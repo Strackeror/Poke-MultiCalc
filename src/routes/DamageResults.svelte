@@ -12,9 +12,18 @@
     results = []
 		for (let offensePoke of offense) {
 			for (let defensePoke of defense) {
+				let bestResult: Result | undefined = undefined;
 				for (let moveName of offensePoke.moves) {
           let move = new Move(gen, moveName);
-          results.push(calculate(gen, offensePoke, defensePoke, move));
+					let result = calculate(gen, offensePoke, defensePoke, move);
+					if (result.damage) {
+						if (!bestResult || result.damage > bestResult.damage) {
+							bestResult = result;
+						}
+					}
+				}
+				if (bestResult) {
+					results.push(bestResult)
 				}
 			}
 		}
@@ -30,5 +39,7 @@
 <style>
   .team {
     display: flex;
+		flex-direction: column;
+		overflow: auto;
   }
 </style>

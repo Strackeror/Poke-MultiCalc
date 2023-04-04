@@ -12,7 +12,7 @@
 	let species: readonly Species[] = [];
 	let types: readonly Type[] = [];
 	let abilities: string[] = [];
-	let moves: readonly Move[] = [];
+	let moves: string[] = [];
 	let items: Item[] = [];
 	let NoneItem = new Item({ name: '(none)' });
 
@@ -22,7 +22,7 @@
 		abilities = dex.abilities.all().map((a) => a.name);
 		items = [NoneItem, ...dex.items.all()];
 		species = dex.species.all();
-		moves = dex.moves.all();
+		moves = dex.moves.all().map((m) => m.name);
 	}
 
 	$: {
@@ -61,7 +61,7 @@
 
 	let currentSpecies: string = '';
 	function setSpecies() {
-		pokemon = new Pokemon(currentGen, currentSpecies);
+		pokemon.species = dex.species.get(currentSpecies);
 	}
 </script>
 
@@ -122,7 +122,7 @@
 				<tr class={stat}>
 					<td> {dex.stats.mediumNames[stat]} </td>
 					<td>
-						<input bind:value={pokemon.species.baseStats[stat]} />
+						<input type="number" bind:value={pokemon.species.baseStats[stat]} />
 					</td>
 					<td class={genCheck([3, 4, 5, 6, 7, 8, 9])}>
 						<input class="ivs" type="number" min="0" max="31" bind:value={pokemon.ivs[stat]} />
@@ -292,21 +292,24 @@
 		<br />
 		<br />
 	</div>
-	{#each [0, 1, 2, 3] as move}
-		<div class="move{move + 1}">
-			<select class="move-selector small-select" bind:value={pokemon.moves[move]}>
+	{#each [0, 1, 2, 3] as moveId}
+		<div class="move{moveId + 1}">
+			<select class="move-selector small-select" bind:value={pokemon.moves[moveId]}>
 				<option selected value="">(no move)</option>
 				{#each moves as move}
 					<option value={move}>{move}</option>
 				{/each}
 			</select>
-			<input class="move-bp" bind:value={calcMoves[move].bp} />
-			<select class="move-type" bind:value={calcMoves[move].type}>
+			<input class="move-bp" type="number" bind:value={calcMoves[moveId].bp} />
+			<select class="move-type" bind:value={calcMoves[moveId].type}>
 				{#each types as type}
 					<option value={type.name}>{type.name}</option>
 				{/each}
 			</select>
-			<select class="move-cat {genCheck([4, 5, 6, 7, 8, 9])}}" bind:value={calcMoves[move].category}>
+			<select
+				class="move-cat {genCheck([4, 5, 6, 7, 8, 9])}}"
+				bind:value={calcMoves[moveId].category}
+			>
 				<option value="Physical">Physical</option>
 				<option value="Special">Special</option>
 			</select>
@@ -369,7 +372,7 @@
 	}
 
 	.move-selector {
-		width: 100px;
+		width: 9em;
 	}
 
 	.hide {
