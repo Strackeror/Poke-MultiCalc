@@ -1,4 +1,4 @@
-import type {Generation, AbilityName, StatID, Terrain} from '../data/interface';
+import type {Generation, AbilityName, StatID, Terrain} from '../interface';
 import {toID} from '../util';
 import {
   getBerryResistType,

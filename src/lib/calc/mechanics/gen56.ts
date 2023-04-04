@@ -1,4 +1,4 @@
-﻿import type {Generation, AbilityName} from '../data/interface';
+﻿import type {Generation, AbilityName} from '../interface';
 import {toID} from '../util';
 import {
   getItemBoostType,

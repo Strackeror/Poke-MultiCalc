@@ -1,4 +1,4 @@
-import type * as I from './data/interface';
+import type * as I from './interface';
 import type {State} from './state';
 import {toID, extend} from './util';
 

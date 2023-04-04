@@ -1,18 +1,14 @@
 <script lang="ts">
-	import { calculate, Generations, type Result } from '$lib/calc';
-	import { Move } from '$lib/calc/move';
-	import type { Pokemon } from '$lib/calc/pokemon';
-	import type { GenerationNum } from '@pkmn/dex';
+	import { calculate, Generation, Move, Pokemon, type Result } from '$lib/calc';
 	import DamageResult from './DamageResult.svelte';
 
 	export let offense: Pokemon[];
 	export let defense: Pokemon[];
-  export let genNo: GenerationNum = 9;
+	export let gen: Generation;
 
 	let results: Result[] = [];
 
 	$: {
-    let gen = Generations.get(genNo);
     results = []
 		for (let offensePoke of offense) {
 			for (let defensePoke of defense) {

@@ -1,4 +1,4 @@
-import type {Generation} from '../data/interface';
+import type {Generation} from '../interface';
 import {getItemBoostType} from '../items';
 import type {RawDesc} from '../desc';
 import type {Field} from '../field';

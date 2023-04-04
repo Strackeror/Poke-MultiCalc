@@ -1,4 +1,4 @@
-import type * as I from './data/interface';
+import type * as I from './interface';
 
 export namespace State {
   export interface Pokemon {

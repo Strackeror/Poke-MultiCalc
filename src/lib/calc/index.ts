@@ -1,54 +1,10 @@
-// When using this library in the browser, a bundler like Webpack should be
-// used to encapsulate the various interdependencies between internal packages.
-// However, if you are requiring contents of this package in HTML <script>
-// tags, the following loading order is required:
-//
-//   - util.js
-//   - stats.js
-//
-//   - data/species.js
-//   - data/types.js
-//   - data/natures.js
-//   - data/abilities.js
-//   - data/moves.js
-//   - data/items.js
-//   - data/index.js
-//
-//   - pokemon.js
-//   - field.js
-//   - move.js
-//   - items.js
-//
-//   - mechanics/util.js
-//   - mechanics/gen78.js
-//   - mechanics/gen56.js
-//   - mechanics/gen4.js
-//   - mechanics/gen3.js
-//   - mechanics/gen12.js
-//
-//   - calc.js
-//   - desc.js
-//   - result.ts
-//
-//   - adaptable.js
-//   - index.js
-//
-// Furthermore, before anything is loaded, the following is required:
-//
-// <script type="text/javascript">
-//		var calc = exports = {};
-//		function require() { return exports; };
-//	</script>
-
-// If we're not being used as a module we're just going to rely on globals and
-// that the correct loading order being followed.
-
-import {Generations} from './data';
+import { Generations } from './gen';
 import type {State} from './state';
-import type* as I from './data/interface';
+import type* as I from './interface';
 import * as A from './adaptable';
+import { Dex } from '@pkmn/dex';
 
-
+const BaseGens = new Generations(Dex);
 
 export function calculate(
   gen: I.GenerationNum | I.Generation,
@@ -58,7 +14,7 @@ export function calculate(
   field?: A.Field
 ): A.Result {
   return (A.calculate)(
-    typeof gen === 'number' ? Generations.get(gen) : gen,
+    typeof gen === 'number' ? BaseGens.get(gen) : gen,
     attacker,
     defender,
     move,
@@ -76,7 +32,7 @@ export class Move extends A.Move {
       species?: string;
     } = {}
   ) {
-    super(typeof gen === 'number' ? Generations.get(gen) : gen, name, options as any);
+    super(typeof gen === 'number' ? BaseGens.get(gen) : gen, name, options as any);
   }
 }
 
@@ -95,7 +51,7 @@ export class Pokemon extends A.Pokemon {
       boosts?: Partial<I.StatsTable> & {spc?: number};
     } = {}
   ) {
-    super(typeof gen === 'number' ? Generations.get(gen) : gen, name, options as any);
+    super(typeof gen === 'number' ? BaseGens.get(gen) : gen, name, options as any);
   }
 
   static getForme(
@@ -105,7 +61,7 @@ export class Pokemon extends A.Pokemon {
     moveName?: string
   ) {
     return A.Pokemon.getForme(
-      typeof gen === 'number' ? Generations.get(gen) : gen,
+      typeof gen === 'number' ? BaseGens.get(gen) : gen,
       speciesName,
       item as I.ItemName,
       moveName as I.MoveName
@@ -123,7 +79,7 @@ export function calcStat(
   nature?: string
 ) {
   return A.Stats.calcStat(
-    typeof gen === 'number' ? Generations.get(gen) : gen,
+    typeof gen === 'number' ? BaseGens.get(gen) : gen,
     stat === 'spc' ? 'spa' : stat,
     base,
     iv,
@@ -135,15 +91,9 @@ export function calcStat(
 
 export {Field, Side} from './field';
 export {Result} from './result';
-export type {GenerationNum, StatsTable, StatID} from './data/interface';
-export {Generations} from './data/index';
+export {Generations, Generation} from "./gen";
+export type {GenerationNum, StatsTable, StatID} from './interface';
 export {toID} from './util';
 export type {State} from './state';
 
-export {ABILITIES} from './data/abilities';
-export {ITEMS, MEGA_STONES} from './data/items';
-export {MOVES} from './data/moves';
-export {SPECIES} from './data/species';
-export {NATURES} from './data/natures';
-export {TYPE_CHART} from './data/types';
 export {STATS, Stats} from './stats';

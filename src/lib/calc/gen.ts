@@ -1,26 +1,26 @@
-import * as I from '../data/interface';
-import * as D from '@pkmn/dex';
+import type * as I from './interface';
+import type * as D from '@pkmn/dex';
 
 export function toID(s: string) {
   return ('' + s).toLowerCase().replace(/[^a-z0-9]+/g, '') as I.ID;
 }
 
-const GENERATIONS = Object.create(null) as {[num: number]: Generation};
 
 export class Generations implements I.Generations {
   private readonly dex: D.ModdedDex;
+  private Generations: {[num: number]: Generation} = {};
 
   constructor(dex: D.ModdedDex) {
     this.dex = dex;
   }
 
   get(gen: I.GenerationNum) {
-    if (GENERATIONS[gen]) return GENERATIONS[gen];
-    return (GENERATIONS[gen] = new Generation(this.dex.forGen(gen)));
+    if (this.Generations[gen]) return this.Generations[gen];
+    return (this.Generations[gen] = new Generation(this.dex.forGen(gen)));
   }
 }
 
-class Generation implements I.Generation {
+export class Generation implements I.Generation {
   dex: D.ModdedDex;
 
   abilities: Abilities;

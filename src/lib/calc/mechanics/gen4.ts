@@ -1,4 +1,4 @@
-import type {Generation, AbilityName} from '../data/interface';
+import type {Generation, AbilityName} from '../interface';
 import {getItemBoostType, getNaturalGift, getFlingPower, getBerryResistType} from '../items';
 import type {RawDesc} from '../desc';
 import type {Field} from '../field';

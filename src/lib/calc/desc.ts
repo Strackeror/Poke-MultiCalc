@@ -1,4 +1,4 @@
-import type {Generation, Weather, Terrain, TypeName, ID} from './data/interface';
+import type {Generation, Weather, Terrain, TypeName, ID} from './interface';
 import type {Field, Side} from './field';
 import type {Move} from './move';
 import type {Pokemon} from './pokemon';

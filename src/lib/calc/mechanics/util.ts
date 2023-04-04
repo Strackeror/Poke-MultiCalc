@@ -9,7 +9,7 @@ import type {
   Terrain,
   TypeName,
   Weather,
-} from '../data/interface';
+} from '../interface';
 import {toID} from '../util';
 import type {Field, Side} from '../field';
 import type {Move} from '../move';

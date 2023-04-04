@@ -31,6 +31,7 @@
 	"type": "module",
 	"dependencies": {
 		"@pkmn/dex": "^0.7.35",
-		"@pkmn/img": "^0.2.8"
+		"@pkmn/img": "^0.2.8",
+		"@pkmn/sets": "^5.0.4"
 	}
 }

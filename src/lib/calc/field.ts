@@ -1,5 +1,5 @@
 import type {State} from './state';
-import type {GameType, Weather, Terrain} from './data/interface';
+import type {GameType, Weather, Terrain} from './interface';
 
 export class Field implements State.Field {
   gameType: GameType;
