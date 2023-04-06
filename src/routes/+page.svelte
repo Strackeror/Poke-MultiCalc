@@ -121,12 +121,12 @@
 	<div class="data">
 		<div class="teams">
 			<div class="team ally box">
-				<PokemonTeam pokemons={allies} bind:selectedPokemon={editedPoke} />
 				<span>Allies</span>
+				<PokemonTeam pokemons={allies} bind:selectedPokemon={editedPoke} />
 			</div>
 			<div class="team enemy box">
 				<span>Enemies</span>
-				<PokemonTeam pokemons={enemies} bind:selectedPokemon={editedPoke} />
+				<PokemonTeam pokemons={enemies} bind:selectedPokemon={editedPoke} right />
 			</div>
 		</div>
 		<div class="result-matrix box">
@@ -142,10 +142,12 @@
 <style>
 	.main {
 		display: flex;
+		max-width: 100%;
 	}
 	.edit {
 		font: 10pt Verdana;
-		width: 420px;
+		width: 380px;
+		min-width: 380px;
 	}
 	.data {
 		display: flex;
@@ -184,24 +186,20 @@
 		margin: 5px;
 	}
 	.teams {
-		display: flex;
-	}
-	.team {
-		flex-grow: 1;
-		flex-basis: 100%;
-		display: flex;
+		display: grid;
+		grid-auto-columns: minmax(0, 1fr);
+		grid-auto-flow: column;
 	}
 
-	.enemy {
-		justify-content: flex-end;
+	.team {
+		position: relative;
 	}
 
 	.team > span {
-		flex-grow: 1;
-		align-self: center;
-		margin: 0px 5px;
-	}
-	.ally span {
+		position: absolute;
+		right:0;
 		text-align: right;
+		margin: 0px 5px;
+		z-index: 1;
 	}
 </style>

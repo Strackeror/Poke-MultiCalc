@@ -322,8 +322,9 @@
 				<option value="Physical">Physical</option>
 				<option value="Special">Special</option>
 			</select>
-			<input class="move-crit visually-hidden" type="checkbox" id="critL1" />
-			<label class="btn crit-btn" for="critL1" title="Force this attack to be a critical hit?"
+			<br>
+			<input class="move-crit visually-hidden" type="checkbox" id="critL{moveId}" />
+			<label class="btn crit-btn" for="critL{moveId}" title="Force this attack to be a critical hit?"
 				>Crit</label
 			>
 			<input class="move-z visually-hidden {genCheck([7])}" type="checkbox" id="zL1" />
@@ -365,7 +366,6 @@
 
 <style>
 	.poke-info input:not([type]),
-	.poke-info input[type='text'],
 	.poke-info span {
 		display: inline-block;
 		width: 2.5em;
