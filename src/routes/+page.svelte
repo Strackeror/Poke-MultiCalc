@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { slide } from 'svelte/transition';
 	import DamageResults from './DamageResults.svelte';
 	import PokemonTeam from './PokemonTeam.svelte';
 	import PokemonEditor from './PokemonEditor.svelte';
@@ -13,8 +14,7 @@
 	let gen = new Generations(Dex).get(7);
 	let field = new Field();
 	let editedPoke: Pokemon = new Pokemon(gen, 'Bulbasaur');
-	editedPoke.moves[0] = 'Giga Drain' as MoveName;
-	let allies: Pokemon[] = [editedPoke];
+	let allies: Pokemon[] = [];
 	let enemies: Pokemon[] = [];
 
 	$: {
@@ -81,29 +81,41 @@
 		allies = allies.filter((p) => p != editedPoke);
 		enemies = enemies.filter((p) => p != editedPoke);
 	}
+
+	let pokemonCollapsed: boolean = false;
+	let fieldCollapse: boolean = true;
 </script>
 
 <div class="main">
 	<div class="edit">
 		<div class="box poke-editor">
-			<PokemonEditor bind:pokemon={editedPoke} {gen} />
-			<div style="display: flex; flex-direction: row;">
-				<button on:click={addPokeToAllies}>Add to allies</button>
-				<button on:click={addToPokeEnemies}>Add to enemies</button>
-				{#if allies.indexOf(editedPoke) >= 0 || enemies.indexOf(editedPoke) >= 0}
-					<button on:click={removePoke}>Remove</button>
-				{/if}
-			</div>
+			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
+			{#if pokemonCollapsed == false}
+				<div transition:slide={{ duration: 300 }}>
+					<PokemonEditor bind:pokemon={editedPoke} {gen} />
+					<div style="display: flex; flex-direction: row;">
+						<button on:click={addPokeToAllies}>Add to allies</button>
+						<button on:click={addToPokeEnemies}>Add to enemies</button>
+						{#if allies.indexOf(editedPoke) >= 0 || enemies.indexOf(editedPoke) >= 0}
+							<button on:click={removePoke}>Remove</button>
+						{/if}
+					</div>
+				</div>
+			{/if}
+		</div>
+		<div class="box field-editor">
+			<button on:click={() => (fieldCollapse = !fieldCollapse)}>Field</button>
+			{#if fieldCollapse == false}
+				<div transition:slide={{ duration: 300 }}>
+					<FieldEditor bind:field {gen} />
+				</div>
+			{/if}
 		</div>
 		<div class="box import-text-box">
 			<textarea class="import-text" bind:value={importText} />
 			<button on:click={importTextPokemon}>Import</button>
 			<button on:click={() => importTextTeam(false)}>Import allies</button>
 			<button on:click={() => importTextTeam(true)}>Import enemies</button>
-		</div>
-
-		<div class="box field-editor">
-			<FieldEditor bind:field {gen} />
 		</div>
 	</div>
 	<div class="data">
@@ -139,17 +151,14 @@
 		display: flex;
 		flex-grow: 1;
 		flex-direction: column;
-		max-height: 100%;
 	}
 
 	.result-matrix {
-		flex-grow: 1;
+		min-height: 10em;
 		display: flex;
 	}
 
 	.sep {
-		flex-grow: 100;
-		border-left: 1px solid black;
 		border-right: 1px solid black;
 	}
 

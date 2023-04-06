@@ -70,6 +70,7 @@
 		text-align: center;
 		display: flex;
 		flex-direction: column;
+		width: 5em;
 	}
 	.speed-column {
 		display: flex;

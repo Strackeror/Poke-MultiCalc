@@ -16,8 +16,8 @@
 		types = [...gen.types];
 		abilities = [...gen.abilities].map((a) => a.name);
 		items = [...gen.items];
-		species = [...gen.species].sort((a,b)=>a.name.localeCompare(b.name));
-		moves = [...gen.moves].map((m) => m.name);
+		species = [...gen.species].sort((a, b) => a.name.localeCompare(b.name));
+		moves = [...gen.moves].map((m) => m.name).sort();
 	}
 
 	$: {
@@ -33,6 +33,7 @@
 				calcMoves[i] = new CalcMove(gen, pokemon.moves[i]);
 			}
 		}
+		let hpRatio = pokemon.curHP() / pokemon.maxHP();
 		for (let stat of gen.stats) {
 			pokemon.rawStats[stat] = calcStat(
 				gen,
@@ -44,7 +45,12 @@
 				pokemon.nature
 			);
 		}
-		pokemon.originalCurHP = pokemon.rawStats['hp'];
+		pokemon.originalCurHP = Math.floor(pokemon.maxHP() * hpRatio);
+	}
+
+	let percentHp: number;
+	$: {
+		percentHp = Math.round((pokemon.curHP() / pokemon.maxHP()) * 100);
 	}
 
 	function genCheck(gens: number[]) {
@@ -248,7 +254,7 @@
 		</div>
 		<div>
 			<div class="edit">Status</div>
-			<select class="status">
+			<select class="status" bind:value={pokemon.status}>
 				<option value="Healthy">Healthy</option>
 				<option value="Poisoned">Poisoned</option>
 				<option value="Badly Poisoned">Badly Poisoned</option>
@@ -278,11 +284,15 @@
 	</div>
 	<div class="info-group">
 		Current HP
-		<input class="current-hp" value={pokemon.curHP()} />/<span class="max-hp"
+		<input class="current-hp" type="number" bind:value={pokemon.originalCurHP} />/<span class="max-hp"
 			>{pokemon.maxHP()}</span
 		>
 		(
-		<input class="percent-hp" value="100" />%)
+		<input
+			class="percent-hp"
+			bind:value={percentHp}
+			on:input={() => (pokemon.originalCurHP = Math.round(pokemon.maxHP() * percentHp / 100))}
+		/>%)
 		<input class="max calc-trigger btn-input {genCheck([8])}" type="checkbox" id="maxL" /><label
 			class="btn btn-wide gen-specific {genCheck([8])}"
 			for="maxL"

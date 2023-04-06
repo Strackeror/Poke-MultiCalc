@@ -10,7 +10,13 @@
 	$: imgs = pokemons.map((poke) => Sprites.getPokemon(poke.species.name, {gen: "gen5"}));
 </script>
 
+<div>
 {#each pokemons as pokemon}
 	<PokemonSprite pokemon={pokemon} bind:selectedPokemon={selectedPokemon}/>
 {/each}
-
+</div>
+<style>
+	div {
+		height: 96px;
+	}
+</style>
