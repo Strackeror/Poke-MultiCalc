@@ -11,9 +11,9 @@
 	import { Sets, Team } from '@pkmn/sets';
 	import { Field, Pokemon } from '$lib/calc';
 
-	let gen = new Generations(Dex).get(7);
-	let field = new Field();
+	let gen = new Generations(Dex, () => true).get(9);
 	let editedPoke: Pokemon = new Pokemon(gen, 'Bulbasaur');
+	let field = new Field();
 	let allies: Pokemon[] = [];
 	let enemies: Pokemon[] = [];
 
