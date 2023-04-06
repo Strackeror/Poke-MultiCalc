@@ -1,46 +1,41 @@
 <script lang="ts">
-	import { Pokemon, Move as CalcMove, type StatID, calcStat } from '$lib/calc';
-	import { type GenerationNum, Type, Dex, Item, Species, Move, ModdedDex } from '@pkmn/dex';
+	import { Pokemon, Move as CalcMove, calcStat } from '$lib/calc';
+	import type { Generation, Type, Item, Specie } from '@pkmn/data';
 
-	export let currentGen: GenerationNum = 9;
+	export let gen: Generation;
 	export let pokemon: Pokemon;
 
-	const STATS: StatID[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 	let calcMoves: CalcMove[] = [];
 
-	let dex: ModdedDex;
-	let species: readonly Species[] = [];
-	let types: readonly Type[] = [];
+	let species: readonly Specie[] = [];
+	let types: Type[] = [];
 	let abilities: string[] = [];
 	let moves: string[] = [];
-	let items: Item[] = [];
-	let NoneItem = new Item({ name: '(none)' });
-
+	let items: readonly Item[] = [];
 	$: {
-		dex = Dex.forGen(currentGen);
-		types = dex.types.all();
-		abilities = dex.abilities.all().map((a) => a.name);
-		items = [NoneItem, ...dex.items.all()];
-		species = dex.species.all();
-		moves = dex.moves.all().map((m) => m.name);
+		types = [...gen.types];
+		abilities = [...gen.abilities].map((a) => a.name);
+		items = [...gen.items];
+		species = [...gen.species].sort((a,b)=>a.name.localeCompare(b.name));
+		moves = [...gen.moves].map((m) => m.name);
 	}
 
 	$: {
 		currentSpecies = pokemon.species.name;
 		calcMoves = [
-			new CalcMove(currentGen, ''),
-			new CalcMove(currentGen, ''),
-			new CalcMove(currentGen, ''),
-			new CalcMove(currentGen, '')
+			new CalcMove(gen, ''),
+			new CalcMove(gen, ''),
+			new CalcMove(gen, ''),
+			new CalcMove(gen, '')
 		];
 		for (let i = 0; i < 4; ++i) {
 			if (pokemon.moves[i]) {
-				calcMoves[i] = new CalcMove(currentGen, pokemon.moves[i]);
+				calcMoves[i] = new CalcMove(gen, pokemon.moves[i]);
 			}
 		}
-		for (let stat of dex.stats.ids()) {
+		for (let stat of gen.stats) {
 			pokemon.rawStats[stat] = calcStat(
-				currentGen,
+				gen,
 				stat,
 				pokemon.species.baseStats[stat],
 				pokemon.ivs[stat],
@@ -53,7 +48,7 @@
 	}
 
 	function genCheck(gens: number[]) {
-		if (gens.indexOf(currentGen) < 0) {
+		if (!gens.includes(gen.num)) {
 			return 'hide';
 		}
 		return '';
@@ -61,7 +56,10 @@
 
 	let currentSpecies: string = '';
 	function setSpecies() {
-		pokemon.species = dex.species.get(currentSpecies);
+		let species = gen.species.get(currentSpecies);
+		if (species) {
+			pokemon.species = species;
+		}
 	}
 </script>
 
@@ -118,9 +116,9 @@
 				<th />
 				<th />
 			</tr>
-			{#each STATS as stat}
+			{#each [...gen.stats] as stat}
 				<tr class={stat}>
-					<td> {dex.stats.mediumNames[stat]} </td>
+					<td> {gen.stats.display(stat)} </td>
 					<td>
 						<input type="number" bind:value={pokemon.species.baseStats[stat]} />
 					</td>
@@ -144,19 +142,19 @@
 					{#if stat != 'hp'}
 						<td>
 							<select class="boost" bind:value={pokemon.boosts[stat]}>
-								<option value="6">+6</option>
-								<option value="5">+5</option>
-								<option value="4">+4</option>
-								<option value="3">+3</option>
-								<option value="2">+2</option>
-								<option value="1">+1</option>
-								<option value="0" selected>--</option>
-								<option value="-1">-1</option>
-								<option value="-2">-2</option>
-								<option value="-3">-3</option>
-								<option value="-4">-4</option>
-								<option value="-5">-5</option>
-								<option value="-6">-6</option>
+								<option value={6}>+6</option>
+								<option value={5}>+5</option>
+								<option value={4}>+4</option>
+								<option value={3}>+3</option>
+								<option value={2}>+2</option>
+								<option value={1}>+1</option>
+								<option value={0} selected>--</option>
+								<option value={-1}>-1</option>
+								<option value={-2}>-2</option>
+								<option value={-3}>-3</option>
+								<option value={-4}>-4</option>
+								<option value={-5}>-5</option>
+								<option value={-6}>-6</option>
 							</select>
 						</td>
 					{/if}
@@ -241,9 +239,10 @@
 		</div>
 		<div class={genCheck([2, 3, 4, 5, 6, 7, 8, 9])}>
 			<div class="edit">Item</div>
-			<select class="item terrain-trigger">
+			<select class="item terrain-trigger" bind:value={pokemon.item}>
+				<option value={undefined} selected>(none)</option>
 				{#each items as item}
-					<option value={item}>{item}</option>
+					<option value={item.name}>{item.name}</option>
 				{/each}
 			</select>
 		</div>

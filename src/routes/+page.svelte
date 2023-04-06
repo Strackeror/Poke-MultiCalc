@@ -2,25 +2,20 @@
 	import DamageResults from './DamageResults.svelte';
 	import PokemonTeam from './PokemonTeam.svelte';
 	import PokemonEditor from './PokemonEditor.svelte';
-	import {
-		Dex,
-		type AbilityName,
-		type ItemName,
-		type MoveName,
-		type NatureName,
-		type PokemonSet
-	} from '@pkmn/dex';
-	import { Sets, Team } from '@pkmn/sets';
-	import { Generation, Pokemon } from '$lib/calc';
-	import { not_equal } from 'svelte/internal';
+	import SpeedColumn from './SpeedColumn.svelte';
+	import FieldEditor from './FieldEditor.svelte';
 
-	let dex = Dex.forGen(9);
-	let gen = new Generation(dex);
+	import { Dex, type MoveName, type PokemonSet } from '@pkmn/dex';
+	import { Generations } from '@pkmn/data';
+	import { Sets, Team } from '@pkmn/sets';
+	import { Field, Pokemon } from '$lib/calc';
+
+	let gen = new Generations(Dex).get(7);
+	let field = new Field();
 	let editedPoke: Pokemon = new Pokemon(gen, 'Bulbasaur');
-	editedPoke.moves[1] = 'Giga Drain' as MoveName;
+	editedPoke.moves[0] = 'Giga Drain' as MoveName;
 	let allies: Pokemon[] = [editedPoke];
 	let enemies: Pokemon[] = [];
-	let importText: string = '';
 
 	$: {
 		if (allies.indexOf(editedPoke) >= 0) {
@@ -37,31 +32,19 @@
 			return undefined;
 		}
 
-		let poke = new Pokemon(gen, set.species);
-		if (set.item) {
-			poke.item = set.item as ItemName;
-		}
-		if (set.ability) {
-			poke.ability = set.ability as AbilityName;
-		}
-		if (set.nature) {
-			poke.nature = set.nature as NatureName;
-		}
-		if (set.moves) {
-			poke.moves = set.moves as MoveName[];
-		}
-		if (set.level) {
-			poke.level = set.level;
-		}
-		if (set.ivs) {
-			poke.ivs = set.ivs;
-		}
-		if (set.evs) {
-			poke.evs = set.evs;
-		}
+		let poke = new Pokemon(gen, set.species, {
+			item: set.item,
+			nature: set.nature,
+			moves: set.moves,
+			ability: set.ability,
+			level: set.level,
+			ivs: set.ivs,
+			evs: set.evs
+		});
 		return poke;
 	}
 
+	let importText: string = '';
 	function importTextPokemon() {
 		let set = Sets.importSet(importText);
 		let poke = setToPoke(set);
@@ -93,15 +76,23 @@
 		enemies.push(editedPoke.clone());
 		enemies = enemies;
 	}
+
+	function removePoke() {
+		allies = allies.filter((p) => p != editedPoke);
+		enemies = enemies.filter((p) => p != editedPoke);
+	}
 </script>
 
 <div class="main">
 	<div class="edit">
-		<div class="box">
-			<div class="poke-editor"><PokemonEditor bind:pokemon={editedPoke} /></div>
+		<div class="box poke-editor">
+			<PokemonEditor bind:pokemon={editedPoke} {gen} />
 			<div style="display: flex; flex-direction: row;">
 				<button on:click={addPokeToAllies}>Add to allies</button>
 				<button on:click={addToPokeEnemies}>Add to enemies</button>
+				{#if allies.indexOf(editedPoke) >= 0 || enemies.indexOf(editedPoke) >= 0}
+					<button on:click={removePoke}>Remove</button>
+				{/if}
 			</div>
 		</div>
 		<div class="box import-text-box">
@@ -110,20 +101,28 @@
 			<button on:click={() => importTextTeam(false)}>Import allies</button>
 			<button on:click={() => importTextTeam(true)}>Import enemies</button>
 		</div>
+
+		<div class="box field-editor">
+			<FieldEditor bind:field {gen} />
+		</div>
 	</div>
 	<div class="data">
 		<div class="teams">
 			<div class="team ally box">
-				Allies <PokemonTeam pokemons={allies} bind:selectedPokemon={editedPoke} />
+				<PokemonTeam pokemons={allies} bind:selectedPokemon={editedPoke} />
+				<span>Allies</span>
 			</div>
 			<div class="team enemy box">
-				Enemies <PokemonTeam pokemons={enemies} bind:selectedPokemon={editedPoke} />
+				<span>Enemies</span>
+				<PokemonTeam pokemons={enemies} bind:selectedPokemon={editedPoke} />
 			</div>
 		</div>
 		<div class="result-matrix box">
-			<DamageResults offense={allies} defense={enemies} {gen} />
-			<div class="sep"></div>
-			<DamageResults offense={enemies} defense={allies} {gen} />
+			<DamageResults offense={allies} defense={enemies} {gen} {field} />
+			<div class="sep" />
+			<SpeedColumn leftTeam={allies} rightTeam={enemies} {gen} {field} />
+			<div class="sep" />
+			<DamageResults offense={enemies} defense={allies} {gen} {field} otherSide />
 		</div>
 	</div>
 </div>
@@ -150,10 +149,8 @@
 
 	.sep {
 		flex-grow: 100;
-	}
-
-	.teams {
-		display: flex;
+		border-left: 1px solid black;
+		border-right: 1px solid black;
 	}
 
 	.import-text {
@@ -167,17 +164,35 @@
 		margin: 5px;
 	}
 
-	.poke-editor {
-		margin: 5px;
+	.poke-editor,
+	.field-editor {
+		padding: 10px;
 	}
 
 	.box {
-		border-radius: 5px;
+		border-radius: 10px;
 		border: 1px solid black;
-		box-shadow: 2px 2px black;
 		margin: 5px;
+	}
+	.teams {
+		display: flex;
 	}
 	.team {
 		flex-grow: 1;
+		flex-basis: 100%;
+		display: flex;
+	}
+
+	.enemy {
+		justify-content: flex-end;
+	}
+
+	.team > span {
+		flex-grow: 1;
+		align-self: center;
+		margin: 0px 5px;
+	}
+	.ally span {
+		text-align: right;
 	}
 </style>

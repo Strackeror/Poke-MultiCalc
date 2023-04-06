@@ -1,39 +1,31 @@
 <script lang="ts">
+	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import type { Result } from '../lib/calc/index';
-	import { Icons } from '@pkmn/img';
-
-	type Icon = {
-		style: string;
-	};
-
 	export let result: Result;
 	let text: string;
-	let attackerIcon: Icon, defenderIcon: Icon;
 	$: {
-		attackerIcon = Icons.getPokemon(result.attacker.species.name);
-		defenderIcon = Icons.getPokemon(result.defender.species.name);
-		text = `${result.moveDesc()}: ${result.kochance().text}`;
+		text = `${result.moveDesc()}: ${result.kochance(false).text}`;
 	}
 </script>
 
 <div class="damage-result">
-	<span style={attackerIcon.style} class="poke-icon" />
+	<PokemonSprite pokemon={result.attacker} icon={true} />
 	<div class="damage-description">
-		{result.move.name}<br>
+		{result.move.name}<br />
 		{text}
 	</div>
-	<span style={defenderIcon.style} class="poke-icon" />
+	<PokemonSprite pokemon={result.defender} icon={true} />
 </div>
 
 <style>
 	.damage-result {
 		display: flex;
 		align-items: center;
+		margin: 2px 0px;
 	}
 	.damage-description {
 		flex-grow: 1;
-	}
-	.poke-icon {
+		margin: 0px 3px;
 		margin-bottom: 5px;
 	}
 </style>

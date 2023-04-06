@@ -1,0 +1,88 @@
+<script lang="ts">
+	import type { Generation } from '@pkmn/data';
+	import type { Field, Pokemon } from '$lib/calc/';
+	import { getFinalSpeed } from '$lib/calc/mechanics/util';
+
+	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
+
+	export let gen: Generation;
+	export let field: Field;
+	export let leftTeam: Pokemon[], rightTeam: Pokemon[];
+
+	enum PokeSide {
+		Left,
+		Right
+	}
+
+	let speeds: { speed: number; pokes: { poke: Pokemon; side: PokeSide }[] }[] = [];
+	$: {
+		let pokeBySpeed: { [speed: number]: { poke: Pokemon; side: PokeSide }[] } = {};
+		for (let poke of leftTeam) {
+			let speed = getFinalSpeed(gen, poke, field, field.attackerSide);
+			if (!(speed in pokeBySpeed)) {
+				pokeBySpeed[speed] = [];
+			}
+
+			pokeBySpeed[speed].push({ poke, side: PokeSide.Left });
+		}
+		for (let poke of rightTeam) {
+			let speed = getFinalSpeed(gen, poke, field, field.defenderSide);
+			if (!(speed in pokeBySpeed)) {
+				pokeBySpeed[speed] = [];
+			}
+
+			pokeBySpeed[speed].push({ poke, side: PokeSide.Right });
+		}
+
+		speeds = Object.keys(pokeBySpeed).map((speed) => ({
+			speed: Number(speed),
+			pokes: pokeBySpeed[Number(speed)]
+		}));
+		speeds.sort((a, b) => b.speed - a.speed);
+	}
+
+	function getSideClass(side: PokeSide) {
+		switch (side) {
+			case PokeSide.Left:
+				return 'left';
+			case PokeSide.Right:
+				return 'right';
+		}
+	}
+</script>
+
+<div class="main-column">
+	<div class="speed-column">Speed</div>
+	{#each speeds as speedEntry}
+		<div class="speed-column">
+			{speedEntry.speed}
+			{#each speedEntry.pokes as poke}
+				<div class={getSideClass(poke.side)}>
+					<PokemonSprite icon={true} pokemon={poke.poke} />
+				</div>
+			{/each}
+		</div>
+	{/each}
+</div>
+
+<style>
+	.main-column {
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+	}
+	.speed-column {
+		display: flex;
+		flex-direction: column;
+		border-bottom: 1px solid black;
+		margin-top: 5px;
+		padding-bottom: 5px;
+	}
+
+	.left {
+		margin-right: 30px;
+	}
+	.right {
+		margin-left: 30px;
+	}
+</style>
