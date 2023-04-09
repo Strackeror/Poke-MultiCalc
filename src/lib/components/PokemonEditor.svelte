@@ -1,6 +1,15 @@
 <script lang="ts">
 	import { Pokemon, Move, calcStat } from '$lib/calc';
-	import type { Generation, Type, Item, Specie, MoveCategory, TypeName } from '@pkmn/data';
+	import type {
+		Generation,
+		Type,
+		Item,
+		Specie,
+		MoveCategory,
+		TypeName,
+		StatID,
+		StatsTable
+	} from '@pkmn/data';
 
 	export let gen: Generation;
 	export let pokemon: Pokemon;
@@ -10,12 +19,17 @@
 	let abilities: string[] = [];
 	let moves: string[] = [];
 	let items: readonly Item[] = [];
+	let stats: StatID[] = [];
 	$: {
 		types = [...gen.types];
 		abilities = [...gen.abilities].map((a) => a.name);
 		items = [...gen.items];
 		species = [...gen.species].sort((a, b) => a.name.localeCompare(b.name));
 		moves = [...gen.moves].map((m) => m.name).sort();
+		stats = [...gen.stats];
+		if (gen.num == 1) {
+			stats.pop();
+		}
 	}
 
 	class MoveProxy {
@@ -46,7 +60,6 @@
 		public set basePower(basePower: number) {
 			this.move.overrides = { ...this.move.overrides, basePower };
 		}
-
 	}
 
 	let moveProxies: MoveProxy[];
@@ -74,27 +87,38 @@
 		pokemon.originalCurHP = Math.floor(pokemon.maxHP() * hpRatio);
 	}
 
-	let percentHp: number;
+	let percentHp: string;
 	$: {
-		percentHp = Math.round((pokemon.curHP() / pokemon.maxHP()) * 100);
+		percentHp = '' + Math.round((pokemon.originalCurHP / pokemon.rawStats.hp) * 100);
+	}
+	function updatePercent() {
+		let ratio = +percentHp / 100;
+		pokemon.originalCurHP = Math.floor(pokemon.rawStats.hp * ratio);
 	}
 
-	function genCheck(gens: number[]) {
+	let speciesString: string;
+	$: {
+		speciesString = pokemon.species.name;
+	}
+	function updateSpecies() {
+		pokemon = new Pokemon(gen, speciesString);
+	}
+
+	let dvs: StatsTable = { ...pokemon.ivs };
+	$: {
+		for (let stat of stats) {
+			dvs[stat] = gen.stats.toDV(pokemon.ivs[stat]);
+		}
+	}
+	function updateDv(stat: StatID) {
+		pokemon.ivs[stat] = gen.stats.toIV(dvs[stat]);
+	}
+
+	function genCheck(gen: Generation, gens: number[]) {
 		if (!gens.includes(gen.num)) {
 			return 'hide';
 		}
 		return '';
-	}
-
-	let currentSpecies: string = '';
-	$: {
-		currentSpecies = pokemon.species.name;
-	}
-	function setSpecies() {
-		let species = gen.species.get(currentSpecies);
-		if (species) {
-			pokemon.species = species;
-		}
 	}
 </script>
 
@@ -102,7 +126,7 @@
 	<div class="info-group top">
 		<div>
 			<div class="edit">Species</div>
-			<select bind:value={currentSpecies} on:change={setSpecies}>
+			<select bind:value={speciesString} on:change={updateSpecies}>
 				{#each species as specie}
 					<option value={specie.name}>{specie.name}</option>
 				{/each}
@@ -145,22 +169,22 @@
 			<tr>
 				<th />
 				<th>Base</th>
-				<th class={genCheck([3, 4, 5, 6, 7, 8, 9])}>IVs</th>
-				<th class={genCheck([3, 4, 5, 6, 7, 8, 9])}>EVs</th>
-				<th class={genCheck([1, 2])}>DVs</th>
+				<th class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>IVs</th>
+				<th class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>EVs</th>
+				<th class={genCheck(gen, [1, 2])}>DVs</th>
 				<th />
 				<th />
 			</tr>
-			{#each [...gen.stats] as stat}
-				<tr class={stat}>
+			{#each stats as stat}
+				<tr>
 					<td> {gen.stats.display(stat)} </td>
 					<td>
 						<input type="number" bind:value={pokemon.species.baseStats[stat]} />
 					</td>
-					<td class={genCheck([3, 4, 5, 6, 7, 8, 9])}>
+					<td class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
 						<input class="ivs" type="number" min="0" max="31" bind:value={pokemon.ivs[stat]} />
 					</td>
-					<td class={genCheck([3, 4, 5, 6, 7, 8, 9])}>
+					<td class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
 						<input
 							class="evs"
 							type="number"
@@ -170,8 +194,13 @@
 							bind:value={pokemon.evs[stat]}
 						/>
 					</td>
-					<td class="gen-specific {genCheck([1, 2])} hide">
-						<input class="dvs" value="15" />
+					<td class="gen-specific {genCheck(gen, [1, 2])}">
+						<input
+							class="dvs"
+							type="number"
+							bind:value={dvs[stat]}
+							on:input={() => updateDv(stat)}
+						/>
 					</td>
 					<td><span class="total">{pokemon.rawStats[stat]}</span> </td>
 					{#if stat != 'hp'}
@@ -195,37 +224,10 @@
 					{/if}
 				</tr>
 			{/each}
-			<tr class="sl gen-specific {genCheck([1])} hide">
-				<td> Special </td>
-				<td>
-					<input class="base" value="100" />
-				</td>
-				<td>
-					<input class="dvs" value="15" />
-				</td>
-				<td><span class="total">236</span> </td>
-				<td>
-					<select class="boost">
-						<option value="6">+6</option>
-						<option value="5">+5</option>
-						<option value="4">+4</option>
-						<option value="3">+3</option>
-						<option value="2">+2</option>
-						<option value="1">+1</option>
-						<option value="0" selected>--</option>
-						<option value="-1">-1</option>
-						<option value="-2">-2</option>
-						<option value="-3">-3</option>
-						<option value="-4">-4</option>
-						<option value="-5">-5</option>
-						<option value="-6">-6</option>
-					</select>
-				</td>
-			</tr>
 		</table>
 	</div>
 	<div class="info-group info-selectors">
-		<div class={genCheck([3, 4, 5, 6, 7, 8, 9])}>
+		<div class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
 			<div class="edit">Nature</div>
 			<select class="nature" bind:value={pokemon.nature}>
 				<option value="Adamant">Adamant (+Atk, -SpA)</option>
@@ -255,7 +257,7 @@
 				<option value="Timid">Timid (+Spe, -Atk)</option>
 			</select>
 		</div>
-		<div class={genCheck([3, 4, 5, 6, 7, 8, 9])}>
+		<div class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
 			<div class="edit">Ability</div>
 			<select class="ability terrain-trigger" bind:value={pokemon.ability}>
 				{#each abilities as ability}
@@ -272,7 +274,7 @@
 				<option value="5">Five allies fainted</option>
 			</select>
 		</div>
-		<div class={genCheck([2, 3, 4, 5, 6, 7, 8, 9])}>
+		<div class={genCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}>
 			<div class="edit">Item</div>
 			<select class="item terrain-trigger" bind:value={pokemon.item}>
 				<option value={undefined} selected>(none)</option>
@@ -284,13 +286,13 @@
 		<div>
 			<div class="edit">Status</div>
 			<select class="status" bind:value={pokemon.status}>
-				<option value="Healthy">Healthy</option>
-				<option value="Poisoned">Poisoned</option>
-				<option value="Badly Poisoned">Badly Poisoned</option>
-				<option value="Burned">Burned</option>
-				<option value="Paralyzed">Paralyzed</option>
-				<option value="Asleep">Asleep</option>
-				<option value="Frozen">Frozen</option>
+				<option value="">Healthy</option>
+				<option value="psn">Poisoned</option>
+				<option value="txc">Badly Poisoned</option>
+				<option value="brn">Burned</option>
+				<option value="par">Paralyzed</option>
+				<option value="slp">Asleep</option>
+				<option value="frz">Frozen</option>
 			</select>
 			<select class="toxic-counter hide">
 				<option value="1">1/16</option>
@@ -317,13 +319,13 @@
 			class="max-hp">{pokemon.maxHP()}</span
 		>
 		(
+		<input class="percent-hp" bind:value={percentHp} on:input={updatePercent} />%)
 		<input
-			class="percent-hp"
-			bind:value={percentHp}
-			on:input={() => (pokemon.originalCurHP = Math.round((pokemon.maxHP() * percentHp) / 100))}
-		/>%)
-		<input class="max calc-trigger btn-input {genCheck([8])}" type="checkbox" id="maxL" /><label
-			class="btn btn-wide gen-specific {genCheck([8])}"
+			class="max calc-trigger btn-input {genCheck(gen, [8])}"
+			type="checkbox"
+			id="maxL"
+		/><label
+			class="btn btn-wide gen-specific {genCheck(gen, [8])}"
 			for="maxL"
 			title="Use the corresponding Max Move?">Dynamax</label
 		>
@@ -349,7 +351,7 @@
 				{/each}
 			</select>
 			<select
-				class="move-cat {genCheck([4, 5, 6, 7, 8, 9])}}"
+				class="move-cat {genCheck(gen, [4, 5, 6, 7, 8, 9])}"
 				bind:value={moveProxies[moveId].category}
 			>
 				<option value="Physical">Physical</option>
@@ -368,14 +370,14 @@
 				title="Force this attack to be a critical hit?">Crit</label
 			>
 			<input
-				class="move-z visually-hidden {genCheck([7])}"
+				class="move-z visually-hidden {genCheck(gen, [7])}"
 				type="checkbox"
-				id="zL1"
+				id="zL{moveId}"
 				bind:checked={moveProxies[moveId].move.isZ}
 			/>
 			<label
-				class="btn z-btn gen-specific {genCheck([7])}"
-				for="zL1"
+				class="btn z-btn gen-specific {genCheck(gen, [7])}"
+				for="zL{moveId}"
 				title="Make this attack a Z-move?">Z</label
 			>
 			{#if moveProxies[moveId].move.hits > 1}

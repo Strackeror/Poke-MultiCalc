@@ -7,24 +7,51 @@
 	import FieldEditor from '$lib/components/FieldEditor.svelte';
 	import TextImporter from '$lib/components/TextImporter.svelte';
 
-	import { Dex } from '@pkmn/dex';
-	import { Generations } from '@pkmn/data';
+	import { Dex, type Data } from '@pkmn/dex';
+	import { Generation, Generations } from '@pkmn/data';
 	import { Field, Pokemon } from '$lib/calc';
 
-	let gen = new Generations(Dex, () => true).get(9);
-	let editedPoke: Pokemon = new Pokemon(gen, 'Bulbasaur');
+	function existCheck(data: Data) {
+		if ('isNonstandard' in data && data.isNonstandard === 'Past') {
+			return true;
+		}
+		return Generations.DEFAULT_EXISTS(data);
+	}
+
+	const baseGens = new Generations(Dex, existCheck);
+	const generationMap = {
+		RBY: baseGens.get(1),
+		GSC: baseGens.get(2),
+		ADV: baseGens.get(3),
+		DPP: baseGens.get(4),
+		'B/W': baseGens.get(5),
+		'X/Y': baseGens.get(6),
+		'S/M': baseGens.get(7),
+		'S/S': baseGens.get(8),
+		'S/V': baseGens.get(9)
+	};
+	let gen: Generation;
+	let editedPoke: Pokemon;
 	let field = new Field();
-	let allies: Pokemon[] = [];
-	let enemies: Pokemon[] = [];
+	let allies: Pokemon[];
+	let enemies: Pokemon[];
+
+	let genString: keyof typeof generationMap = 'S/V';
+
+	function updateGen() {
+		gen = generationMap[genString];
+		editedPoke = new Pokemon(gen, 'Bulbasaur');
+		allies = [];
+		enemies = [];
+		field = new Field();
+	}
+	updateGen();
 
 	$: {
-		if (allies.indexOf(editedPoke) >= 0) {
+		if (allies.includes(editedPoke))
 			allies = allies;
-		}
-
-		if (enemies.indexOf(editedPoke) >= 0) {
+		if (enemies.includes(editedPoke))
 			enemies = enemies;
-		}
 	}
 
 	function addPokeToAllies() {
@@ -48,6 +75,14 @@
 
 <div class="main">
 	<div class="edit">
+		<div class="box basic-options">
+			Games
+			<select bind:value={genString} on:change={updateGen}>
+				{#each Object.keys(generationMap) as name}
+					<option value={name}>{name}</option>
+				{/each}
+			</select>
+		</div>
 		<div class="box poke-editor">
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
 			{#if pokemonCollapsed == false}
@@ -124,6 +159,10 @@
 	.poke-editor,
 	.field-editor {
 		padding: 10px;
+	}
+
+	.basic-options {
+		padding: 5px;
 	}
 
 	.box {

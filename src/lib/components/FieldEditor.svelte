@@ -12,7 +12,7 @@
 	}
 
 
-	function hideGenCheck(gens: number[]) {
+	function hideGenCheck(gen: Generation, gens: number[]) {
 		if (!gens.includes(gen.num)) {
 			return 'hide';
 		}
@@ -21,7 +21,7 @@
 </script>
 
 <div class="panel-body field-info">
-	<div class={hideGenCheck([3, 4, 5, 6, 7, 8, 9])} title="Select the battle format.">
+	<div class={hideGenCheck(gen, [3, 4, 5, 6, 7, 8, 9])} title="Select the battle format.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -39,7 +39,7 @@
 		/>
 		<label class="btn btn-right" for="doubles-format">Doubles</label>
 	</div>
-	<div class={hideGenCheck([6, 7, 8, 9])} title="Select the current terrain.">
+	<div class={hideGenCheck(gen, [6, 7, 8, 9])} title="Select the current terrain.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -73,7 +73,7 @@
 			id="misty"
 		/><label class="btn btn-right" for="misty">Misty Terrain</label>
 	</div>
-	<div class={hideGenCheck([7, 8, 9])} title="Select the current terrain.">
+	<div class={hideGenCheck(gen, [7, 8, 9])} title="Select the current terrain.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -84,7 +84,7 @@
 		/><label class="btn btn-mid" for="psychic">Psychic Terrain</label>
 	</div>
 	<div
-		class="{hideGenCheck([9])} format-specific doubles"
+		class="{hideGenCheck(gen, [9])} format-specific doubles"
 		role="group"
 		title="Select the ruin abilities from other Pok&eacute;mon on the field."
 	>
@@ -117,7 +117,7 @@
 		<label class="btn btn-right" for="sword">Sword of Ruin</label>
 	</div>
 	<div
-		class="{hideGenCheck([9])} format-specific doubles"
+		class="{hideGenCheck(gen, [9])} format-specific doubles"
 		role="group"
 		title="Select the ruin abilities from other Pok&eacute;mon on the field."
 	>
@@ -125,8 +125,8 @@
 		<label class="btn btn-mid" for="vessel">Vessel of Ruin</label>
 	</div>
 
-	<hr class={hideGenCheck([6, 7, 8, 9])} />
-	<div class={hideGenCheck([3, 4, 5, 6, 7, 8, 9])} title="Select the current weather condition.">
+	<hr class={hideGenCheck(gen, [6, 7, 8, 9])} />
+	<div class={hideGenCheck(gen, [3, 4, 5, 6, 7, 8, 9])} title="Select the current weather condition.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -174,7 +174,7 @@
 		/>
 		<label class="btn btn-right" for="hail">Hail</label>
 	</div>
-	<div class={hideGenCheck([6, 7, 8, 9])} title="Select the current weather condition.">
+	<div class={hideGenCheck(gen, [6, 7, 8, 9])} title="Select the current weather condition.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -203,7 +203,7 @@
 		/>
 		<label class="btn btn-right" for="strong-winds">Strong Winds</label>
 	</div>
-	<div class="{hideGenCheck([2])} hide" title="Select the current weather condition.">
+	<div class="{hideGenCheck(gen, [2])}" title="Select the current weather condition.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -242,12 +242,12 @@
 		/>
 		<label class="btn btn-right" for="gscSand">Sand</label>
 	</div>
-	<div class={hideGenCheck([4, 5, 6, 7, 8, 9])} title="Is gravity in effect?">
+	<div class={hideGenCheck(gen, [4, 5, 6, 7, 8, 9])} title="Is gravity in effect?">
 		<input class="visually-hidden" type="checkbox" id="gravity" bind:checked={field.isGravity} />
 		<label class="btn" for="gravity">Gravity</label>
 	</div>
-	<hr class={hideGenCheck([2, 3, 4, 5, 6, 7, 8, 9])} />
-	<div class="btn-group {hideGenCheck([4, 5, 6, 7, 8])}">
+	<hr class={hideGenCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])} />
+	<div class="btn-group {hideGenCheck(gen, [4, 5, 6, 7, 8])}">
 		<div class="left" title="Is Stealth Rock affecting this side of the field?">
 			<input
 				class="visually-hidden"
@@ -267,7 +267,7 @@
 			<label class="btn" for="srR">Stealth Rock</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [8, 9])}">
 		<div class="left" title="Is Steelsurge affecting this side of the field?">
 			<input
 				class="visually-hidden"
@@ -287,7 +287,7 @@
 			<label class="btn" for="steelsurgeR">Steelsurge</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([2, 3, 4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}">
 		<div class="left" title="Are there Spikes on this side of the field?">
 			<input
 				class="visually-hidden"
@@ -401,7 +401,7 @@
 			<label class="btn btn-right" for="reflectR">Reflect</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([2, 3, 4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}">
 		<div class="left" title="Is this Pok&eacute;mon protected?">
 			<input
 				class="visually-hidden"
@@ -441,7 +441,7 @@
 			<label class="btn btn-wide" for="leechSeedR">Leech Seed</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([2, 3, 4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}">
 		<div class="left" title="Has this Pok&eacute;mon been revealed with Foresight or Odor Sleuth?">
 			<input
 				class="visually-hidden"
@@ -461,7 +461,7 @@
 			<label class="btn btn-wide" for="foresightR">Foresight</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([3, 4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [3, 4, 5, 6, 7, 8, 9])}">
 		<div
 			class="left"
 			title="Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?"
@@ -487,7 +487,7 @@
 			<label class="btn" for="helpingHandR">Helping Hand</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [4, 5, 6, 7, 8, 9])}">
 		<div class="left" title="Has this Pok&eacute;mon's speed been boosted by Tailwind?">
 			<input
 				class="visually-hidden"
@@ -507,7 +507,7 @@
 			<label class="btn" for="tailwindR">Tailwind</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [4, 5, 6, 7, 8, 9])}">
 		<div class="left" title="Is the Pok&eacute;mon affected by an ally's Flower Gift?">
 			<div hidden id="selectFlowerGiftInstruction">
 				Is the Pok&eacute;mon affected by an ally's Flower Gift?
@@ -532,7 +532,7 @@
 			<label class="btn" for="flowerGiftR">Flower Gift</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [5, 6, 7, 8, 9])}">
 		<div class="left" title="Is the Pok&eacute;mon protected by an ally's Friend Guard?">
 			<input
 				class="visually-hidden"
@@ -552,7 +552,7 @@
 			<label class="btn" for="friendGuardR">Friend Guard</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [7, 8, 9])}">
 		<div class="left" title="Is the Pok&eacute;mon protected by an ally's Aurora Veil?">
 			<input
 				class="visually-hidden"
@@ -572,7 +572,7 @@
 			<label class="btn" for="auroraVeilR">Aurora Veil</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [7, 8, 9])}">
 		<div
 			class="left"
 			title="Has this Pok&eacute;mon's power been boosted by an ally's Battery ability?"
@@ -598,7 +598,7 @@
 			<label class="btn" for="batteryR">Battery</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [8, 9])}">
 		<div
 			class="left"
 			title="Has this Pok&eacute;mon's power been boosted by an ally's Power Spot ability?"
@@ -624,7 +624,7 @@
 			<label class="btn" for="powerSpotR">Power Spot</label>
 		</div>
 	</div>
-	<div class="btn-group {hideGenCheck([2, 3, 4, 5, 6, 7, 8, 9])}">
+	<div class="btn-group {hideGenCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}">
 		<div class="left" title="Is the defending Pok&eacute;mon switching out?">
 			<input
 				class="visually-hidden"
@@ -647,9 +647,6 @@
 </div>
 
 <style>
-	.hide {
-		display: none;
-	}
 	/* general button styling */
 	.btn {
 		text-align: center;
@@ -732,5 +729,8 @@
 
 	.field-info > div {
 		align-self: center;
+	}
+	.hide {
+		display: none;
 	}
 </style>
