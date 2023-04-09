@@ -1,5 +1,6 @@
 import type * as I from './interface';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace State {
   export interface Pokemon {
     name: I.SpeciesName;
@@ -20,7 +21,7 @@ export namespace State {
     status?: I.StatusName | '';
     teraType?: I.TypeName;
     toxicCounter?: number;
-    moves?: I.MoveName[];
+    moves?: Move[];
     overrides?: Partial<I.Specie>;
   }
 

@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { Pokemon, Move as CalcMove, calcStat } from '$lib/calc';
-	import type { Generation, Type, Item, Specie } from '@pkmn/data';
+	import { Pokemon, Move, calcStat } from '$lib/calc';
+	import type { Generation, Type, Item, Specie, MoveCategory, TypeName } from '@pkmn/data';
 
 	export let gen: Generation;
 	export let pokemon: Pokemon;
-
-	let calcMoves: CalcMove[] = [];
 
 	let species: readonly Specie[] = [];
 	let types: Type[] = [];
@@ -20,19 +18,47 @@
 		moves = [...gen.moves].map((m) => m.name).sort();
 	}
 
-	$: {
-		currentSpecies = pokemon.species.name;
-		calcMoves = [
-			new CalcMove(gen, ''),
-			new CalcMove(gen, ''),
-			new CalcMove(gen, ''),
-			new CalcMove(gen, '')
-		];
-		for (let i = 0; i < 4; ++i) {
-			if (pokemon.moves[i]) {
-				calcMoves[i] = new CalcMove(gen, pokemon.moves[i]);
-			}
+	class MoveProxy {
+		public move: Move;
+		constructor(move: Move) {
+			this.move = move;
+			this.name = move.name;
 		}
+
+		public name: string;
+		public get category() {
+			return this.move.overrides?.category ?? this.move.category;
+		}
+		public set category(category: MoveCategory) {
+			this.move.overrides = { ...this.move.overrides, category };
+		}
+
+		public get type() {
+			return this.move.overrides?.type ?? this.move.type;
+		}
+		public set type(type: TypeName) {
+			this.move.overrides = { ...this.move.overrides, type };
+		}
+
+		public get basePower() {
+			return this.move.overrides?.basePower ?? this.move.bp;
+		}
+		public set basePower(basePower: number) {
+			this.move.overrides = { ...this.move.overrides, basePower };
+		}
+
+	}
+
+	let moveProxies: MoveProxy[];
+	$: {
+		moveProxies = [];
+		for (let i of [0, 1, 2, 3]) {
+			let proxy = new MoveProxy(pokemon.moves[i] ?? new Move(gen, ''));
+			moveProxies.push(proxy);
+		}
+	}
+
+	$: {
 		let hpRatio = pokemon.curHP() / pokemon.maxHP();
 		for (let stat of gen.stats) {
 			pokemon.rawStats[stat] = calcStat(
@@ -61,6 +87,9 @@
 	}
 
 	let currentSpecies: string = '';
+	$: {
+		currentSpecies = pokemon.species.name;
+	}
 	function setSpecies() {
 		let species = gen.species.get(currentSpecies);
 		if (species) {
@@ -284,14 +313,14 @@
 	</div>
 	<div class="info-group">
 		Current HP
-		<input class="current-hp" type="number" bind:value={pokemon.originalCurHP} />/<span class="max-hp"
-			>{pokemon.maxHP()}</span
+		<input class="current-hp" type="number" bind:value={pokemon.originalCurHP} />/<span
+			class="max-hp">{pokemon.maxHP()}</span
 		>
 		(
 		<input
 			class="percent-hp"
 			bind:value={percentHp}
-			on:input={() => (pokemon.originalCurHP = Math.round(pokemon.maxHP() * percentHp / 100))}
+			on:input={() => (pokemon.originalCurHP = Math.round((pokemon.maxHP() * percentHp) / 100))}
 		/>%)
 		<input class="max calc-trigger btn-input {genCheck([8])}" type="checkbox" id="maxL" /><label
 			class="btn btn-wide gen-specific {genCheck([8])}"
@@ -303,63 +332,89 @@
 	</div>
 	{#each [0, 1, 2, 3] as moveId}
 		<div class="move{moveId + 1}">
-			<select class="move-selector small-select" bind:value={pokemon.moves[moveId]}>
+			<select
+				class="move-selector small-select"
+				bind:value={moveProxies[moveId].name}
+				on:change={() => (pokemon.moves[moveId] = new Move(gen, moveProxies[moveId].name))}
+			>
 				<option selected value="">(no move)</option>
 				{#each moves as move}
 					<option value={move}>{move}</option>
 				{/each}
 			</select>
-			<input class="move-bp" type="number" bind:value={calcMoves[moveId].bp} />
-			<select class="move-type" bind:value={calcMoves[moveId].type}>
+			<input class="move-bp" type="number" bind:value={moveProxies[moveId].basePower} />
+			<select class="move-type" bind:value={moveProxies[moveId].type}>
 				{#each types as type}
 					<option value={type.name}>{type.name}</option>
 				{/each}
 			</select>
 			<select
 				class="move-cat {genCheck([4, 5, 6, 7, 8, 9])}}"
-				bind:value={calcMoves[moveId].category}
+				bind:value={moveProxies[moveId].category}
 			>
 				<option value="Physical">Physical</option>
 				<option value="Special">Special</option>
 			</select>
-			<br>
-			<input class="move-crit visually-hidden" type="checkbox" id="critL{moveId}" />
-			<label class="btn crit-btn" for="critL{moveId}" title="Force this attack to be a critical hit?"
-				>Crit</label
+			<br />
+			<input
+				class="move-crit visually-hidden"
+				type="checkbox"
+				id="critL{moveId}"
+				bind:checked={moveProxies[moveId].move.isCrit}
+			/>
+			<label
+				class="btn crit-btn"
+				for="critL{moveId}"
+				title="Force this attack to be a critical hit?">Crit</label
 			>
-			<input class="move-z visually-hidden {genCheck([7])}" type="checkbox" id="zL1" />
+			<input
+				class="move-z visually-hidden {genCheck([7])}"
+				type="checkbox"
+				id="zL1"
+				bind:checked={moveProxies[moveId].move.isZ}
+			/>
 			<label
 				class="btn z-btn gen-specific {genCheck([7])}"
 				for="zL1"
 				title="Make this attack a Z-move?">Z</label
 			>
-			<select class="move-hits hide">
-				<option value="2">2 hits</option>
-				<option value="3">3 hits</option>
-				<option value="4">4 hits</option>
-				<option value="5">5 hits</option>
-			</select>
-			<select
-				class="stat-drops calc-trigger hide"
-				title="How many times was this move used in a row?"
-			>
-				<option value="1">Once</option>
-				<option value="2">Twice</option>
-				<option value="3">3 times</option>
-				<option value="4">4 times</option>
-				<option value="5">5 times</option>
-			</select>
-			<select
-				class="metronome calc-trigger hide"
-				title="How many times was this move successfully and consecutively used while holding Metronome before this turn?"
-			>
-				<option value="0" selected>Never</option>
-				<option value="1">Once</option>
-				<option value="2">Twice</option>
-				<option value="3">3 times</option>
-				<option value="4">4 times</option>
-				<option value="5">5 times</option>
-			</select>
+			{#if moveProxies[moveId].move.hits > 1}
+				<select class="move-hits" bind:value={moveProxies[moveId].move.hits}>
+					<option value={2}>2 hits</option>
+					<option value={3}>3 hits</option>
+					<option value={4}>4 hits</option>
+					<option value={5}>5 hits</option>
+				</select>
+			{/if}
+
+			{#if moveProxies[moveId].move.timesUsed}
+				<select
+					class="stat-drops calc-trigger hide"
+					title="How many times was this move used in a row?"
+					bind:value={moveProxies[moveId].move.timesUsed}
+				>
+					<option value={1}>Once</option>
+					<option value={2}>Twice</option>
+					<option value={3}>3 times</option>
+					<option value={4}>4 times</option>
+					<option value={5}>5 times</option>
+				</select>
+			{/if}
+
+			{#if moveProxies[moveId].move.timesUsedWithMetronome}
+				<select
+					class="metronome calc-trigger hide"
+					title="How many times was this move successfully and consecutively used while holding Metronome before this turn?"
+					bind:value={moveProxies[moveId].move.timesUsedWithMetronome}
+				>
+					<option value={0} selected>Never</option>
+					<option value={1}>Once</option>
+					<option value={2}>Twice</option>
+					<option value={3}>3 times</option>
+					<option value={4}>4 times</option>
+					<option value={5}>5 times</option>
+				</select>
+			{/if}
 		</div>
 	{/each}
 </div>

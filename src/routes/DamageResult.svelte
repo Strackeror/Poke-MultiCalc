@@ -16,14 +16,14 @@
 </script>
 
 <div class="damage-results">
-	<div class="damage-result" on:click={() => (showOthers = !showOthers)}>
+	<button class="damage-result" on:click={() => (showOthers = !showOthers)}>
 		<PokemonSprite pokemon={results[0].attacker} icon={true} />
 		<div class="damage-description">
 			{results[0].move.name}<br />
 			{description(results[0])}
 		</div>
 		<PokemonSprite pokemon={results[0].defender} icon={true} />
-	</div>
+	</button>
 	{#if showOthers}
 		{#each results.slice(1, 4) as result}
 			<div class="damage-description folded">
@@ -35,6 +35,14 @@
 </div>
 
 <style>
+	button {
+		font-size: 100%;
+		font-family: inherit;
+		background: none;
+		border: 0;
+		padding: 0;
+		text-align: inherit;
+	}
 	.damage-result {
 		display: flex;
 		align-items: center;

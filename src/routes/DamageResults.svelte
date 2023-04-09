@@ -23,12 +23,12 @@
 		for (let offensePoke of offense) {
 			for (let defensePoke of defense) {
 				let pokeResults = [];
-				for (let moveName of offensePoke.moves) {
-					let move = new Move(gen, moveName);
+				for (let move of offensePoke.moves) {
 					let result = calculate(gen, offensePoke, defensePoke, move, curField);
 					pokeResults.push(result);
 				}
-				results.push(pokeResults);
+				if (pokeResults.length)
+					results.push(pokeResults);
 			}
 		}
 	}

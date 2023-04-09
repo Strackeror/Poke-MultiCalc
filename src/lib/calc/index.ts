@@ -40,11 +40,10 @@ export class Pokemon extends A.Pokemon {
   constructor(
     gen: I.GenerationNum | I.Generation,
     name: string,
-    options: Partial<Omit<State.Pokemon, 'ability' | 'item' | 'nature' | 'moves'>> & {
+    options: Partial<Omit<State.Pokemon, 'ability' | 'item' | 'nature'>> & {
       ability?: string;
       item?: string;
       nature?: string;
-      moves?: string[];
       curHP?: number;
       ivs?: Partial<I.StatsTable> & {spc?: number};
       evs?: Partial<I.StatsTable> & {spc?: number};

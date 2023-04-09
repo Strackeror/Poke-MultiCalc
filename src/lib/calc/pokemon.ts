@@ -2,6 +2,7 @@ import type * as I from './interface';
 import {Stats} from './stats';
 import {toID, extend, assignWithout} from './util';
 import type {State} from './state';
+import { Move } from './move';
 
 const STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as I.StatID[];
 const SPC = new Set(['spc']);
@@ -37,7 +38,7 @@ export class Pokemon implements State.Pokemon {
   status: I.StatusName | '';
   toxicCounter: number;
 
-  moves: I.MoveName[];
+  moves: Move[];
 
   constructor(
     gen: I.Generation,
@@ -102,7 +103,7 @@ export class Pokemon implements State.Pokemon {
     this.originalCurHP = curHP && curHP <= this.rawStats.hp ? curHP : this.rawStats.hp;
     this.status = options.status || '';
     this.toxicCounter = options.toxicCounter || 0;
-    this.moves = options.moves || [];
+    this.moves = (options.moves || []).map(m => new Move(gen, m.name, {...m}))
   }
 
   maxHP(original = false) {

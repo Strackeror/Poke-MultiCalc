@@ -9,7 +9,7 @@
 	import { Dex, type MoveName, type PokemonSet } from '@pkmn/dex';
 	import { Generations } from '@pkmn/data';
 	import { Sets, Team } from '@pkmn/sets';
-	import { Field, Pokemon } from '$lib/calc';
+	import { Field, Move, Pokemon } from '$lib/calc';
 
 	let gen = new Generations(Dex, () => true).get(9);
 	let editedPoke: Pokemon = new Pokemon(gen, 'Bulbasaur');
@@ -35,7 +35,7 @@
 		let poke = new Pokemon(gen, set.species, {
 			item: set.item,
 			nature: set.nature,
-			moves: set.moves,
+			moves: set.moves?.map((m) => new Move(gen, m)),
 			ability: set.ability,
 			level: set.level,
 			ivs: set.ivs,
@@ -184,6 +184,7 @@
 		border-radius: 10px;
 		border: 1px solid black;
 		margin: 5px;
+		overflow: hidden;
 	}
 	.teams {
 		display: grid;
