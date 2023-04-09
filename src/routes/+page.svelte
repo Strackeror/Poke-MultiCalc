@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import DamageResults from './DamageResults.svelte';
-	import PokemonTeam from './PokemonTeam.svelte';
-	import PokemonEditor from './PokemonEditor.svelte';
-	import SpeedColumn from './SpeedColumn.svelte';
-	import FieldEditor from './FieldEditor.svelte';
+	import DamageResults from '$lib/components/DamageResults.svelte';
+	import PokemonTeam from '$lib/components/PokemonTeam.svelte';
+	import PokemonEditor from '$lib/components/PokemonEditor.svelte';
+	import SpeedColumn from '$lib/components/SpeedColumn.svelte';
+	import FieldEditor from '$lib/components/FieldEditor.svelte';
+	import TextImporter from '$lib/components/TextImporter.svelte';
 
-	import { Dex, type MoveName, type PokemonSet } from '@pkmn/dex';
+	import { Dex } from '@pkmn/dex';
 	import { Generations } from '@pkmn/data';
-	import { Sets, Team } from '@pkmn/sets';
-	import { Field, Move, Pokemon } from '$lib/calc';
+	import { Field, Pokemon } from '$lib/calc';
 
 	let gen = new Generations(Dex, () => true).get(9);
 	let editedPoke: Pokemon = new Pokemon(gen, 'Bulbasaur');
@@ -24,46 +24,6 @@
 
 		if (enemies.indexOf(editedPoke) >= 0) {
 			enemies = enemies;
-		}
-	}
-
-	function setToPoke(set: Partial<PokemonSet<string>>) {
-		if (!set || !set.species) {
-			return undefined;
-		}
-
-		let poke = new Pokemon(gen, set.species, {
-			item: set.item,
-			nature: set.nature,
-			moves: set.moves?.map((m) => new Move(gen, m)),
-			ability: set.ability,
-			level: set.level,
-			ivs: set.ivs,
-			evs: set.evs
-		});
-		return poke;
-	}
-
-	let importText: string = '';
-	function importTextPokemon() {
-		let set = Sets.importSet(importText);
-		let poke = setToPoke(set);
-		if (poke) {
-			editedPoke = poke;
-		}
-	}
-
-	function importTextTeam(setEnemies: boolean) {
-		let sets = Team.import(importText);
-		if (!sets) {
-			return;
-		}
-
-		let pokes = sets.team.map((s) => setToPoke(s)).filter((s) => s != undefined) as Pokemon[];
-		if (setEnemies) {
-			enemies = pokes;
-		} else {
-			allies = pokes;
 		}
 	}
 
@@ -111,11 +71,8 @@
 				</div>
 			{/if}
 		</div>
-		<div class="box import-text-box">
-			<textarea class="import-text" bind:value={importText} />
-			<button on:click={importTextPokemon}>Import</button>
-			<button on:click={() => importTextTeam(false)}>Import allies</button>
-			<button on:click={() => importTextTeam(true)}>Import enemies</button>
+		<div class="box">
+			<TextImporter bind:editedPoke bind:allies bind:enemies {gen} />
 		</div>
 	</div>
 	<div class="data">
@@ -164,17 +121,6 @@
 		border-right: 1px solid black;
 	}
 
-	.import-text {
-		margin: 5px;
-		height: 10em;
-		min-width: 95%;
-		max-width: 95%;
-	}
-
-	.import-text-box > button {
-		margin: 5px;
-	}
-
 	.poke-editor,
 	.field-editor {
 		padding: 10px;
@@ -198,7 +144,7 @@
 
 	.team > span {
 		position: absolute;
-		right:0;
+		right: 0;
 		text-align: right;
 		margin: 0px 5px;
 		z-index: 1;

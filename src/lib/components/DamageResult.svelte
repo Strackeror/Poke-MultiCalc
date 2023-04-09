@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import type { Result } from '../lib/calc/index';
+	import type { Result } from '$lib/calc/index';
 
 	export let results: Result[];
 
