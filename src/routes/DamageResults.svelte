@@ -9,34 +9,43 @@
 	export let field: Field;
 	export let otherSide: boolean = false;
 
-	let results: Result[][] = [];
-
+	let currentField: Field;
 	$: {
-		let curField = field;
 		if (otherSide) {
-			curField = field.clone();
-			let newSides = [curField.defenderSide, curField.attackerSide];
-			curField.attackerSide = newSides[0];
-			curField.defenderSide = newSides[1];
+			currentField = field;
+		} else {
+			currentField = field.clone();
+			let newSides = [currentField.defenderSide, currentField.attackerSide];
+			currentField.attackerSide = newSides[0];
+			currentField.defenderSide = newSides[1];
 		}
-		results = [];
+	}
+
+	let pokePairs: [Pokemon, Pokemon][]
+	$: {
+		pokePairs = [];
 		for (let offensePoke of offense) {
 			for (let defensePoke of defense) {
-				let pokeResults = [];
-				for (let move of offensePoke.moves) {
-					let result = calculate(gen, offensePoke, defensePoke, move, curField);
-					pokeResults.push(result);
-				}
-				if (pokeResults.length)
-					results.push(pokeResults);
+				pokePairs.push([offensePoke, defensePoke])
 			}
 		}
+	}
+
+	function getResults(atk: Pokemon, def: Pokemon): Result[] {
+		let pokeResults = [];
+		for (let move of atk.moves) {
+			pokeResults.push(calculate(gen, atk, def, move, currentField))
+		}
+		return pokeResults;
 	}
 </script>
 
 <div class="results">
-	{#each results as result}
-		<div><DamageResult results={result} /></div>
+	{#each pokePairs as [atk, def]}
+		{@const results = getResults(atk, def)}
+		{#if results.length > 0}
+			<div><DamageResult results={getResults(atk, def)} /></div>
+		{/if}
 	{/each}
 </div>
 
