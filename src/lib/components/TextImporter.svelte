@@ -1,29 +1,39 @@
 <script lang="ts">
+	import { dev } from '$app/environment';
 	import { Pokemon, Move } from '$lib/calc';
+	import { getTeam1, getTeam2 } from '$lib/sets/TestTeam';
+	import type { PokemonState } from '$lib/state';
 	import type { Generation } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
+	import { selectedPokemon } from '$lib/state';
+	import { derived, writable } from 'svelte/store';
 
 	export let gen: Generation;
-	export let editedPoke: Pokemon;
-	export let allies: Pokemon[];
-	export let enemies: Pokemon[];
+	export let allyStates: PokemonState[];
+	export let enemyStates: PokemonState[];
 
 	let importText: string = '';
+
+	$: selectedPokemonState = $selectedPokemon;
+	$: allies = derived(allyStates, (p)=>p);
+	$: enemies = derived(enemyStates, (p)=>p);
 
 	function setToPoke(set: Partial<PokemonSet<string>>) {
 		if (!set || !set.species) {
 			return undefined;
 		}
 
-		let poke = new Pokemon(gen, set.species, {
-			item: set.item,
-			nature: set.nature,
-			moves: set.moves?.map((m) => new Move(gen, m)),
-			ability: set.ability,
-			level: set.level,
-			ivs: set.ivs,
-			evs: set.evs
-		});
+		let poke = writable(
+			new Pokemon(gen, set.species, {
+				item: set.item,
+				nature: set.nature,
+				moves: set.moves?.map((m) => new Move(gen, m)),
+				ability: set.ability,
+				level: set.level,
+				ivs: set.ivs,
+				evs: set.evs
+			})
+		);
 		return poke;
 	}
 
@@ -44,22 +54,21 @@
 		let set = Sets.importSet(importText);
 		let poke = setToPoke(set);
 		if (poke) {
-			editedPoke = poke;
+			$selectedPokemon = poke;
 		}
 	}
 
 	function exportTextPokemon() {
-		importText = Sets.exportSet(pokeToSet(editedPoke));
+		importText = Sets.exportSet(pokeToSet($selectedPokemonState));
 	}
 
-	function importTextTeam(set: (v: Pokemon[]) => void) {
+	function importTextTeam(): PokemonState[] | undefined {
 		let sets = Team.import(importText);
 		if (!sets) {
-			return;
+			return undefined;
 		}
 
-		let pokes = sets.team.map((s) => setToPoke(s)).filter((s) => s != undefined) as Pokemon[];
-		set(pokes);
+		return sets.team.map((s) => setToPoke(s)).filter((s) => s != undefined) as PokemonState[];
 	}
 
 	function exportTextTeam(team: Pokemon[]) {
@@ -71,12 +80,24 @@
 	<textarea class="import-text" bind:value={importText} />
 	<div class="button-grid">
 		<button on:click={importTextPokemon}>Import Pokémon</button>
-		<button on:click={() => importTextTeam((v) => (allies = v))}>Import allies</button>
-		<button on:click={() => importTextTeam((v) => (enemies = v))}>Import enemies</button>
+		<button on:click={() => allyStates = importTextTeam() ?? allyStates}>Import allies</button>
+		<button on:click={() => enemyStates = importTextTeam() ?? enemyStates}>Import enemies</button>
 
 		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
-		<button on:click={() => exportTextTeam(allies)}>Export allies</button>
-		<button on:click={() => exportTextTeam(enemies)}>Export enemies</button>
+		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
+		<button on:click={() => exportTextTeam($enemies)}>Export enemies</button>
+
+		{#if dev}
+			<button
+				on:click={() => {
+					importText = getTeam1();
+					allyStates = importTextTeam() ?? [];
+					importText = getTeam2();
+					enemyStates = importTextTeam() ?? [];
+				}}
+				>Toast
+			</button>
+		{/if}
 	</div>
 </div>
 
@@ -90,7 +111,7 @@
 
 	.button-grid {
 		display: grid;
-    margin-bottom: 5px;
+		margin-bottom: 5px;
 
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr;

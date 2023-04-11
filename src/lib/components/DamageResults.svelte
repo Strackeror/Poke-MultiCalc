@@ -1,17 +1,18 @@
 <script lang="ts">
-	import { calculate, Field, Move, Pokemon, type Result } from '$lib/calc';
+	import type { Field } from '$lib/calc';
 	import type { Generation } from '@pkmn/data';
 	import DamageResult from './DamageResult.svelte';
+	import type { PokemonState } from '$lib/state';
 
-	export let offense: Pokemon[];
-	export let defense: Pokemon[];
+	export let attackers: PokemonState[];
+	export let defenders: PokemonState[];
 	export let gen: Generation;
 	export let field: Field;
 	export let otherSide: boolean = false;
 
 	let currentField: Field;
 	$: {
-		if (otherSide) {
+		if (!otherSide) {
 			currentField = field;
 		} else {
 			currentField = field.clone();
@@ -20,32 +21,15 @@
 			currentField.defenderSide = newSides[1];
 		}
 	}
-
-	let pokePairs: [Pokemon, Pokemon][]
-	$: {
-		pokePairs = [];
-		for (let offensePoke of offense) {
-			for (let defensePoke of defense) {
-				pokePairs.push([offensePoke, defensePoke])
-			}
-		}
-	}
-
-	function getResults(atk: Pokemon, def: Pokemon): Result[] {
-		let pokeResults = [];
-		for (let move of atk.moves) {
-			pokeResults.push(calculate(gen, atk, def, move, currentField))
-		}
-		return pokeResults;
-	}
 </script>
 
 <div class="results">
-	{#each pokePairs as [atk, def]}
-		{@const results = getResults(atk, def)}
-		{#if results.length > 0}
-			<div><DamageResult results={getResults(atk, def)} /></div>
-		{/if}
+	{#each attackers as atk}
+		{#each defenders as def}
+			<div>
+				<DamageResult {atk} {def} {gen} field={currentField} />
+			</div>
+		{/each}
 	{/each}
 </div>
 

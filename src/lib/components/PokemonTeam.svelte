@@ -1,19 +1,29 @@
 <script lang="ts">
 	import type { Pokemon } from '$lib/calc/pokemon';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import { Sprites } from '@pkmn/img';
+	import { selectedPokemon, type PokemonState } from '$lib/state';
+	import { derived } from 'svelte/store';
 
-	export let pokemons: Pokemon[];
-	export let selectedPokemon: Pokemon;
+	export let pokemonStates: PokemonState[];
 	export let right: boolean = false;
 
-	let imgs: any[] = [];
-	$: imgs = pokemons.map((poke) => Sprites.getPokemon(poke.species.name, { gen: 'gen5' }));
+	$: pokemons = derived(pokemonStates, (p) => p);
+
+	let pokemonStateInstances: [Pokemon, PokemonState][];
+	$: {
+		pokemonStateInstances = $pokemons.map(
+			(p, i) => [p, pokemonStates[i]] as [Pokemon, PokemonState]
+		);
+	}
 </script>
 
 <div class={right ? 'right' : ''}>
-	{#each pokemons as pokemon}
-		<PokemonSprite {pokemon} bind:selectedPokemon />
+	{#each pokemonStateInstances as [pokemon, pokemonState]}
+		<PokemonSprite
+			{pokemon}
+			selected={$selectedPokemon == pokemonState}
+			on:clicked={() => ($selectedPokemon = pokemonState)}
+		/>
 	{/each}
 </div>
 

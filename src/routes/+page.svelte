@@ -11,6 +11,12 @@
 	import { Generation, Generations } from '@pkmn/data';
 	import { Field, Pokemon } from '$lib/calc';
 
+	import { selectedPokemon, type PokemonState } from '$lib/state';
+	import { derived, writable } from 'svelte/store';
+
+
+	$: selectedPokemonState = $selectedPokemon;
+
 	function existCheck(data: Data) {
 		if ('isNonstandard' in data && data.isNonstandard === 'Past') {
 			return true;
@@ -31,42 +37,37 @@
 		'S/V': baseGens.get(9)
 	};
 	let gen: Generation;
-	let editedPoke: Pokemon;
 	let field = new Field();
-	let allies: Pokemon[];
-	let enemies: Pokemon[];
+	let allyStates: PokemonState[];
+	let enemyStates: PokemonState[];
+
+	$: allies = derived(allyStates, (p) => p);
+	$: enemies = derived(enemyStates, (p) => p);
 
 	let genString: keyof typeof generationMap = 'S/V';
 
 	function updateGen() {
 		gen = generationMap[genString];
-		editedPoke = new Pokemon(gen, 'Bulbasaur');
-		allies = [];
-		enemies = [];
+		$selectedPokemon = writable(new Pokemon(gen, 'Bulbasaur'));
+		allyStates = [];
+		enemyStates = [];
 		field = new Field();
 	}
 	updateGen();
 
-	$: {
-		if (allies.includes(editedPoke))
-			allies = allies;
-		if (enemies.includes(editedPoke))
-			enemies = enemies;
-	}
-
 	function addPokeToAllies() {
-		allies.push(editedPoke.clone());
-		allies = allies;
+		allyStates.push(writable($selectedPokemonState.clone()));
+		allyStates = allyStates;
 	}
 
 	function addToPokeEnemies() {
-		enemies.push(editedPoke.clone());
-		enemies = enemies;
+		enemyStates.push(writable($selectedPokemonState.clone()));
+		enemyStates = enemyStates;
 	}
 
 	function removePoke() {
-		allies = allies.filter((p) => p != editedPoke);
-		enemies = enemies.filter((p) => p != editedPoke);
+		allyStates = allyStates.filter((p) => p != selectedPokemonState);
+		enemyStates = enemyStates.filter((p) => p != selectedPokemonState);
 	}
 
 	let pokemonCollapsed: boolean = false;
@@ -87,11 +88,11 @@
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
 			{#if pokemonCollapsed == false}
 				<div transition:slide={{ duration: 300 }}>
-					<PokemonEditor bind:pokemon={editedPoke} {gen} />
+					<PokemonEditor bind:pokemon={$selectedPokemonState} {gen} />
 					<div style="display: flex; flex-direction: row;">
 						<button on:click={addPokeToAllies}>Add to allies</button>
 						<button on:click={addToPokeEnemies}>Add to enemies</button>
-						{#if allies.indexOf(editedPoke) >= 0 || enemies.indexOf(editedPoke) >= 0}
+						{#if allyStates.indexOf(selectedPokemonState) >= 0 || enemyStates.indexOf(selectedPokemonState) >= 0}
 							<button on:click={removePoke}>Remove</button>
 						{/if}
 					</div>
@@ -107,26 +108,26 @@
 			{/if}
 		</div>
 		<div class="box">
-			<TextImporter bind:editedPoke bind:allies bind:enemies {gen} />
+			<TextImporter bind:allyStates bind:enemyStates {gen} />
 		</div>
 	</div>
 	<div class="data">
 		<div class="teams">
 			<div class="team ally box">
 				<span>Allies</span>
-				<PokemonTeam pokemons={allies} bind:selectedPokemon={editedPoke} />
+				<PokemonTeam pokemonStates={allyStates}/>
 			</div>
 			<div class="team enemy box">
 				<span>Enemies</span>
-				<PokemonTeam pokemons={enemies} bind:selectedPokemon={editedPoke} right />
+				<PokemonTeam pokemonStates={enemyStates}/>
 			</div>
 		</div>
 		<div class="result-matrix box">
-			<DamageResults offense={allies} defense={enemies} {gen} {field} />
+			<DamageResults attackers={allyStates} defenders={enemyStates} {gen} {field} />
 			<div class="sep" />
-			<SpeedColumn leftTeam={allies} rightTeam={enemies} {gen} {field} />
+			<SpeedColumn leftTeam={$allies} rightTeam={$enemies} {gen} {field} />
 			<div class="sep" />
-			<DamageResults offense={enemies} defense={allies} {gen} {field} otherSide />
+			<DamageResults attackers={enemyStates} defenders={allyStates} {gen} {field} otherSide />
 		</div>
 	</div>
 </div>
