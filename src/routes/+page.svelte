@@ -11,11 +11,8 @@
 	import { Generation, Generations } from '@pkmn/data';
 	import { Field, Pokemon } from '$lib/calc';
 
-	import { selectedPokemon, type PokemonState } from '$lib/state';
-	import { derived, writable } from 'svelte/store';
-
-
-	$: selectedPokemonState = $selectedPokemon;
+	import { selectedPokemon, PokemonState } from '$lib/state';
+	import { derived } from 'svelte/store';
 
 	function existCheck(data: Data) {
 		if ('isNonstandard' in data && data.isNonstandard === 'Past') {
@@ -48,7 +45,7 @@
 
 	function updateGen() {
 		gen = generationMap[genString];
-		$selectedPokemon = writable(new Pokemon(gen, 'Bulbasaur'));
+		$selectedPokemon = new PokemonState(new Pokemon(gen, 'Bulbasaur'));
 		allyStates = [];
 		enemyStates = [];
 		field = new Field();
@@ -56,18 +53,18 @@
 	updateGen();
 
 	function addPokeToAllies() {
-		allyStates.push(writable($selectedPokemonState.clone()));
+		allyStates.push(new PokemonState($selectedPokemon.pokemon.clone()));
 		allyStates = allyStates;
 	}
 
 	function addToPokeEnemies() {
-		enemyStates.push(writable($selectedPokemonState.clone()));
+		enemyStates.push(new PokemonState($selectedPokemon.pokemon.clone()));
 		enemyStates = enemyStates;
 	}
 
 	function removePoke() {
-		allyStates = allyStates.filter((p) => p != selectedPokemonState);
-		enemyStates = enemyStates.filter((p) => p != selectedPokemonState);
+		allyStates = allyStates.filter((p) => p != $selectedPokemon);
+		enemyStates = enemyStates.filter((p) => p != $selectedPokemon);
 	}
 
 	let pokemonCollapsed: boolean = false;
@@ -88,11 +85,11 @@
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
 			{#if pokemonCollapsed == false}
 				<div transition:slide={{ duration: 300 }}>
-					<PokemonEditor bind:pokemon={$selectedPokemonState} {gen} />
+					<PokemonEditor bind:pokemon={$selectedPokemon} {gen} />
 					<div style="display: flex; flex-direction: row;">
 						<button on:click={addPokeToAllies}>Add to allies</button>
 						<button on:click={addToPokeEnemies}>Add to enemies</button>
-						{#if allyStates.indexOf(selectedPokemonState) >= 0 || enemyStates.indexOf(selectedPokemonState) >= 0}
+						{#if allyStates.indexOf($selectedPokemon) >= 0 || enemyStates.indexOf($selectedPokemon) >= 0}
 							<button on:click={removePoke}>Remove</button>
 						{/if}
 					</div>
@@ -115,11 +112,11 @@
 		<div class="teams">
 			<div class="team ally box">
 				<span>Allies</span>
-				<PokemonTeam pokemonStates={allyStates}/>
+				<PokemonTeam pokemonStates={allyStates} />
 			</div>
 			<div class="team enemy box">
 				<span>Enemies</span>
-				<PokemonTeam pokemonStates={enemyStates}/>
+				<PokemonTeam pokemonStates={enemyStates} />
 			</div>
 		</div>
 		<div class="result-matrix box">

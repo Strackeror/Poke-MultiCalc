@@ -2,7 +2,7 @@
 	import { dev } from '$app/environment';
 	import { Pokemon, Move } from '$lib/calc';
 	import { getTeam1, getTeam2 } from '$lib/sets/TestTeam';
-	import type { PokemonState } from '$lib/state';
+	import { PokemonState } from '$lib/state';
 	import type { Generation } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
 	import { selectedPokemon } from '$lib/state';
@@ -23,7 +23,7 @@
 			return undefined;
 		}
 
-		let poke = writable(
+		let poke = new PokemonState(
 			new Pokemon(gen, set.species, {
 				item: set.item,
 				nature: set.nature,
