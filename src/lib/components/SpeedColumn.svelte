@@ -74,6 +74,7 @@
 
 		border-left: 1px solid black;
 		border-right: 1px solid black;
+		overflow-y: scroll;
 	}
 	.speed-column {
 		display: flex;
