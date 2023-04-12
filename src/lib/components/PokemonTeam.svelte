@@ -33,5 +33,6 @@
 		display: flex;
 		flex-wrap: nowrap;
 		overflow-x: scroll;
+		overflow-y: hidden;
 	}
 </style>

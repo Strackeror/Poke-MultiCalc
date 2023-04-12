@@ -6,7 +6,7 @@
 	import type { Generation } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
 	import { selectedPokemon } from '$lib/state';
-	import { derived, writable } from 'svelte/store';
+	import { derived } from 'svelte/store';
 
 	export let gen: Generation;
 	export let allyStates: PokemonState[];
@@ -15,26 +15,28 @@
 	let importText: string = '';
 
 	$: selectedPokemonState = $selectedPokemon;
-	$: allies = derived(allyStates, (p)=>p);
-	$: enemies = derived(enemyStates, (p)=>p);
+	$: allies = derived(allyStates, (p) => p);
+	$: enemies = derived(enemyStates, (p) => p);
 
 	function setToPoke(set: Partial<PokemonSet<string>>) {
-		if (!set || !set.species) {
-			return undefined;
-		}
+		if (!set?.species) return;
 
-		let poke = new PokemonState(
-			new Pokemon(gen, set.species, {
-				item: set.item,
-				nature: set.nature,
-				moves: set.moves?.map((m) => new Move(gen, m)),
-				ability: set.ability,
-				level: set.level,
-				ivs: set.ivs,
-				evs: set.evs
-			})
-		);
-		return poke;
+		try {
+			let poke = new PokemonState(
+				new Pokemon(gen, set.species, {
+					item: set.item,
+					nature: set.nature,
+					moves: set.moves?.map((m) => new Move(gen, m)),
+					ability: set.ability,
+					level: set.level,
+					ivs: set.ivs,
+					evs: set.evs
+				})
+			);
+			return poke;
+		} catch (e) {
+			return;
+		}
 	}
 
 	function pokeToSet(poke: Pokemon): Partial<PokemonSet<string>> {
@@ -53,9 +55,11 @@
 	function importTextPokemon() {
 		let set = Sets.importSet(importText);
 		let poke = setToPoke(set);
-		if (poke) {
-			$selectedPokemon = poke;
+		if (!poke) {
+			window.alert(`failed to import: \n ${importText}`);
+			return;
 		}
+		$selectedPokemon = poke;
 	}
 
 	function exportTextPokemon() {
@@ -65,10 +69,16 @@
 	function importTextTeam(): PokemonState[] | undefined {
 		let sets = Team.import(importText);
 		if (!sets) {
-			return undefined;
+			window.alert(`failed to import: \n ${importText}`);
+			return;
 		}
 
-		return sets.team.map((s) => setToPoke(s)).filter((s) => s != undefined) as PokemonState[];
+		let pokes = sets.team.map((s) => setToPoke(s));
+		if (pokes.some(p => p === undefined)) {
+			window.alert(`failed to import: \n ${importText}`);
+			return;
+		}
+		return pokes.filter((p): p is PokemonState => p !== undefined);
 	}
 
 	function exportTextTeam(team: Pokemon[]) {
@@ -80,8 +90,8 @@
 	<textarea class="import-text" bind:value={importText} />
 	<div class="button-grid">
 		<button on:click={importTextPokemon}>Import Pokémon</button>
-		<button on:click={() => allyStates = importTextTeam() ?? allyStates}>Import allies</button>
-		<button on:click={() => enemyStates = importTextTeam() ?? enemyStates}>Import enemies</button>
+		<button on:click={() => (allyStates = importTextTeam() ?? allyStates)}>Import allies</button>
+		<button on:click={() => (enemyStates = importTextTeam() ?? enemyStates)}>Import enemies</button>
 
 		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
 		<button on:click={() => exportTextTeam($allies)}>Export allies</button>

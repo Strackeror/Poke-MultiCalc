@@ -11,6 +11,7 @@
 		StatID,
 		StatsTable
 	} from '@pkmn/data';
+	import MoveEditor from './MoveEditor.svelte';
 
 	export let gen: Generation;
 	export let pokemon: PokemonState;
@@ -33,49 +34,18 @@
 		}
 	}
 
-	class MoveProxy {
-		public move: Move;
-		constructor(move: Move) {
-			this.move = move;
-			this.name = move.name;
-		}
-
-		public name: string;
-		public get category() {
-			return this.move.overrides?.category ?? this.move.category;
-		}
-		public set category(category: MoveCategory) {
-			this.move.overrides = { ...this.move.overrides, category };
-		}
-
-		public get type() {
-			return this.move.overrides?.type ?? this.move.type;
-		}
-		public set type(type: TypeName) {
-			this.move.overrides = { ...this.move.overrides, type };
-		}
-
-		public get basePower() {
-			return this.move.overrides?.basePower ?? this.move.bp;
-		}
-		public set basePower(basePower: number) {
-			this.move.overrides = { ...this.move.overrides, basePower };
-		}
-	}
-
-	let moveProxies: MoveProxy[];
 	$: {
-		moveProxies = [];
 		for (let i of [0, 1, 2, 3]) {
-			let proxy = new MoveProxy($pokemon.moves[i] ?? new Move(gen, ''));
-			moveProxies.push(proxy);
+			if (!$pokemon.moves[i]) {
+				$pokemon.moves[i] = new Move(gen, '');
+			}
 		}
 	}
 
 	$: {
 		let hpRatio = $pokemon.curHP() / $pokemon.maxHP();
 		for (let stat of gen.stats) {
-			pokemon.pokemon.rawStats[stat] = calcStat(
+			let newStat = calcStat(
 				gen,
 				stat,
 				$pokemon.species.baseStats[stat],
@@ -84,8 +54,16 @@
 				$pokemon.level,
 				$pokemon.nature
 			);
+
+			if (newStat != $pokemon.rawStats[stat]) {
+				$pokemon.rawStats[stat] = newStat;
+			}
 		}
-		pokemon.pokemon.originalCurHP = Math.floor($pokemon.maxHP() * hpRatio);
+
+		let newHp = Math.floor($pokemon.maxHP() * hpRatio);
+		if ($pokemon.originalCurHP != newHp) {
+			$pokemon.originalCurHP = newHp;
+		}
 	}
 
 	let percentHp: string;
@@ -333,92 +311,8 @@
 		<br />
 		<br />
 	</div>
-	{#each [0, 1, 2, 3] as moveId}
-		<div class="move{moveId + 1}">
-			<select
-				class="move-selector small-select"
-				bind:value={moveProxies[moveId].name}
-				on:change={() => ($pokemon.moves[moveId] = new Move(gen, moveProxies[moveId].name))}
-			>
-				<option selected value="">(no move)</option>
-				{#each moves as move}
-					<option value={move}>{move}</option>
-				{/each}
-			</select>
-			<input class="move-bp" type="number" bind:value={moveProxies[moveId].basePower} />
-			<select class="move-type" bind:value={moveProxies[moveId].type}>
-				{#each types as type}
-					<option value={type.name}>{type.name}</option>
-				{/each}
-			</select>
-			<select
-				class="move-cat {genCheck(gen, [4, 5, 6, 7, 8, 9])}"
-				bind:value={moveProxies[moveId].category}
-			>
-				<option value="Physical">Physical</option>
-				<option value="Special">Special</option>
-			</select>
-			<br />
-			<input
-				class="move-crit visually-hidden"
-				type="checkbox"
-				id="critL{moveId}"
-				bind:checked={moveProxies[moveId].move.isCrit}
-			/>
-			<label
-				class="btn crit-btn"
-				for="critL{moveId}"
-				title="Force this attack to be a critical hit?">Crit</label
-			>
-			<input
-				class="move-z visually-hidden {genCheck(gen, [7])}"
-				type="checkbox"
-				id="zL{moveId}"
-				bind:checked={moveProxies[moveId].move.isZ}
-			/>
-			<label
-				class="btn z-btn gen-specific {genCheck(gen, [7])}"
-				for="zL{moveId}"
-				title="Make this attack a Z-move?">Z</label
-			>
-			{#if moveProxies[moveId].move.hits > 1}
-				<select class="move-hits" bind:value={moveProxies[moveId].move.hits}>
-					<option value={2}>2 hits</option>
-					<option value={3}>3 hits</option>
-					<option value={4}>4 hits</option>
-					<option value={5}>5 hits</option>
-				</select>
-			{/if}
-
-			{#if moveProxies[moveId].move.timesUsed}
-				<select
-					class="stat-drops calc-trigger hide"
-					title="How many times was this move used in a row?"
-					bind:value={moveProxies[moveId].move.timesUsed}
-				>
-					<option value={1}>Once</option>
-					<option value={2}>Twice</option>
-					<option value={3}>3 times</option>
-					<option value={4}>4 times</option>
-					<option value={5}>5 times</option>
-				</select>
-			{/if}
-
-			{#if moveProxies[moveId].move.timesUsedWithMetronome}
-				<select
-					class="metronome calc-trigger hide"
-					title="How many times was this move successfully and consecutively used while holding Metronome before this turn?"
-					bind:value={moveProxies[moveId].move.timesUsedWithMetronome}
-				>
-					<option value={0} selected>Never</option>
-					<option value={1}>Once</option>
-					<option value={2}>Twice</option>
-					<option value={3}>3 times</option>
-					<option value={4}>4 times</option>
-					<option value={5}>5 times</option>
-				</select>
-			{/if}
-		</div>
+	{#each $pokemon.moves as move}
+		<MoveEditor {gen} moveNames={moves} {types} bind:move />
 	{/each}
 </div>
 
@@ -436,10 +330,6 @@
 	.edit {
 		display: inline-block;
 		width: 5em;
-	}
-
-	.move-selector {
-		width: 9em;
 	}
 
 	.hide {
