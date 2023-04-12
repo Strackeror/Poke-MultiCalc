@@ -8,26 +8,18 @@
 	export let selected: boolean = false;
 
 	const event = createEventDispatcher();
-
-	let img: {
-		gen: number;
-		w: number;
-		h: number;
-		url: string;
-		pixelated: boolean;
-	};
-	$: {
-		if (!icon) {
-			img = Sprites.getPokemon(pokemon.species.name, { gen: 'gen5' });
-		}
-	}
 </script>
 
-<button on:click={() => event('clicked')}>
+<button class:selected on:click={() => event('clicked')}>
 	{#if icon}
-		<span class:selected style={Icons.getPokemon(pokemon.species.name).style} />
+		<span class="pokeicon" style={Icons.getPokemon(pokemon.species.name).style} />
 	{:else}
-		<img class:selected src={img.url} alt={pokemon.species.name} width={img.w} height={img.h} />
+		{@const img = Sprites.getPokemon(pokemon.species.name, {gen: "gen5"})}
+		<img src={img.url} alt={pokemon.species.name} width={img.w} height={img.h} />
+		{#if pokemon.item}
+			{@const item = Icons.getItem(pokemon.item)}
+			<span class="itemicon" style={item.style}/>
+		{/if}
 	{/if}
 </button>
 
@@ -39,14 +31,22 @@
 		border: 0;
 		padding: 0;
 		text-align: inherit;
+		position: relative;
 	}
 	img {
 		border-radius: 8px;
 	}
-	span {
+	.pokeicon {
 		border-radius: 4px;
 	}
 	.selected {
 		background-color: darkgray;
 	}
+
+	.itemicon {
+		position: absolute;
+		bottom: 5px;
+		right: 5px;
+	}
+
 </style>

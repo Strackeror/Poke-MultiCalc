@@ -26,6 +26,7 @@ export class Pokemon implements State.Pokemon {
   alliesFainted?: number;
   item?: I.ItemName;
   teraType?: I.TypeName;
+  selectedTera?: I.TypeName;
 
   nature: I.NatureName;
   ivs: I.StatsTable;
@@ -68,6 +69,7 @@ export class Pokemon implements State.Pokemon {
     this.isSaltCure = !!options.isSaltCure;
     this.alliesFainted = options.alliesFainted;
     this.teraType = options.teraType;
+    this.selectedTera = options.selectedTera ?? this.types[0];
     this.item = options.item;
     this.nature = options.nature || ('Serious' as I.NatureName);
     this.ivs = Pokemon.withDefault(gen, options.ivs, 31);

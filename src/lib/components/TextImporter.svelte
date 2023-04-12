@@ -3,7 +3,7 @@
 	import { Pokemon, Move } from '$lib/calc';
 	import { getTeam1, getTeam2 } from '$lib/sets/TestTeam';
 	import { PokemonState } from '$lib/state';
-	import type { Generation } from '@pkmn/data';
+	import type { Generation, TypeName } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
 	import { selectedPokemon } from '$lib/state';
 	import { derived } from 'svelte/store';
@@ -26,11 +26,14 @@
 				new Pokemon(gen, set.species, {
 					item: set.item,
 					nature: set.nature,
-					moves: set.moves?.map((m) => new Move(gen, m)),
+					moves: set.moves?.map(
+						(m) => new Move(gen, m, { species: set.species, ability: set.ability, item: set.item })
+					),
 					ability: set.ability,
 					level: set.level,
 					ivs: set.ivs,
-					evs: set.evs
+					evs: set.evs,
+					selectedTera: set.teraType as TypeName
 				})
 			);
 			return poke;
@@ -74,7 +77,7 @@
 		}
 
 		let pokes = sets.team.map((s) => setToPoke(s));
-		if (pokes.some(p => p === undefined)) {
+		if (pokes.some((p) => p === undefined)) {
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}

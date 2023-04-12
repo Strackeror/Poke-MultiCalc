@@ -52,14 +52,22 @@
 	}
 	updateGen();
 
+	function pokeInTeams(poke: PokemonState) {
+		return allyStates.includes(poke) || enemyStates.includes(poke);
+	}
+
 	function addPokeToAllies() {
-		allyStates.push(new PokemonState($selectedPokemon.pokemon.clone()));
-		allyStates = allyStates;
+		let poke = pokeInTeams($selectedPokemon)
+			? new PokemonState($selectedPokemon.pokemon.clone())
+			: $selectedPokemon;
+		allyStates = [...allyStates, poke];
 	}
 
 	function addToPokeEnemies() {
-		enemyStates.push(new PokemonState($selectedPokemon.pokemon.clone()));
-		enemyStates = enemyStates;
+		let poke = pokeInTeams($selectedPokemon)
+			? new PokemonState($selectedPokemon.pokemon.clone())
+			: $selectedPokemon;
+		enemyStates = [...enemyStates, poke];
 	}
 
 	function removePoke() {
@@ -80,6 +88,7 @@
 					<option value={name}>{name}</option>
 				{/each}
 			</select>
+			<button class="clear" on:click={updateGen}>Clear</button>
 		</div>
 		<div class="box poke-editor">
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
@@ -146,7 +155,7 @@
 	.result-matrix {
 		min-height: 10em;
 		display: grid;
-		grid-template-columns: minmax(0,1fr) auto minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 	}
 
 	.poke-editor,
@@ -180,5 +189,9 @@
 		text-align: right;
 		margin: 0px 5px;
 		z-index: 1;
+	}
+
+	.clear {
+		float: right;
 	}
 </style>

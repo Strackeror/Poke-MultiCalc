@@ -20,6 +20,7 @@ export namespace State {
     originalCurHP?: number;
     status?: I.StatusName | '';
     teraType?: I.TypeName;
+    selectedTera?: I.TypeName;
     toxicCounter?: number;
     moves?: Move[];
     overrides?: Partial<I.Specie>;

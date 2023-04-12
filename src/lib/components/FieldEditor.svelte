@@ -27,6 +27,7 @@
 			type="radio"
 			name="format"
 			value="Singles"
+			id="singles-format"
 			bind:group={field.gameType}
 		/>
 		<label class="btn btn-left" for="singles-format">Singles</label>
@@ -35,11 +36,12 @@
 			type="radio"
 			name="format"
 			value="Doubles"
+			id="doubles-format"
 			bind:group={field.gameType}
 		/>
 		<label class="btn btn-right" for="doubles-format">Doubles</label>
 	</div>
-	<div class={hideGenCheck(gen, [6, 7, 8, 9])} title="Select the current terrain.">
+	<div class="space {hideGenCheck(gen, [6, 7, 8, 9])}" title="Select the current terrain.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -84,7 +86,8 @@
 		/><label class="btn btn-mid" for="psychic">Psychic Terrain</label>
 	</div>
 	<div
-		class="{hideGenCheck(gen, [9])} format-specific doubles"
+		class="space"
+		class:hide={gen.num != 9 || field.gameType != "Doubles"}
 		role="group"
 		title="Select the ruin abilities from other Pok&eacute;mon on the field."
 	>
@@ -96,7 +99,7 @@
 			value="Beads"
 			id="beads"
 		/>
-		<label class="btn btn-mid" for="beads">Beads of Ruin</label>
+		<label class="btn btn-left" for="beads">Beads of Ruin</label>
 		<input
 			class="visually-hidden"
 			type="checkbox"
@@ -117,7 +120,7 @@
 		<label class="btn btn-right" for="sword">Sword of Ruin</label>
 	</div>
 	<div
-		class="{hideGenCheck(gen, [9])} format-specific doubles"
+		class:hide={gen.num != 9 || field.gameType != "Doubles"}
 		role="group"
 		title="Select the ruin abilities from other Pok&eacute;mon on the field."
 	>
@@ -203,7 +206,7 @@
 		/>
 		<label class="btn btn-right" for="strong-winds">Strong Winds</label>
 	</div>
-	<div class="{hideGenCheck(gen, [2])}" title="Select the current weather condition.">
+	<div class="space {hideGenCheck(gen, [2])}" title="Select the current weather condition.">
 		<input
 			class="visually-hidden"
 			type="radio"
@@ -242,7 +245,7 @@
 		/>
 		<label class="btn btn-right" for="gscSand">Sand</label>
 	</div>
-	<div class={hideGenCheck(gen, [4, 5, 6, 7, 8, 9])} title="Is gravity in effect?">
+	<div class="{hideGenCheck(gen, [4, 5, 6, 7, 8, 9])} space" title="Is gravity in effect?">
 		<input class="visually-hidden" type="checkbox" id="gravity" bind:checked={field.isGravity} />
 		<label class="btn" for="gravity">Gravity</label>
 	</div>
@@ -732,5 +735,13 @@
 	}
 	.hide {
 		display: none;
+	}
+
+	.space {
+		margin-top: 5px;
+	}
+
+	hr {
+		width: 100%;
 	}
 </style>

@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Move } from '$lib/calc';
-	import { deriveField } from '$lib/state';
-	import type { Generation, Type } from '@pkmn/data';
-	import { writable, type Writable } from 'svelte/store';
+	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
 
 	export let gen: Generation;
 	export let move: Move;
@@ -10,51 +8,46 @@
 	export let types: Type[];
 
 	$: name = move.name;
-	function changeMove() {
+	function changeMove(name: string) {
 		move = new Move(gen, name);
 	}
 
-	$: category = deriveField(
-		writable(),
-		(_) => move.overrides?.category ?? move.category,
-		(_, category) => {
-			move.overrides = { ...move.overrides, category };
-		}
-	);
-
-	$: type = deriveField(
-		writable(),
-		(_) => move.overrides?.type ?? move.type,
-		(_, type) => {
-			move.overrides = { ...move.overrides, type };
-		}
-	);
+  $: category = move.overrides?.category ?? move.category;
+  function updateCategory(value: string) {
+    let category = value as MoveCategory;
+    move.overrides = {...move.overrides, category}
+  }
   
-	$: basePower = deriveField(
-		writable(),
-		(_) => move.overrides?.basePower ?? move.bp,
-		(_, basePower) => {
-			move.overrides = { ...move.overrides, basePower };
-		}
-	);
+  $: type = move.overrides?.type ?? move.type;
+  function updateType(value: string) {
+    let type = value as TypeName;
+    move.overrides = {...move.overrides, type}
+  }
+
+  $: basePower = move.overrides?.basePower ?? move.bp;
+  function updateBp(value: string) {
+    let basePower = +value;
+    move.overrides = {...move.overrides, basePower};
+  }
+
 </script>
 
 <div>
-	<select class="move-selector small-select" bind:value={name} on:change={changeMove}>
+	<select class="move-selector small-select" value={name} on:change={(e) => changeMove(e.currentTarget.value)}>
 		<option selected value="">(no move)</option>
 		{#each moveNames as moveName}
 			<option value={moveName}>{moveName}</option>
 		{/each}
 	</select>
-	<input class="move-bp" type="number" bind:value={$basePower} />
-	<select class="move-type" bind:value={$type}>
+	<input class="move-bp" type="number" value={basePower} on:input={(e) => updateBp(e.currentTarget.value)}/>
+	<select class="move-type" value={type} on:change={(e) => updateType(e.currentTarget.value)}>
 		<option hidden value="" />
 		{#each types as type}
 			<option value={type.name}>{type.name}</option>
 		{/each}
 	</select>
 	{#if gen.num >= 4}
-		<select bind:value={$category}>
+		<select value={category} on:change={(e) => updateCategory(e.currentTarget.value)}>
 			<option value="Physical">Physical</option>
 			<option value="Special">Special</option>
 		</select>

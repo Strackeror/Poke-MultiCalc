@@ -8,17 +8,17 @@
 	export let gen: Generation;
 	export let field: Field;
 
-	function getResults(atk: Pokemon, def: Pokemon): Result[] {
+	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
 		console.log(`calc ${atk.name} ${def.name}`);
 		let results: Result[] = [];
 		for (let move of atk.moves) {
-			if (move?.name) results.push(calculate(gen, atk, def, move, field));
+			results.push(calculate(gen, atk, def, move, field));
 		}
 		results.sort((a, b) => b.range()[0] - a.range()[0]);
 		return results;
 	}
 
-	$: results = getResults($atk, $def);
+	$: results = getResults($atk, $def, field);
 	let showOthers: boolean = false;
 
 	function description(res: Result) {

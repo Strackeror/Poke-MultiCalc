@@ -1,38 +1,19 @@
 <script lang="ts">
 	import { Pokemon, Move, calcStat } from '$lib/calc';
 	import type { PokemonState } from '$lib/state';
-	import type {
-		Generation,
-		Type,
-		Item,
-		Specie,
-		MoveCategory,
-		TypeName,
-		StatID,
-		StatsTable
-	} from '@pkmn/data';
+	import type { Generation, Type, Item, Specie, StatID, StatsTable } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
 
 	export let gen: Generation;
 	export let pokemon: PokemonState;
 
-	let species: readonly Specie[] = [];
-	let types: Type[] = [];
-	let abilities: string[] = [];
-	let moves: string[] = [];
-	let items: readonly Item[] = [];
-	let stats: StatID[] = [];
-	$: {
-		types = [...gen.types];
-		abilities = [...gen.abilities].map((a) => a.name);
-		items = [...gen.items];
-		species = [...gen.species].sort((a, b) => a.name.localeCompare(b.name));
-		moves = [...gen.moves].map((m) => m.name).sort();
-		stats = [...gen.stats];
-		if (gen.num == 1) {
-			stats.pop();
-		}
-	}
+	$: types = [...gen.types];
+	$: species = [...gen.species];
+	$: moves = [...gen.moves];
+	$: moveNames = moves.map((m) => m.name);
+	$: abilities = [...gen.abilities];
+	$: stats = [...gen.stats].slice(0, gen.num == 1 ? -1 : undefined);
+	$: items = [...gen.items];
 
 	$: {
 		for (let i of [0, 1, 2, 3]) {
@@ -43,7 +24,29 @@
 	}
 
 	$: {
-		let hpRatio = $pokemon.curHP() / $pokemon.maxHP();
+		if ($pokemon.isDynamaxed && $pokemon.dynamaxLevel === undefined) {
+			$pokemon.dynamaxLevel = 10;
+		}
+	}
+
+	let hpRatio = 1;
+	function updateOriginalHp() {
+		$pokemon.originalCurHP = Math.round($pokemon.rawStats.hp * hpRatio);
+	}
+
+	$: percentHp = '' + Math.round(hpRatio * 100);
+	function updatePercentHp(value: string) {
+		hpRatio = +value / 100;
+		updateOriginalHp();
+	}
+
+	$: currentHp = Math.round($pokemon.maxHP() * hpRatio);
+	function updateCurrentHp(value: number) {
+		hpRatio = value / $pokemon.maxHP();
+		updateOriginalHp();
+	}
+
+	$: {
 		for (let stat of gen.stats) {
 			let newStat = calcStat(
 				gen,
@@ -57,22 +60,9 @@
 
 			if (newStat != $pokemon.rawStats[stat]) {
 				$pokemon.rawStats[stat] = newStat;
+				if (stat == 'hp') updateOriginalHp();
 			}
 		}
-
-		let newHp = Math.floor($pokemon.maxHP() * hpRatio);
-		if ($pokemon.originalCurHP != newHp) {
-			$pokemon.originalCurHP = newHp;
-		}
-	}
-
-	let percentHp: string;
-	$: {
-		percentHp = '' + Math.round(($pokemon.originalCurHP / $pokemon.rawStats.hp) * 100);
-	}
-	function updatePercent() {
-		let ratio = +percentHp / 100;
-		$pokemon.originalCurHP = Math.floor($pokemon.rawStats.hp * ratio);
 	}
 
 	let speciesString: string;
@@ -91,6 +81,11 @@
 	}
 	function updateDv(stat: StatID) {
 		$pokemon.ivs[stat] = gen.stats.toIV(dvs[stat]);
+	}
+
+	let teraChecked: boolean;
+	function updateTeraType() {
+		$pokemon.teraType = teraChecked ? $pokemon.selectedTera : undefined;
 	}
 
 	function genCheck(gen: Generation, gens: number[]) {
@@ -119,28 +114,46 @@
 				{/each}
 			</select>
 			<select class="type2 terrain-trigger" bind:value={$pokemon.types[1]}>
+				<option value={undefined} />
 				{#each types as type}
 					<option value={type.name}>{type.name}</option>
 				{/each}
 			</select>
 		</div>
-		<div class="hide">
-			<div class="edit">Forme</div>
-			<select class="forme calc-trigger" />
-		</div>
-		<div class="hide">
+		{#if gen.num == 9}
+			<div>
+				<div class="edit">Tera Type</div>
+				<select bind:value={$pokemon.selectedTera}>
+					{#each types as type}
+						<option value={type.name}>{type.name}</option>
+					{/each}
+				</select>
+				<input
+					type="checkbox"
+					title="Has this Pok&eacute;mon terastalized?"
+					bind:checked={teraChecked}
+					on:change={updateTeraType}
+				/>
+			</div>
+		{/if}
+		<div>
 			<div class="edit">Gender</div>
-			<select class="gender calc-trigger"
-				><option /><option>Male</option><option>Female</option></select
-			>
+			<select class="gender calc-trigger" bind:value={$pokemon.gender}>
+				<option value="N" hidden />
+				{#if $pokemon.gender != 'N'}
+					<option value="M">Male</option>
+					<option value="F">Female</option>
+				{/if}
+			</select>
 		</div>
 		<div>
 			<div class="edit">Level</div>
 			<input class="level" type="number" min="1" max="100" bind:value={$pokemon.level} />
 		</div>
-		<div class="hide">
-			<div class="edit">Weight (kg)</div>
-			<input class="weight" value="10.0" />
+		<div>
+			<div class="edit">Weight</div>
+			<input class="weight" type="number" step="0.5" bind:value={$pokemon.weightkg} />
+			kg
 		</div>
 	</div>
 	<div class="info-group">
@@ -240,7 +253,7 @@
 			<div class="edit">Ability</div>
 			<select class="ability terrain-trigger" bind:value={$pokemon.ability}>
 				{#each abilities as ability}
-					<option value={ability}>{ability}</option>
+					<option value={ability.name}>{ability.name}</option>
 				{/each}
 			</select>
 			<input hidden type="checkbox" title="Is this ability active?" class="abilityToggle" />
@@ -267,43 +280,55 @@
 			<select class="status" bind:value={$pokemon.status}>
 				<option value="">Healthy</option>
 				<option value="psn">Poisoned</option>
-				<option value="txc">Badly Poisoned</option>
+				<option value="tox">Badly Poisoned</option>
 				<option value="brn">Burned</option>
 				<option value="par">Paralyzed</option>
 				<option value="slp">Asleep</option>
 				<option value="frz">Frozen</option>
 			</select>
-			<select class="toxic-counter hide">
-				<option value="1">1/16</option>
-				<option value="2">2/16</option>
-				<option value="3">3/16</option>
-				<option value="4">4/16</option>
-				<option value="5">5/16</option>
-				<option value="6">6/16</option>
-				<option value="7">7/16</option>
-				<option value="8">8/16</option>
-				<option value="9">9/16</option>
-				<option value="10">10/16</option>
-				<option value="11">11/16</option>
-				<option value="12">12/16</option>
-				<option value="13">13/16</option>
-				<option value="14">14/16</option>
-				<option value="15">15/16</option>
-			</select>
+			{#if $pokemon.status == 'tox'}
+				<select bind:value={$pokemon.toxicCounter}>
+					<option value="1">1/16</option>
+					<option value="2">2/16</option>
+					<option value="3">3/16</option>
+					<option value="4">4/16</option>
+					<option value="5">5/16</option>
+					<option value="6">6/16</option>
+					<option value="7">7/16</option>
+					<option value="8">8/16</option>
+					<option value="9">9/16</option>
+					<option value="10">10/16</option>
+					<option value="11">11/16</option>
+					<option value="12">12/16</option>
+					<option value="13">13/16</option>
+					<option value="14">14/16</option>
+					<option value="15">15/16</option>
+				</select>
+			{/if}
 		</div>
 	</div>
 	<div class="info-group">
 		Current HP
-		<input class="current-hp" type="number" bind:value={$pokemon.originalCurHP} />/<span
-			class="max-hp">{$pokemon.maxHP()}</span
-		>
+		<input
+			class="current-hp"
+			type="number"
+			value={currentHp}
+			on:input={(e) => updateCurrentHp(+e.currentTarget.value)}
+		/>/
+		<span class="max-hp">{$pokemon.maxHP()}</span>
 		(
-		<input class="percent-hp" bind:value={percentHp} on:input={updatePercent} />%)
+		<input
+			class="percent-hp"
+			value={percentHp}
+			on:input={(e) => updatePercentHp(e.currentTarget.value)}
+		/>%)
 		<input
 			class="max calc-trigger btn-input {genCheck(gen, [8])}"
 			type="checkbox"
 			id="maxL"
-		/><label
+			bind:checked={$pokemon.isDynamaxed}
+		/>
+		<label
 			class="btn btn-wide gen-specific {genCheck(gen, [8])}"
 			for="maxL"
 			title="Use the corresponding Max Move?">Dynamax</label
@@ -312,7 +337,7 @@
 		<br />
 	</div>
 	{#each $pokemon.moves as move}
-		<MoveEditor {gen} moveNames={moves} {types} bind:move />
+		<MoveEditor {gen} {moveNames} {types} bind:move />
 	{/each}
 </div>
 
@@ -330,6 +355,10 @@
 	.edit {
 		display: inline-block;
 		width: 5em;
+	}
+
+	.weight {
+		width: 5em !important;
 	}
 
 	.hide {
