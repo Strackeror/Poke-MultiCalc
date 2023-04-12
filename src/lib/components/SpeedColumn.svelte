@@ -71,6 +71,9 @@
 		display: flex;
 		flex-direction: column;
 		width: 5em;
+
+		border-left: 1px solid black;
+		border-right: 1px solid black;
 	}
 	.speed-column {
 		display: flex;

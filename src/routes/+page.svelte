@@ -121,9 +121,7 @@
 		</div>
 		<div class="result-matrix box">
 			<DamageResults attackers={allyStates} defenders={enemyStates} {gen} {field} />
-			<div class="sep" />
 			<SpeedColumn leftTeam={$allies} rightTeam={$enemies} {gen} {field} />
-			<div class="sep" />
 			<DamageResults attackers={enemyStates} defenders={allyStates} {gen} {field} otherSide />
 		</div>
 	</div>
@@ -147,11 +145,8 @@
 
 	.result-matrix {
 		min-height: 10em;
-		display: flex;
-	}
-
-	.sep {
-		border-right: 1px solid black;
+		display: grid;
+		grid-template-columns: minmax(0,1fr) auto minmax(0, 1fr);
 	}
 
 	.poke-editor,
