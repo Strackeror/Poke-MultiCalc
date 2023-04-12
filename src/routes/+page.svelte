@@ -21,6 +21,8 @@
 		return Generations.DEFAULT_EXISTS(data);
 	}
 
+	$: console.log(`selected pokemon changed: ${$selectedPokemon.pokemon.species.name}`)
+
 	const baseGens = new Generations(Dex, existCheck);
 	const generationMap = {
 		RBY: baseGens.get(1),
@@ -145,6 +147,8 @@
 		font: 10pt Verdana;
 		width: 380px;
 		min-width: 380px;
+		max-height: calc(100vh - 20px);
+		overflow-y: scroll;
 	}
 	.data {
 		display: flex;
@@ -154,6 +158,8 @@
 
 	.result-matrix {
 		min-height: 10em;
+		max-height: calc(100vh - 138px);
+		min-width: 800px;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 	}

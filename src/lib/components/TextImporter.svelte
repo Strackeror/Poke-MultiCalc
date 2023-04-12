@@ -51,18 +51,24 @@
 			moves: poke.moves.map((m) => m.name),
 			level: poke.level,
 			ivs: poke.ivs,
-			evs: poke.evs
+			evs: poke.evs,
+			teraType: poke.selectedTera
 		};
 	}
 
-	function importTextPokemon() {
+	function importTextPokemon(replace: boolean = false) {
 		let set = Sets.importSet(importText);
 		let poke = setToPoke(set);
 		if (!poke) {
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		$selectedPokemon = poke;
+		if (replace) {
+			$selectedPokemonState = poke.pokemon;
+			$selectedPokemon = selectedPokemonState;
+		} else {
+			$selectedPokemon = poke;
+		}
 	}
 
 	function exportTextPokemon() {
@@ -92,13 +98,14 @@
 <div class="import-text-box">
 	<textarea class="import-text" bind:value={importText} />
 	<div class="button-grid">
-		<button on:click={importTextPokemon}>Import Pokémon</button>
+		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
 		<button on:click={() => (allyStates = importTextTeam() ?? allyStates)}>Import allies</button>
 		<button on:click={() => (enemyStates = importTextTeam() ?? enemyStates)}>Import enemies</button>
 
 		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
 		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
 		<button on:click={() => exportTextTeam($enemies)}>Export enemies</button>
+		<button on:click={() => importTextPokemon(true)}>Replace</button>
 
 		{#if dev}
 			<button

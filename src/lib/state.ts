@@ -11,11 +11,12 @@ export class PokemonState {
 	}
 
 	set(p: Pokemon) {
+		this.pokemon = p;
 		return this.writable.set(p);
 	}
 
 	update(updater: Updater<Pokemon>) {
-		return this.writable.update(updater);
+		this.writable.set(updater(this.pokemon));
 	}
 
 	subscribe(run: Subscriber<Pokemon>, invalidator: (p?: Pokemon) => void) {

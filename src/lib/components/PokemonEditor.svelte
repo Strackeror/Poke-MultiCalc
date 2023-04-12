@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Pokemon, Move, calcStat } from '$lib/calc';
 	import type { PokemonState } from '$lib/state';
-	import type { Generation, Type, Item, Specie, StatID, StatsTable } from '@pkmn/data';
+	import type { Generation, Type, Item, Specie, StatID, StatsTable, TypeName } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
 
 	export let gen: Generation;
@@ -65,12 +65,10 @@
 		}
 	}
 
-	let speciesString: string;
-	$: {
-		speciesString = $pokemon.species.name;
-	}
-	function updateSpecies() {
-		$pokemon = new Pokemon(gen, speciesString);
+	$: speciesName = $pokemon.species.name;
+	function updateSpecies(speciesName: string) {
+		$pokemon = new Pokemon(gen, speciesName);
+		pokemon = pokemon;
 	}
 
 	let dvs: StatsTable = { ...$pokemon.ivs };
@@ -100,7 +98,7 @@
 	<div class="info-group top">
 		<div>
 			<div class="edit">Species</div>
-			<select bind:value={speciesString} on:change={updateSpecies}>
+			<select value={speciesName} on:change={(e) => updateSpecies(e.currentTarget.value)}>
 				{#each species as specie}
 					<option value={specie.name}>{specie.name}</option>
 				{/each}
@@ -108,13 +106,14 @@
 		</div>
 		<div>
 			<div class="edit">Type</div>
-			<select class="type1 terrain-trigger" bind:value={$pokemon.types[0]}>
+			<select bind:value={$pokemon.types[0]}>
 				{#each types as type}
 					<option value={type.name}>{type.name}</option>
 				{/each}
 			</select>
-			<select class="type2 terrain-trigger" bind:value={$pokemon.types[1]}>
-				<option value={undefined} />
+			<select bind:value={$pokemon.types[1]}>
+				<option value="" selected>(none)</option>
+				<option value={undefined} hidden>(none)</option>
 				{#each types as type}
 					<option value={type.name}>{type.name}</option>
 				{/each}
@@ -124,6 +123,7 @@
 			<div>
 				<div class="edit">Tera Type</div>
 				<select bind:value={$pokemon.selectedTera}>
+					<option value="" hidden />
 					{#each types as type}
 						<option value={type.name}>{type.name}</option>
 					{/each}

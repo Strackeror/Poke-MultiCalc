@@ -38,7 +38,7 @@
 		</button>
 	{/if}
 	{#if showOthers}
-		{#each results.slice(1, 4) as result}
+		{#each results.slice(1) as result}
 			<div class="damage-description folded">
 				{result.move.name}<br />
 				{description(result)}
