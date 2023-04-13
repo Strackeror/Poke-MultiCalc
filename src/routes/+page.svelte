@@ -43,10 +43,9 @@
 	$: allies = derived(allyStates, (p) => p);
 	$: enemies = derived(enemyStates, (p) => p);
 
-	let genString: keyof typeof generationMap = 'S/V';
-
+	let genName: keyof typeof generationMap = 'S/V';
 	function updateGen() {
-		gen = generationMap[genString];
+		gen = generationMap[genName];
 		$selectedPokemon = new PokemonState(new Pokemon(gen, 'Bulbasaur'));
 		allyStates = [];
 		enemyStates = [];
@@ -85,7 +84,7 @@
 	<div class="edit">
 		<div class="box basic-options">
 			Games
-			<select bind:value={genString} on:change={updateGen}>
+			<select bind:value={genName} on:change={updateGen}>
 				{#each Object.keys(generationMap) as name}
 					<option value={name}>{name}</option>
 				{/each}
@@ -116,7 +115,7 @@
 			{/if}
 		</div>
 		<div class="box">
-			<TextImporter bind:allyStates bind:enemyStates {gen} />
+			<TextImporter {genName} bind:allyStates bind:enemyStates {gen} />
 		</div>
 	</div>
 	<div class="data">

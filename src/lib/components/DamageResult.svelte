@@ -26,26 +26,29 @@
 	}
 </script>
 
-<div class="damage-results">
-	<button class="damage-result" on:click={() => (showOthers = !showOthers)}>
-		<PokemonSprite pokemon={results[0].attacker} icon={true} />
-		<div class="damage-description">
-			{results[0].move.name}<br />
-			{description(results[0])}
-		</div>
-		<PokemonSprite pokemon={results[0].defender} icon={true} />
-	</button>
-	{#if showOthers}
-		<div class="main-damage folded">{results[0].damage}</div>
-		{#each results.slice(1) as result}
-			<div class="damage-description folded">
-				{result.move.name}<br />
-				{description(result)} <br />
-				{result.damage}
+{#if results.length > 0}
+	<div class="damage-results">
+		<button class="damage-result" on:click={() => (showOthers = !showOthers)}>
+			<PokemonSprite pokemon={results[0].attacker} icon={true} />
+			<div class="damage-description">
+				{results[0].move.name}<br />
+				{description(results[0])}
 			</div>
-		{/each}
-	{/if}
-</div>
+			<PokemonSprite pokemon={results[0].defender} icon={true} />
+		</button>
+
+		{#if showOthers}
+			<div class="main-damage folded">{results[0].damage}</div>
+			{#each results.slice(1) as result}
+				<div class="damage-description folded">
+					{result.move.name}<br />
+					{description(result)} <br />
+					{result.damage}
+				</div>
+			{/each}
+		{/if}
+	</div>
+{/if}
 
 <style>
 	button {

@@ -3,16 +3,44 @@
 	import { Pokemon, Move } from '$lib/calc';
 	import { getTeam1, getTeam2 } from '$lib/sets/TestTeam';
 	import { PokemonState } from '$lib/state';
-	import type { Generation, TypeName } from '@pkmn/data';
+	import type { Generation, StatsTable, TypeName } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
 	import { selectedPokemon } from '$lib/state';
 	import { derived } from 'svelte/store';
+	import { getSets, type LocalSet, type LocalSetStats } from '$lib/sets/sets';
 
 	export let gen: Generation;
+	export let genName: string;
 	export let allyStates: PokemonState[];
 	export let enemyStates: PokemonState[];
 
 	let importText: string = '';
+
+	$: setList = getSets(genName);
+
+	let currentSet: { set: LocalSet; poke: string } | undefined = undefined;
+	function updateSet() {
+		if (!currentSet) return;
+		function statsFromLocalSet(stats: Partial<LocalSetStats>, def: number): StatsTable {
+			return {
+				hp: stats.hp ?? def,
+				atk: stats.at ?? def,
+				def: stats.df ?? def,
+				spe: stats.sp ?? def,
+				spa: stats.sa ?? def,
+				spd: stats.sd ?? def
+			};
+		}
+
+		let set: Partial<PokemonSet> = {
+			...currentSet.set,
+			species: currentSet.poke,
+			ivs: statsFromLocalSet(currentSet.set?.ivs ?? {}, 31),
+			evs: statsFromLocalSet(currentSet.set?.evs ?? {}, 0)
+		};
+		importText = Sets.exportSet(set);
+		currentSet = undefined;
+	}
 
 	$: selectedPokemonState = $selectedPokemon;
 	$: allies = derived(allyStates, (p) => p);
@@ -96,6 +124,16 @@
 </script>
 
 <div class="import-text-box">
+	<select class="select-set" bind:value={currentSet} on:change={updateSet}>
+		<option hidden />
+		{#each Object.entries(setList) as [poke, sets]}
+			<optgroup label={poke}>
+				{#each Object.entries(sets) as [setName, set]}
+					<option value={{ set, poke }}>{setName}</option>
+				{/each}
+			</optgroup>
+		{/each}
+	</select>
 	<textarea class="import-text" bind:value={importText} />
 	<div class="button-grid">
 		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
@@ -122,6 +160,10 @@
 </div>
 
 <style>
+	.select-set {
+		margin: 5px 5px 0px 5px;
+		max-width: 95%;
+	}
 	.import-text {
 		margin: 5px;
 		height: 10em;
