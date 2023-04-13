@@ -27,21 +27,21 @@
 </script>
 
 <div class="damage-results">
-	{#if results.length > 0}
-		<button class="damage-result" on:click={() => (showOthers = !showOthers)}>
-			<PokemonSprite pokemon={results[0].attacker} icon={true} />
-			<div class="damage-description">
-				{results[0].move.name}<br />
-				{description(results[0])}
-			</div>
-			<PokemonSprite pokemon={results[0].defender} icon={true} />
-		</button>
-	{/if}
+	<button class="damage-result" on:click={() => (showOthers = !showOthers)}>
+		<PokemonSprite pokemon={results[0].attacker} icon={true} />
+		<div class="damage-description">
+			{results[0].move.name}<br />
+			{description(results[0])}
+		</div>
+		<PokemonSprite pokemon={results[0].defender} icon={true} />
+	</button>
 	{#if showOthers}
+		<div class="main-damage folded">{results[0].damage}</div>
 		{#each results.slice(1) as result}
 			<div class="damage-description folded">
 				{result.move.name}<br />
-				{description(result)}
+				{description(result)} <br />
+				{result.damage}
 			</div>
 		{/each}
 	{/if}
@@ -55,6 +55,8 @@
 		border: 0;
 		padding: 0;
 		text-align: inherit;
+		padding-top: 3px;
+		width: 100%;
 	}
 	.damage-result {
 		display: flex;
@@ -66,10 +68,14 @@
 	}
 
 	.damage-description {
-		flex-grow: 1;
 		margin: 0px 3px;
-		margin-bottom: 5px;
+		padding-bottom: 5px;
 	}
+
+	.damage-description.folded {
+		padding-top: 8px;
+	}
+
 	.folded {
 		margin-left: 48px;
 	}
