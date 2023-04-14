@@ -33,6 +33,7 @@
 		"@pkmn/data": "^0.7.35",
 		"@pkmn/dex": "^0.7.35",
 		"@pkmn/img": "^0.2.8",
-		"@pkmn/sets": "^5.0.4"
+		"@pkmn/sets": "^5.0.4",
+		"svelecte": "^3.16.0"
 	}
 }

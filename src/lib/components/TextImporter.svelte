@@ -8,6 +8,8 @@
 	import { selectedPokemon } from '$lib/state';
 	import { derived } from 'svelte/store';
 	import { getSets, type LocalSet, type LocalSetStats } from '$lib/sets/sets';
+	// @ts-ignore
+	import Svelecte, { addFormatter } from 'svelecte';
 
 	export let gen: Generation;
 	export let genName: string;
@@ -16,11 +18,13 @@
 
 	let importText: string = '';
 
-	$: setList = getSets(genName);
+	$: setList = Object.entries(getSets(genName)).map(([name, sets]) => ({
+		name,
+		sets: Object.entries(sets).map(([setname, set]) => ({ value: set, text: setname, name: name }))
+	}));
 
-	let currentSet: { set: LocalSet; poke: string } | undefined = undefined;
-	function updateSet() {
-		if (!currentSet) return;
+	let selectedSet: (typeof setList)[0]['sets'][0];
+	function updateSet(species: string, localset: Partial<LocalSet>) {
 		function statsFromLocalSet(stats: Partial<LocalSetStats>, def: number): StatsTable {
 			return {
 				hp: stats.hp ?? def,
@@ -33,14 +37,25 @@
 		}
 
 		let set: Partial<PokemonSet> = {
-			...currentSet.set,
-			species: currentSet.poke,
-			ivs: statsFromLocalSet(currentSet.set?.ivs ?? {}, 31),
-			evs: statsFromLocalSet(currentSet.set?.evs ?? {}, 0)
+			...localset,
+			species: species,
+			ivs: statsFromLocalSet(localset?.ivs ?? {}, 31),
+			evs: statsFromLocalSet(localset?.evs ?? {}, 0)
 		};
 		importText = Sets.exportSet(set);
-		currentSet = undefined;
 	}
+
+	function setListUpdate(_: unknown) {
+		updateSet(selectedSet.name, selectedSet.value);
+	}
+
+	function renderListElem(item: typeof selectedSet, isSelected: boolean): string {
+		if (isSelected) {
+			return `${item.name}: ${item.text}`;
+		}
+		return item.text;
+	}
+	addFormatter('with-name', renderListElem);
 
 	$: selectedPokemonState = $selectedPokemon;
 	$: allies = derived(allyStates, (p) => p);
@@ -124,16 +139,16 @@
 </script>
 
 <div class="import-text-box">
-	<select class="select-set" bind:value={currentSet} on:change={updateSet}>
-		<option hidden />
-		{#each Object.entries(setList) as [poke, sets]}
-			<optgroup label={poke}>
-				{#each Object.entries(sets) as [setName, set]}
-					<option value={{ set, poke }}>{setName}</option>
-				{/each}
-			</optgroup>
-		{/each}
-	</select>
+	<Svelecte
+		options={setList}
+		groupLabelField="name"
+		groupItemsField="sets"
+		virtualList={true}
+		valueAsObject
+		renderer="with-name"
+		bind:value={selectedSet}
+		on:change={setListUpdate}
+	/>
 	<textarea class="import-text" bind:value={importText} />
 	<div class="button-grid">
 		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
@@ -160,15 +175,12 @@
 </div>
 
 <style>
-	.select-set {
-		margin: 5px 5px 0px 5px;
-		max-width: 95%;
-	}
 	.import-text {
 		margin: 5px;
-		height: 10em;
+		height: 20em;
 		min-width: 95%;
 		max-width: 95%;
+		resize: none;
 	}
 
 	.button-grid {
@@ -182,5 +194,22 @@
 	.button-grid > button {
 		margin-left: 5px;
 		margin-right: 5px;
+	}
+
+	:global(.svelecte-control) {
+		position: absolute;
+		margin: 5px 5px 0px 5px;
+		width: 96%;
+
+		--sv-border-color: #888 !important;
+		--sv-color: #111;
+	}
+
+	:global(.svelecte-control input::placeholder) {
+		color: black;
+	}
+	/** Dropdown always goes down */
+	:global(.sv-dropdown) {
+		bottom: auto !important;
 	}
 </style>
