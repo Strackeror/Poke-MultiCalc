@@ -1,3 +1,6 @@
+<script context="module">
+	let counter = 0;
+</script>
 <script lang="ts">
 	import { Move } from '$lib/calc';
 	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
@@ -6,6 +9,8 @@
 	export let move: Move;
 	export let moveNames: string[];
 	export let types: Type[];
+
+	let uniqueId = counter++;
 
 	$: name = move.name;
 	function changeMove(name: string) {
@@ -53,12 +58,12 @@
 		</select>
 	{/if}
 	<br />
-	<input type="checkbox" id="crit" bind:checked={move.isCrit} />
-	<label class="btn crit-btn" for="crit" title="Force this attack to be a critical hit?">Crit</label
+	<input type="checkbox" id="crit{uniqueId}" bind:checked={move.isCrit} />
+	<label class="btn crit-btn" for="crit{uniqueId}" title="Force this attack to be a critical hit?">Crit</label
 	>
 	{#if gen.num == 7}
-		<input type="checkbox" id="zMove" bind:checked={move.isZ} />
-		<label for="zMove" title="Make this attack a Z-move?">Z</label>
+		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.isZ} />
+		<label for="zMove{uniqueId}" title="Make this attack a Z-move?">Z</label>
 	{/if}
 	{#if move.hits > 1}
 		<select class="move-hits" bind:value={move.hits}>
