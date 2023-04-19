@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Pokemon, Move, calcStat } from '$lib/calc';
-	import type { PokemonState } from '$lib/state';
+	import { currentGame, type PokemonState } from '$lib/state';
 	import type { Generation, Type, Item, Specie, StatID, StatsTable, TypeName } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
 
-	export let gen: Generation;
 	export let pokemon: PokemonState;
 
+	$: gen = $currentGame.gen;
 	$: types = [...gen.types];
 	$: species = [...gen.species];
 	$: moves = [...gen.moves];

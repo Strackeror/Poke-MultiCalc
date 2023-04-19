@@ -1,13 +1,14 @@
 <script lang="ts">
-	import type { Generation } from '@pkmn/data';
 	import type { Field, Pokemon } from '$lib/calc/';
 	import { getFinalSpeed } from '$lib/calc/mechanics/util';
 
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
+	import { currentGame } from '$lib/state';
 
-	export let gen: Generation;
 	export let field: Field;
 	export let leftTeam: Pokemon[], rightTeam: Pokemon[];
+
+	$: gen = $currentGame.gen;
 
 	enum PokeSide {
 		Left,

@@ -6,7 +6,6 @@
 
 	export let attackers: PokemonState[];
 	export let defenders: PokemonState[];
-	export let gen: Generation;
 	export let field: Field;
 	export let otherSide: boolean = false;
 
@@ -27,7 +26,7 @@
 	{#each attackers as atk}
 		{#each defenders as def}
 			<div>
-				<DamageResult {atk} {def} {gen} field={currentField} />
+				<DamageResult {atk} {def} field={currentField} />
 			</div>
 		{/each}
 	{/each}

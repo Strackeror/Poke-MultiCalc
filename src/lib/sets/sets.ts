@@ -1,12 +1,4 @@
-import { SETDEX_RBY } from './gen1';
-import { SETDEX_GSC } from './gen2';
-import { SETDEX_ADV } from './gen3';
-import { SETDEX_DPP } from './gen4';
-import { SETDEX_BW } from './gen5';
-import { SETDEX_XY } from './gen6';
-import { SETDEX_SM } from './gen7';
-import { SETDEX_SS } from './gen8';
-import { SETDEX_SV } from './gen9';
+import type { PokemonSet, StatsTable } from "@pkmn/dex";
 
 export type LocalSetStats = { hp: number; at: number; df: number; sa: number; sd: number; sp: number };
 export type LocalSet = {
@@ -18,22 +10,24 @@ export type LocalSet = {
   item?: string,
   ability?: string,
 };
+export type SetList = { [poke: string]: { [set: string]: Partial<LocalSet> } };
 
-const setMap: {[name: string]: SetList} = {
-	RBY: SETDEX_RBY,
-	GSC: SETDEX_GSC,
-	ADV: SETDEX_ADV,
-	DPP: SETDEX_DPP,
-	'B/W': SETDEX_BW,
-	'X/Y': SETDEX_XY,
-	'S/M': SETDEX_SM,
-	'S/S': SETDEX_SS,
-	'S/V': SETDEX_SV,
-};
-type SetList = { [poke: string]: { [set: string]: Partial<LocalSet> } };
-export function getSets(genName: string): SetList {
-  if (!(genName in setMap)) {
-    return {};
-  }
-	return setMap[genName];
+export function localSetToPokemonSet(species: string, localset: Partial<LocalSet>): Partial<PokemonSet> {
+	function statsFromLocalSet(stats: Partial<LocalSetStats>, def: number): StatsTable {
+		return {
+			hp: stats.hp ?? def,
+			atk: stats.at ?? def,
+			def: stats.df ?? def,
+			spe: stats.sp ?? def,
+			spa: stats.sa ?? def,
+			spd: stats.sd ?? def
+		};
+	}
+
+	return {
+		species,
+		...localset,
+		ivs: statsFromLocalSet(localset?.ivs ?? {}, 31),
+		evs: statsFromLocalSet(localset?.evs ?? {}, 0)
+	};
 }

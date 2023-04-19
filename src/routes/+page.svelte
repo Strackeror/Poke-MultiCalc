@@ -7,35 +7,13 @@
 	import FieldEditor from '$lib/components/FieldEditor.svelte';
 	import TextImporter from '$lib/components/TextImporter.svelte';
 
-	import { Dex, type Data } from '@pkmn/dex';
-	import { Generation, Generations } from '@pkmn/data';
 	import { Field, Pokemon } from '$lib/calc';
 
-	import { selectedPokemon, PokemonState } from '$lib/state';
+	import { selectedPokemon, PokemonState, currentGame, getGame, GameNames } from '$lib/state';
 	import { derived } from 'svelte/store';
 
-	function existCheck(data: Data) {
-		if ('isNonstandard' in data && data.isNonstandard === 'Past') {
-			return true;
-		}
-		return Generations.DEFAULT_EXISTS(data);
-	}
+	$: console.log(`selected pokemon changed: ${$selectedPokemon.pokemon.species.name}`);
 
-	$: console.log(`selected pokemon changed: ${$selectedPokemon.pokemon.species.name}`)
-
-	const baseGens = new Generations(Dex, existCheck);
-	const generationMap = {
-		RBY: baseGens.get(1),
-		GSC: baseGens.get(2),
-		ADV: baseGens.get(3),
-		DPP: baseGens.get(4),
-		'B/W': baseGens.get(5),
-		'X/Y': baseGens.get(6),
-		'S/M': baseGens.get(7),
-		'S/S': baseGens.get(8),
-		'S/V': baseGens.get(9)
-	};
-	let gen: Generation;
 	let field = new Field();
 	let allyStates: PokemonState[];
 	let enemyStates: PokemonState[];
@@ -43,10 +21,10 @@
 	$: allies = derived(allyStates, (p) => p);
 	$: enemies = derived(enemyStates, (p) => p);
 
-	let genName: keyof typeof generationMap = 'S/V';
+	let genName: string = 'S/V';
 	function updateGen() {
-		gen = generationMap[genName];
-		$selectedPokemon = new PokemonState(new Pokemon(gen, 'Bulbasaur'));
+		$currentGame = getGame(genName);
+		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 		allyStates = [];
 		enemyStates = [];
 		field = new Field();
@@ -85,7 +63,7 @@
 		<div class="box basic-options">
 			Games
 			<select bind:value={genName} on:change={updateGen}>
-				{#each Object.keys(generationMap) as name}
+				{#each GameNames as name}
 					<option value={name}>{name}</option>
 				{/each}
 			</select>
@@ -95,7 +73,7 @@
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
 			{#if pokemonCollapsed == false}
 				<div transition:slide={{ duration: 300 }}>
-					<PokemonEditor bind:pokemon={$selectedPokemon} {gen} />
+					<PokemonEditor bind:pokemon={$selectedPokemon} />
 					<div style="display: flex; flex-direction: row;">
 						<button on:click={addPokeToAllies}>Add to allies</button>
 						<button on:click={addToPokeEnemies}>Add to enemies</button>
@@ -110,12 +88,12 @@
 			<button on:click={() => (fieldCollapse = !fieldCollapse)}>Field</button>
 			{#if fieldCollapse == false}
 				<div transition:slide={{ duration: 300 }}>
-					<FieldEditor bind:field {gen} />
+					<FieldEditor bind:field />
 				</div>
 			{/if}
 		</div>
 		<div class="box">
-			<TextImporter {genName} bind:allyStates bind:enemyStates {gen} />
+			<TextImporter bind:allyStates bind:enemyStates />
 		</div>
 	</div>
 	<div class="data">
@@ -130,9 +108,9 @@
 			</div>
 		</div>
 		<div class="result-matrix box">
-			<DamageResults attackers={allyStates} defenders={enemyStates} {gen} {field} />
-			<SpeedColumn leftTeam={$allies} rightTeam={$enemies} {gen} {field} />
-			<DamageResults attackers={enemyStates} defenders={allyStates} {gen} {field} otherSide />
+			<DamageResults attackers={allyStates} defenders={enemyStates} {field} />
+			<SpeedColumn leftTeam={$allies} rightTeam={$enemies} {field} />
+			<DamageResults attackers={enemyStates} defenders={allyStates} {field} otherSide />
 		</div>
 	</div>
 </div>

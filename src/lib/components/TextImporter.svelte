@@ -2,51 +2,32 @@
 	import { dev } from '$app/environment';
 	import { Pokemon, Move } from '$lib/calc';
 	import { getTeam1, getTeam2 } from '$lib/sets/TestTeam';
-	import { PokemonState } from '$lib/state';
+	import { PokemonState, currentGame } from '$lib/state';
 	import type { Generation, StatsTable, TypeName } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
 	import { selectedPokemon } from '$lib/state';
 	import { derived } from 'svelte/store';
-	import { getSets, type LocalSet, type LocalSetStats } from '$lib/sets/sets';
+	import { localSetToPokemonSet, type LocalSet, type LocalSetStats } from '$lib/sets/sets';
 	// @ts-ignore
 	import Svelecte, { addFormatter } from 'svelecte';
 
-	export let gen: Generation;
-	export let genName: string;
 	export let allyStates: PokemonState[];
 	export let enemyStates: PokemonState[];
 
 	let importText: string = '';
 
-	$: setList = Object.entries(getSets(genName)).map(([name, sets]) => ({
+	type SetEntry = { value: Partial<LocalSet>; text: string; name: string };
+	let setList: { name: string; sets: SetEntry[] }[];
+	$: setList = Object.entries($currentGame.sets).map(([name, sets]) => ({
 		name,
 		sets: Object.entries(sets).map(([setname, set]) => ({ value: set, text: setname, name: name }))
 	}));
 
-	let selectedSet: (typeof setList)[0]['sets'][0];
-	function updateSet(species: string, localset: Partial<LocalSet>) {
-		function statsFromLocalSet(stats: Partial<LocalSetStats>, def: number): StatsTable {
-			return {
-				hp: stats.hp ?? def,
-				atk: stats.at ?? def,
-				def: stats.df ?? def,
-				spe: stats.sp ?? def,
-				spa: stats.sa ?? def,
-				spd: stats.sd ?? def
-			};
-		}
+	$: gen = $currentGame.gen;
 
-		let set: Partial<PokemonSet> = {
-			...localset,
-			species: species,
-			ivs: statsFromLocalSet(localset?.ivs ?? {}, 31),
-			evs: statsFromLocalSet(localset?.evs ?? {}, 0)
-		};
-		importText = Sets.exportSet(set);
-	}
-
+	let selectedSet: SetEntry;
 	function setListUpdate(_: unknown) {
-		updateSet(selectedSet.name, selectedSet.value);
+		importText = Sets.exportSet(localSetToPokemonSet(selectedSet.name, selectedSet.value));
 	}
 
 	function renderListElem(item: typeof selectedSet, isSelected: boolean): string {

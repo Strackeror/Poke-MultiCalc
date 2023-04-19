@@ -1,9 +1,11 @@
 <script lang="ts">
 	import type { Generation } from '@pkmn/data';
 	import type { Field } from '$lib/calc';
+	import { currentGame } from '$lib/state';
 
-	export let gen: Generation;
 	export let field: Field;
+
+	$: gen = $currentGame.gen;
 
 	let leftSwitching: boolean, rightSwitching: boolean;
 	$: {

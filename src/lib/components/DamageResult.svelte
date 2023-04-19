@@ -1,12 +1,12 @@
 <script lang="ts">
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { calculate, type Result, type Pokemon, Field } from '$lib/calc';
-	import type { PokemonState } from '$lib/state';
-	import type { Generation } from '@pkmn/data';
+	import { currentGame, type PokemonState } from '$lib/state';
 
 	export let atk: PokemonState, def: PokemonState;
-	export let gen: Generation;
 	export let field: Field;
+
+	$: gen = $currentGame.gen;
 
 	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
 		console.log(`calc ${atk.name} ${def.name}`);
