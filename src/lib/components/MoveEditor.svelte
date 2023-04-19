@@ -1,6 +1,7 @@
 <script context="module">
 	let counter = 0;
 </script>
+
 <script lang="ts">
 	import { Move } from '$lib/calc';
 	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
@@ -17,34 +18,53 @@
 		move = new Move(gen, name);
 	}
 
-  $: category = move.overrides?.category ?? move.category;
-  function updateCategory(value: string) {
-    let category = value as MoveCategory;
-    move.overrides = {...move.overrides, category}
-  }
-  
-  $: type = move.overrides?.type ?? move.type;
-  function updateType(value: string) {
-    let type = value as TypeName;
-    move.overrides = {...move.overrides, type}
-  }
+	$: category = move.overrides?.category ?? move.category;
+	function updateCategory(value: string) {
+		let category = value as MoveCategory;
+		move.overrides = { ...move.overrides, category };
+	}
 
-  $: basePower = move.overrides?.basePower ?? move.bp;
-  function updateBp(value: string) {
-    let basePower = +value;
-    move.overrides = {...move.overrides, basePower};
-  }
+	$: type = move.overrides?.type ?? move.type;
+	function updateType(value: string) {
+		let type = value as TypeName;
+		move.overrides = { ...move.overrides, type };
+	}
 
+	$: basePower = move.overrides?.basePower ?? move.bp;
+	function updateBp(value: string) {
+		let basePower = +value;
+		move.overrides = { ...move.overrides, basePower };
+	}
+
+	let hits: number[];
+	$: {
+		let multihit = gen.moves.get(move.name)?.multihit;
+		if (!multihit) hits = [1];
+		else if (typeof multihit == 'number') hits = [multihit];
+		else {
+			hits = [];
+			for (let i = multihit[0]; i <= multihit[1]; ++i) hits.push(i)
+		}
+	}
 </script>
 
 <div>
-	<select class="move-selector small-select" value={name} on:change={(e) => changeMove(e.currentTarget.value)}>
+	<select
+		class="move-selector small-select"
+		value={name}
+		on:change={(e) => changeMove(e.currentTarget.value)}
+	>
 		<option selected value="">(no move)</option>
 		{#each moveNames as moveName}
 			<option value={moveName}>{moveName}</option>
 		{/each}
 	</select>
-	<input class="move-bp" type="number" value={basePower} on:input={(e) => updateBp(e.currentTarget.value)}/>
+	<input
+		class="move-bp"
+		type="number"
+		value={basePower}
+		on:input={(e) => updateBp(e.currentTarget.value)}
+	/>
 	<select class="move-type" value={type} on:change={(e) => updateType(e.currentTarget.value)}>
 		<option hidden value="" />
 		{#each types as type}
@@ -59,18 +79,19 @@
 	{/if}
 	<br />
 	<input type="checkbox" id="crit{uniqueId}" bind:checked={move.isCrit} />
-	<label class="btn crit-btn" for="crit{uniqueId}" title="Force this attack to be a critical hit?">Crit</label
+	<label class="btn crit-btn" for="crit{uniqueId}" title="Force this attack to be a critical hit?"
+		>Crit</label
 	>
 	{#if gen.num == 7}
 		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.isZ} />
 		<label for="zMove{uniqueId}" title="Make this attack a Z-move?">Z</label>
 	{/if}
-	{#if move.hits > 1}
+
+	{#if hits.length > 1}
 		<select class="move-hits" bind:value={move.hits}>
-			<option value={2}>2 hits</option>
-			<option value={3}>3 hits</option>
-			<option value={4}>4 hits</option>
-			<option value={5}>5 hits</option>
+			{#each hits as hitCount}
+				<option value={hitCount}>{hitCount} hits</option>
+			{/each}
 		</select>
 	{/if}
 
@@ -80,7 +101,6 @@
 			title="How many times was this move used in a row?"
 			bind:value={move.timesUsed}
 		>
-			<option value={1}>Once</option>
 			<option value={2}>Twice</option>
 			<option value={3}>3 times</option>
 			<option value={4}>4 times</option>
