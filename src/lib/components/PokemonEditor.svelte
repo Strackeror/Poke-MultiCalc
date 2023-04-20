@@ -8,10 +8,10 @@
 
 	$: gen = $currentGame.gen;
 	$: types = [...gen.types];
-	$: species = [...gen.species];
-	$: moves = [...gen.moves];
+	$: species = [...gen.species].sort((a, b) => a.name.localeCompare(b.name));
+	$: moves = [...gen.moves].sort((a, b) => a.name.localeCompare(b.name));
 	$: moveNames = moves.map((m) => m.name);
-	$: abilities = [...gen.abilities];
+	$: abilities = [...gen.abilities].sort((a, b) => a.name.localeCompare(b.name));
 	$: stats = [...gen.stats].slice(0, gen.num == 1 ? -1 : undefined);
 	$: items = [...gen.items];
 
@@ -255,15 +255,6 @@
 				{#each abilities as ability}
 					<option value={ability.name}>{ability.name}</option>
 				{/each}
-			</select>
-			<input hidden type="checkbox" title="Is this ability active?" class="abilityToggle" />
-			<select hidden aria-label="Allies fainted" class="alliesFainted calc-trigger">
-				<option value="0" selected>Zero allies fainted</option>
-				<option value="1">One ally fainted</option>
-				<option value="2">Two allies fainted</option>
-				<option value="3">Three allies fainted</option>
-				<option value="4">Four allies fainted</option>
-				<option value="5">Five allies fainted</option>
 			</select>
 		</div>
 		<div class={genCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}>

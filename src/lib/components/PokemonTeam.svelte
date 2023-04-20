@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Pokemon } from '$lib/calc/pokemon';
+	import { Pokemon } from '$lib/calc/pokemon';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import { selectedPokemon, type PokemonState } from '$lib/state';
+	import { selectedPokemon, currentGame, PokemonState } from '$lib/state';
 	import { derived } from 'svelte/store';
 
 	export let pokemonStates: PokemonState[];
@@ -15,9 +15,15 @@
 			(p, i) => [p, pokemonStates[i]] as [Pokemon, PokemonState]
 		);
 	}
+
+	function addPokemon() {
+		let newPoke = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur'))
+		pokemonStates = [...pokemonStates, newPoke]
+		$selectedPokemon = newPoke;
+	}
 </script>
 
-<div class={right ? 'right' : ''}>
+<div class:right>
 	{#each pokemonStateInstances as [pokemon, pokemonState]}
 		<PokemonSprite
 			{pokemon}
@@ -25,6 +31,9 @@
 			on:clicked={() => ($selectedPokemon = pokemonState)}
 		/>
 	{/each}
+	<div class="add">
+		<button on:click={addPokemon}>Add</button>
+	</div>
 </div>
 
 <style>
@@ -34,5 +43,11 @@
 		flex-wrap: nowrap;
 		overflow-x: scroll;
 		overflow-y: hidden;
+	}
+
+	.add {
+		width: 64x;
+		height: 64px;
+		padding: 16px;
 	}
 </style>

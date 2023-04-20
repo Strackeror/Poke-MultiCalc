@@ -80,19 +80,15 @@
 		};
 	}
 
-	function importTextPokemon(replace: boolean = false) {
+	function importTextPokemon() {
 		let set = Sets.importSet(importText);
 		let poke = setToPoke(set);
 		if (!poke) {
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		if (replace) {
-			$selectedPokemonState = poke.pokemon;
-			$selectedPokemon = selectedPokemonState;
-		} else {
-			$selectedPokemon = poke;
-		}
+		$selectedPokemonState = poke.pokemon;
+		$selectedPokemon = selectedPokemonState;
 	}
 
 	function exportTextPokemon() {
@@ -120,6 +116,15 @@
 </script>
 
 <div class="import-text-box">
+	<div class="button-grid">
+		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
+		<button on:click={() => (allyStates = importTextTeam() ?? allyStates)}>Import allies</button>
+		<button on:click={() => (enemyStates = importTextTeam() ?? enemyStates)}>Import enemies</button>
+
+		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
+		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
+		<button on:click={() => exportTextTeam($enemies)}>Export enemies</button>
+	</div>
 	<Svelecte
 		options={setList}
 		groupLabelField="name"
@@ -131,28 +136,6 @@
 		on:change={setListUpdate}
 	/>
 	<textarea class="import-text" bind:value={importText} />
-	<div class="button-grid">
-		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
-		<button on:click={() => (allyStates = importTextTeam() ?? allyStates)}>Import allies</button>
-		<button on:click={() => (enemyStates = importTextTeam() ?? enemyStates)}>Import enemies</button>
-
-		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
-		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
-		<button on:click={() => exportTextTeam($enemies)}>Export enemies</button>
-		<button on:click={() => importTextPokemon(true)}>Replace</button>
-
-		{#if dev}
-			<button
-				on:click={() => {
-					importText = getTeam1();
-					allyStates = importTextTeam() ?? [];
-					importText = getTeam2();
-					enemyStates = importTextTeam() ?? [];
-				}}
-				>Toast
-			</button>
-		{/if}
-	</div>
 </div>
 
 <style>
@@ -166,7 +149,7 @@
 
 	.button-grid {
 		display: grid;
-		margin-bottom: 5px;
+		margin-top: 5px;
 
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr;

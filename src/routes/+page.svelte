@@ -7,16 +7,17 @@
 	import FieldEditor from '$lib/components/FieldEditor.svelte';
 	import TextImporter from '$lib/components/TextImporter.svelte';
 
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { Field, Pokemon } from '$lib/calc';
-
 	import { selectedPokemon, PokemonState, currentGame, getGame, GameNames } from '$lib/state';
 	import { derived } from 'svelte/store';
 
-	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
+	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur'));
 	$: console.log(`selected pokemon changed: ${$selectedPokemon.pokemon.species.name}`);
 
 	let field = new Field();
-	let allyStates: PokemonState[] = [];
+	let allyStates: PokemonState[] = [$selectedPokemon];
 	let enemyStates: PokemonState[] = [];
 
 	$: allies = derived(allyStates, (p) => p);
@@ -26,32 +27,36 @@
 	async function updateGen() {
 		$currentGame = await getGame(genName);
 		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
-		allyStates = [];
+		$page.url.searchParams.set("game", genName)
+		goto(`?${$page.url.searchParams.toString()}`);
+		allyStates = [$selectedPokemon];
 		enemyStates = [];
 		field = new Field();
 	}
 
-	function pokeInTeams(poke: PokemonState) {
-		return allyStates.includes(poke) || enemyStates.includes(poke);
-	}
-
-	function addPokeToAllies() {
-		let poke = pokeInTeams($selectedPokemon)
-			? new PokemonState($selectedPokemon.pokemon.clone())
-			: $selectedPokemon;
-		allyStates = [...allyStates, poke];
-	}
-
-	function addToPokeEnemies() {
-		let poke = pokeInTeams($selectedPokemon)
-			? new PokemonState($selectedPokemon.pokemon.clone())
-			: $selectedPokemon;
-		enemyStates = [...enemyStates, poke];
+	if ($page.url.searchParams.get("game") != genName) {
+		genName = $page.url.searchParams.get("game") ?? genName;
+		updateGen();
 	}
 
 	function removePoke() {
-		allyStates = allyStates.filter((p) => p != $selectedPokemon);
-		enemyStates = enemyStates.filter((p) => p != $selectedPokemon);
+		let index = allyStates.indexOf($selectedPokemon);
+		if (index >= 0) {
+			allyStates.splice(index, 1);
+			allyStates = allyStates;
+			if (index > 0) $selectedPokemon = allyStates[index - 1];
+			else $selectedPokemon = [...allyStates, ...enemyStates][0];
+			return;
+		}
+
+		index = enemyStates.indexOf($selectedPokemon);
+		if (index >= 0) {
+			enemyStates.splice(index, 1);
+			enemyStates = enemyStates;
+			if (index > 0) $selectedPokemon = enemyStates[index - 1];
+			else $selectedPokemon = [...allyStates, ...enemyStates][0];
+			return;
+		}
 	}
 
 	let pokemonCollapsed: boolean = false;
@@ -71,26 +76,20 @@
 		</div>
 		<div class="box poke-editor">
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
-			{#if pokemonCollapsed == false}
-				<div transition:slide={{ duration: 300 }}>
-					<PokemonEditor bind:pokemon={$selectedPokemon} />
-					<div style="display: flex; flex-direction: row;">
-						<button on:click={addPokeToAllies}>Add to allies</button>
-						<button on:click={addToPokeEnemies}>Add to enemies</button>
-						{#if allyStates.indexOf($selectedPokemon) >= 0 || enemyStates.indexOf($selectedPokemon) >= 0}
-							<button on:click={removePoke}>Remove</button>
-						{/if}
-					</div>
-				</div>
-			{/if}
+			<button
+				class="poke-remove"
+				on:click={removePoke}
+				disabled={$allies.length + $enemies.length <= 1}>Remove</button
+			>
+			<div hidden={pokemonCollapsed}>
+				<PokemonEditor bind:pokemon={$selectedPokemon} />
+			</div>
 		</div>
 		<div class="box field-editor">
 			<button on:click={() => (fieldCollapse = !fieldCollapse)}>Field</button>
-			{#if fieldCollapse == false}
-				<div transition:slide={{ duration: 300 }}>
-					<FieldEditor bind:field />
-				</div>
-			{/if}
+			<div hidden={fieldCollapse}>
+				<FieldEditor bind:field />
+			</div>
 		</div>
 		<div class="box">
 			<TextImporter bind:allyStates bind:enemyStates />
@@ -100,11 +99,11 @@
 		<div class="teams">
 			<div class="team ally box">
 				<span>Allies</span>
-				<PokemonTeam pokemonStates={allyStates} />
+				<PokemonTeam bind:pokemonStates={allyStates} />
 			</div>
 			<div class="team enemy box">
 				<span>Enemies</span>
-				<PokemonTeam pokemonStates={enemyStates} />
+				<PokemonTeam bind:pokemonStates={enemyStates} />
 			</div>
 		</div>
 		<div class="result-matrix box">
@@ -144,6 +143,10 @@
 	.poke-editor,
 	.field-editor {
 		padding: 10px;
+	}
+
+	.poke-remove {
+		float: right;
 	}
 
 	.basic-options {
