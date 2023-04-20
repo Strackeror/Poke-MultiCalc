@@ -17,8 +17,10 @@
 	}
 
 	function addPokemon() {
-		let newPoke = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur'))
-		pokemonStates = [...pokemonStates, newPoke]
+		let level = pokemonStates.map((n) => n.pokemon.level).reduce((a, b) => Math.max(a, b), 0);
+		if (level == 0) level = 100;
+		let newPoke = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur', { level }));
+		pokemonStates = [...pokemonStates, newPoke];
 		$selectedPokemon = newPoke;
 	}
 </script>

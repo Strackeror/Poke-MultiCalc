@@ -67,7 +67,7 @@
 
 	$: speciesName = $pokemon.species.name;
 	function updateSpecies(speciesName: string) {
-		$pokemon = new Pokemon(gen, speciesName);
+		$pokemon = new Pokemon(gen, speciesName, {level: $pokemon.level});
 		pokemon = pokemon;
 	}
 
