@@ -2,15 +2,6 @@ import { Generation, Generations, type Data } from '@pkmn/data';
 import { ModdedDex, type ModData } from '@pkmn/dex';
 import { writable, type Subscriber, type Updater, type Writable } from 'svelte/store';
 import type { Field, Move, Pokemon, Result, Side } from './calc';
-import { SETDEX_RBY } from './sets/gen1';
-import { SETDEX_GSC } from './sets/gen2';
-import { SETDEX_ADV } from './sets/gen3';
-import { SETDEX_DPP } from './sets/gen4';
-import { SETDEX_BW } from './sets/gen5';
-import { SETDEX_XY } from './sets/gen6';
-import { SETDEX_SM } from './sets/gen7';
-import { SETDEX_SS } from './sets/gen8';
-import { SETDEX_SV } from './sets/gen9';
 import type { SetList } from './sets/sets';
 import { calculate } from './calc/calc';
 import { calculateSpeedSwelSun, calculateSwelSun } from './calc/mechanics/mods/swelsun';
@@ -41,12 +32,7 @@ export class PokemonState {
 
 export let selectedPokemon: Writable<PokemonState> = writable();
 
-type CalcSpeedFunc = (
-	gen: Generation,
-	poke: Pokemon,
-	field: Field,
-	side: Side,
-) => number;
+type CalcSpeedFunc = (gen: Generation, poke: Pokemon, field: Field, side: Side) => number;
 
 type CalculateFunc = (
 	gen: Generation,
@@ -58,28 +44,28 @@ type CalculateFunc = (
 
 type GameEntry = {
 	baseGen: number;
-	sets?: SetList | string;
+	sets: string;
 	modData?: string;
-	calculate?: CalculateFunc,
-	calculateSpeed?: CalcSpeedFunc,
+	calculate?: CalculateFunc;
+	calculateSpeed?: CalcSpeedFunc;
 };
 
 const GameMap: { [id: string]: GameEntry } = {
-	RBY: { baseGen: 1, sets: SETDEX_RBY },
-	GSC: { baseGen: 2, sets: SETDEX_GSC },
-	ADV: { baseGen: 3, sets: SETDEX_ADV },
-	DPP: { baseGen: 4, sets: SETDEX_DPP },
-	'B/W': { baseGen: 5, sets: SETDEX_BW },
-	'X/Y': { baseGen: 6, sets: SETDEX_XY },
-	'S/M': { baseGen: 7, sets: SETDEX_SM },
-	'S/S': { baseGen: 8, sets: SETDEX_SS },
-	'S/V': { baseGen: 9, sets: SETDEX_SV },
+	RBY: { baseGen: 1, sets: "/data/baseSets/gen1.json" },
+	GSC: { baseGen: 2, sets: "/data/baseSets/gen2.json" },
+	ADV: { baseGen: 3, sets: "/data/baseSets/gen3.json" },
+	DPP: { baseGen: 4, sets: "/data/baseSets/gen4.json" },
+	'B/W': { baseGen: 5, sets: "/data/baseSets/gen5.json" },
+	'X/Y': { baseGen: 6, sets: "/data/baseSets/gen6.json" },
+	'S/M': { baseGen: 7, sets: "/data/baseSets/gen7.json" },
+	'S/S': { baseGen: 8, sets: "/data/baseSets/gen8.json" },
+	'S/V': { baseGen: 9, sets: "/data/baseSets/gen9.json" },
 	'Sweltering Sun': {
 		baseGen: 7,
-		sets: 'data/swelsun/sets.json',
-		modData: 'data/swelsun/mod-data.json',
+		sets: '/data/swelsun/sets.json',
+		modData: '/data/swelsun/mod-data.json',
 		calculate: calculateSwelSun,
-		calculateSpeed: calculateSpeedSwelSun,
+		calculateSpeed: calculateSpeedSwelSun
 	}
 };
 
@@ -96,10 +82,9 @@ export async function getGame(name: string): Promise<Game> {
 		data = await (await fetch(gameEntry.modData)).json();
 	}
 
-	let sets = gameEntry.sets;
-	if (typeof sets == 'string') {
-		sets = (await (await fetch(sets)).json()) as SetList;
-	}
+	let setUrl = '/Poke-MultiCalc' + gameEntry.sets;
+	let	sets = (await (await fetch(setUrl)).json()) as SetList;
+
 	let dex = new ModdedDex(`gen${gameEntry.baseGen}` as any, data);
 	let gen = new Generation(dex, existsOrPast);
 	return {
@@ -110,11 +95,15 @@ export async function getGame(name: string): Promise<Game> {
 	};
 }
 
-
 export type Game = {
 	gen: Generation;
 	sets: SetList;
-	calculate: CalculateFunc
-	calculateSpeed: CalcSpeedFunc
+	calculate: CalculateFunc;
+	calculateSpeed: CalcSpeedFunc;
 };
-export let currentGame: Writable<Game> = writable(await getGame("S/V"));
+export let currentGame: Writable<Game> = writable({
+	gen: new Generation(new ModdedDex('gen9'), existsOrPast),
+	sets: {},
+	calculate,
+	calculateSpeed: getFinalSpeed
+});

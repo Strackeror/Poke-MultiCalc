@@ -34,10 +34,8 @@
 		field = new Field();
 	}
 
-	if ($page.url.searchParams.get("game") != genName) {
-		genName = $page.url.searchParams.get("game") ?? genName;
-		updateGen();
-	}
+	genName = $page.url.searchParams.get("game") ?? genName;
+	updateGen();
 
 	function removePoke() {
 		let index = allyStates.indexOf($selectedPokemon);
