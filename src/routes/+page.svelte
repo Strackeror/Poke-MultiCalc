@@ -12,24 +12,24 @@
 	import { selectedPokemon, PokemonState, currentGame, getGame, GameNames } from '$lib/state';
 	import { derived } from 'svelte/store';
 
+	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 	$: console.log(`selected pokemon changed: ${$selectedPokemon.pokemon.species.name}`);
 
 	let field = new Field();
-	let allyStates: PokemonState[];
-	let enemyStates: PokemonState[];
+	let allyStates: PokemonState[] = [];
+	let enemyStates: PokemonState[] = [];
 
 	$: allies = derived(allyStates, (p) => p);
 	$: enemies = derived(enemyStates, (p) => p);
 
 	let genName: string = 'S/V';
-	function updateGen() {
-		$currentGame = getGame(genName);
+	async function updateGen() {
+		$currentGame = await getGame(genName);
 		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 		allyStates = [];
 		enemyStates = [];
 		field = new Field();
 	}
-	updateGen();
 
 	function pokeInTeams(poke: PokemonState) {
 		return allyStates.includes(poke) || enemyStates.includes(poke);

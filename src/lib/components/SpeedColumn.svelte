@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Field, Pokemon } from '$lib/calc/';
-	import { getFinalSpeed } from '$lib/calc/mechanics/util';
 
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { currentGame } from '$lib/state';
@@ -19,7 +18,7 @@
 	$: {
 		let pokeBySpeed: { [speed: number]: { poke: Pokemon; side: PokeSide }[] } = {};
 		for (let poke of leftTeam) {
-			let speed = getFinalSpeed(gen, poke, field, field.attackerSide);
+			let speed = $currentGame.calculateSpeed(gen, poke, field, field.attackerSide);
 			if (!(speed in pokeBySpeed)) {
 				pokeBySpeed[speed] = [];
 			}
@@ -27,7 +26,7 @@
 			pokeBySpeed[speed].push({ poke, side: PokeSide.Left });
 		}
 		for (let poke of rightTeam) {
-			let speed = getFinalSpeed(gen, poke, field, field.defenderSide);
+			let speed = $currentGame.calculateSpeed(gen, poke, field, field.defenderSide);
 			if (!(speed in pokeBySpeed)) {
 				pokeBySpeed[speed] = [];
 			}
