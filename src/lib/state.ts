@@ -75,14 +75,15 @@ function existsOrPast(d: Data) {
 	return Generations.DEFAULT_EXISTS(d) || ('isNonstandard' in d && d['isNonstandard'] == 'Past');
 }
 
+const BASE_PATH  = "/Poke-MultiCalc";
 export async function getGame(name: string): Promise<Game> {
 	let gameEntry = GameMap[name as keyof typeof GameMap];
 	let data;
 	if (gameEntry.modData) {
-		data = await (await fetch(gameEntry.modData)).json();
+		data = await (await fetch(BASE_PATH + gameEntry.modData)).json();
 	}
 
-	let setUrl = '/Poke-MultiCalc' + gameEntry.sets;
+	let setUrl = BASE_PATH + gameEntry.sets;
 	let	sets = (await (await fetch(setUrl)).json()) as SetList;
 
 	let dex = new ModdedDex(`gen${gameEntry.baseGen}` as any, data);
