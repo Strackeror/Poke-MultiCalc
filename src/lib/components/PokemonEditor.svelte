@@ -12,8 +12,14 @@
 	$: moves = [...gen.moves].sort((a, b) => a.name.localeCompare(b.name));
 	$: moveNames = moves.map((m) => m.name);
 	$: abilities = [...gen.abilities].sort((a, b) => a.name.localeCompare(b.name));
-	$: stats = [...gen.stats].slice(0, gen.num == 1 ? -1 : undefined);
 	$: items = [...gen.items];
+
+	let stats: readonly StatID[];
+	$: {
+		stats = [...gen.stats];
+		if (gen.num == 1) stats = stats.slice(0, -1);
+		stats = [...stats.filter(s => s != "spe"), "spe"]
+	}
 
 	$: {
 		for (let i of [0, 1, 2, 3]) {
