@@ -87,6 +87,7 @@ export async function getGame(name: string): Promise<Game> {
 	let	sets = (await (await fetch(setUrl)).json()) as SetList;
 
 	let dex = new ModdedDex(`gen${gameEntry.baseGen}` as any, data);
+	dex.data.Aliases = {}
 	let gen = new Generation(dex, existsOrPast);
 	return {
 		gen,
