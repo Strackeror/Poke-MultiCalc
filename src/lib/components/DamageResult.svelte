@@ -1,27 +1,33 @@
 <script lang="ts">
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import { calculate, type Result, type Pokemon, Field } from '$lib/calc';
-	import { currentGame, type PokemonState } from '$lib/state';
+	import type { Result, Pokemon, Field } from '$lib/calc';
+	import { currentGame, selectedPokemon, type PokemonState } from '$lib/state';
 
 	export let atk: PokemonState, def: PokemonState;
 	export let field: Field;
 
 	$: gen = $currentGame.gen;
 
+	function totalDmg(res: Result) {
+		return res.range()[0] * res.move.hits;
+	}
+
 	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
 		console.log(`calc ${atk.name} ${def.name}`);
 		let results: Result[] = [];
 		for (let move of atk.moves) {
 			if (move.name.length) {
-				results.push(calculate(gen, atk, def, move, field));
+				results.push($currentGame.calculate(gen, atk, def, move, field));
 			}
 		}
-		results.sort((a, b) => b.range()[0] - a.range()[0]);
+		results.sort((a, b) => totalDmg(b) - totalDmg(a));
 		return results;
 	}
 
 	$: results = getResults($atk, $def, field);
-	let showOthers: boolean = false;
+
+	let folded = false;
+	$: showOthers = atk == $selectedPokemon || def == $selectedPokemon || folded;
 
 	function description(res: Result) {
 		return `${res.moveDesc()}: ${res.kochance(false).text}`;
@@ -30,10 +36,10 @@
 
 {#if results.length > 0}
 	<div class="damage-results">
-		<button class="damage-result" on:click={() => (showOthers = !showOthers)}>
+		<button class="damage-result" on:click={() => (folded = !folded)}>
 			<PokemonSprite pokemon={results[0].attacker} icon={true} />
 			<div class="damage-description">
-				{results[0].move.name}<br />
+				<b>{results[0].move.name}</b><br />
 				{description(results[0])}
 			</div>
 			<PokemonSprite pokemon={results[0].defender} icon={true} />
@@ -43,7 +49,7 @@
 			<div class="main-damage folded">{results[0].damage}</div>
 			{#each results.slice(1) as result}
 				<div class="damage-description folded">
-					{result.move.name}<br />
+					<b>{result.move.name}</b><br />
 					{description(result)} <br />
 					{result.damage}
 				</div>
