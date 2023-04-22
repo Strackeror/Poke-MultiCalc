@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
-	import { Pokemon, Move } from '$lib/calc';
-	import { getTeam1, getTeam2 } from '$lib/sets/TestTeam';
+	import type { Pokemon, Move } from '$lib/calc';
 	import { PokemonState, currentGame } from '$lib/state';
-	import type { Generation, StatsTable, TypeName } from '@pkmn/data';
+	import type { TypeName } from '@pkmn/data';
 	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
 	import { selectedPokemon } from '$lib/state';
 	import { derived } from 'svelte/store';
-	import { localSetToPokemonSet, type LocalSet, type LocalSetStats } from '$lib/sets/sets';
+	import { localSetToPokemonSet, type LocalSet, pokeToSet, setToPoke } from '$lib/sets/sets';
 	// @ts-ignore
 	import Svelecte, { addFormatter } from 'svelecte';
+	import { createEventDispatcher } from 'svelte';
+
+	const event = createEventDispatcher<{"teamUpdated":void}>();
 
 	export let allyStates: PokemonState[];
 	export let enemyStates: PokemonState[];
@@ -42,52 +43,16 @@
 	$: allies = derived(allyStates, (p) => p);
 	$: enemies = derived(enemyStates, (p) => p);
 
-	function setToPoke(set: Partial<PokemonSet<string>>) {
-		if (!set?.species) return;
-
-		try {
-			let poke = new PokemonState(
-				new Pokemon(gen, set.species, {
-					item: set.item,
-					nature: set.nature,
-					moves: set.moves?.map(
-						(m) => new Move(gen, m, { species: set.species, ability: set.ability, item: set.item })
-					),
-					ability: set.ability,
-					level: set.level,
-					ivs: set.ivs,
-					evs: set.evs,
-					selectedTera: set.teraType as TypeName
-				})
-			);
-			return poke;
-		} catch (e) {
-			return;
-		}
-	}
-
-	function pokeToSet(poke: Pokemon): Partial<PokemonSet<string>> {
-		return {
-			species: poke.species.name,
-			nature: poke.nature,
-			ability: poke.ability,
-			item: poke.item,
-			moves: poke.moves.map((m) => m.name),
-			level: poke.level,
-			ivs: poke.ivs,
-			evs: poke.evs,
-			teraType: poke.selectedTera
-		};
-	}
-
 	function importTextPokemon() {
 		let set = Sets.importSet(importText);
-		let poke = setToPoke(set);
+		let poke = setToPoke(gen, set);
 		if (!poke) {
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		$selectedPokemonState = poke.pokemon;
+		event("teamUpdated");
+		let state = new PokemonState(poke);
+		$selectedPokemonState = state.pokemon;
 		$selectedPokemon = selectedPokemonState;
 	}
 
@@ -102,12 +67,13 @@
 			return;
 		}
 
-		let pokes = sets.team.map((s) => setToPoke(s));
+		let pokes = sets.team.map((s) => setToPoke(gen, s));
 		if (pokes.some((p) => p === undefined)) {
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		return pokes.filter((p): p is PokemonState => p !== undefined);
+		event("teamUpdated");
+		return pokes.filter((p): p is Pokemon => p !== undefined).map((p) => new PokemonState(p));
 	}
 
 	function exportTextTeam(team: Pokemon[]) {

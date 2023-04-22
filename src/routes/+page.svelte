@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
 	import DamageResults from '$lib/components/DamageResults.svelte';
-	import PokemonTeam from '$lib/components/PokemonTeam.svelte';
-	import PokemonEditor from '$lib/components/PokemonEditor.svelte';
-	import SpeedColumn from '$lib/components/SpeedColumn.svelte';
 	import FieldEditor from '$lib/components/FieldEditor.svelte';
+	import PokemonEditor from '$lib/components/PokemonEditor.svelte';
+	import PokemonTeam from '$lib/components/PokemonTeam.svelte';
+	import SpeedColumn from '$lib/components/SpeedColumn.svelte';
 	import TextImporter from '$lib/components/TextImporter.svelte';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { Field, Pokemon } from '$lib/calc';
-	import { selectedPokemon, PokemonState, currentGame, getGame, GameNames } from '$lib/state';
+	import { pokeToSet, setToPoke } from '$lib/sets/sets';
+	import { GameNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
+	import type { PokemonSet } from '@pkmn/data';
 	import { derived } from 'svelte/store';
 
 	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur'));
@@ -23,18 +24,54 @@
 	$: allies = derived(allyStates, (p) => p);
 	$: enemies = derived(enemyStates, (p) => p);
 
-	let genName: string = 'S/V';
-	async function updateGen() {
-		$currentGame = await getGame(genName);
-		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
-		$page.url.searchParams.set("game", genName)
-		goto(`?${$page.url.searchParams.toString()}`);
-		allyStates = [$selectedPokemon];
-		enemyStates = [];
-		field = new Field();
+	let genName: string = '';
+	genName = $page.url.searchParams.get('game') ?? 'S/V';
+
+	type LocalStorageState = {
+		allies: Partial<PokemonSet>[];
+		enemies: Partial<PokemonSet>[];
+	};
+	function saveState() {
+		let state: LocalStorageState = {
+			allies: $allies.map(pokeToSet),
+			enemies: $enemies.map(pokeToSet)
+		};
+		console.log("Saving state", state);
+		localStorage.setItem(`${genName}-state`, JSON.stringify(state));
 	}
 
-	genName = $page.url.searchParams.get("game") ?? genName;
+	let autosave = setInterval(() => {
+		saveState();
+	}, 20_000);
+
+	function loadState() {
+		let storage = localStorage.getItem(`${genName}-state`);
+		if (!storage) return false;
+		let state: LocalStorageState = JSON.parse(storage);
+		allyStates = state.allies
+			.map((set) => setToPoke($currentGame.gen, set))
+			.filter((p): p is Pokemon => !!p)
+			.map((p) => new PokemonState(p));
+		enemyStates = state.enemies
+			.map((set) => setToPoke($currentGame.gen, set))
+			.filter((p): p is Pokemon => !!p)
+			.map((p) => new PokemonState(p));
+		$selectedPokemon = [...allyStates, ...enemyStates][0];
+		return true;
+	}
+
+	async function updateGen() {
+		$currentGame = await getGame(genName);
+		$page.url.searchParams.set('game', genName);
+		goto(`?${$page.url.searchParams.toString()}`);
+		field = new Field();
+		if (loadState()) return;
+
+		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
+		allyStates = [$selectedPokemon];
+		enemyStates = [];
+		return;
+	}
 	updateGen();
 
 	function removePoke() {
@@ -90,7 +127,7 @@
 			</div>
 		</div>
 		<div class="box">
-			<TextImporter bind:allyStates bind:enemyStates />
+			<TextImporter bind:allyStates bind:enemyStates on:teamUpdated={saveState}/>
 		</div>
 	</div>
 	<div class="data">

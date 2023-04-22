@@ -1,3 +1,5 @@
+import { Move, Pokemon } from "$lib/calc";
+import type { Generation, TypeName } from "@pkmn/data";
 import type { PokemonSet, StatsTable } from "@pkmn/dex";
 
 export type LocalSetStats = { hp: number; at: number; df: number; sa: number; sd: number; sp: number };
@@ -31,3 +33,40 @@ export function localSetToPokemonSet(species: string, localset: Partial<LocalSet
 		evs: statsFromLocalSet(localset?.evs ?? {}, 0)
 	};
 }
+
+export function pokeToSet(poke: Pokemon): Partial<PokemonSet> {
+		return {
+			species: poke.species.name,
+			nature: poke.nature,
+			ability: poke.ability,
+			item: poke.item,
+			moves: poke.moves.map((m) => m.name),
+			level: poke.level,
+			ivs: poke.ivs,
+			evs: poke.evs,
+			teraType: poke.selectedTera
+		};
+}
+
+export function setToPoke(gen: Generation, set: Partial<PokemonSet<string>>) {
+		if (!set?.species) return;
+
+		try {
+			let poke = 
+				new Pokemon(gen, set.species, {
+					item: set.item,
+					nature: set.nature,
+					moves: set.moves?.map(
+						(m) => new Move(gen, m, { species: set.species, ability: set.ability, item: set.item })
+					),
+					ability: set.ability,
+					level: set.level,
+					ivs: set.ivs,
+					evs: set.evs,
+					selectedTera: set.teraType as TypeName
+				})
+			return poke;
+		} catch (e) {
+			return;
+		}
+	}
