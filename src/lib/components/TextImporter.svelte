@@ -60,7 +60,12 @@
 		importText = Sets.exportSet(pokeToSet($selectedPokemonState));
 	}
 
-	function importTextTeam(): PokemonState[] | undefined {
+	enum Side {
+		Allies,
+		Enemies
+	}
+
+	function importTextTeam(side: Side): PokemonState[] | undefined {
 		let sets = Team.import(importText);
 		if (!sets) {
 			window.alert(`failed to import: \n ${importText}`);
@@ -72,8 +77,18 @@
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
+		let newTeam = pokes.filter((p): p is Pokemon => p !== undefined).map((p) => new PokemonState(p));
+		switch (side) {
+			case Side.Allies:
+				if (allyStates.includes($selectedPokemon)) $selectedPokemon = newTeam[0];
+				allyStates = newTeam;
+				break;
+			case Side.Enemies:
+				if (enemyStates.includes($selectedPokemon)) $selectedPokemon = newTeam[0];
+				enemyStates = newTeam;
+				break;
+		}
 		event("teamUpdated");
-		return pokes.filter((p): p is Pokemon => p !== undefined).map((p) => new PokemonState(p));
 	}
 
 	function exportTextTeam(team: Pokemon[]) {
@@ -84,8 +99,8 @@
 <div class="import-text-box">
 	<div class="button-grid">
 		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
-		<button on:click={() => (allyStates = importTextTeam() ?? allyStates)}>Import allies</button>
-		<button on:click={() => (enemyStates = importTextTeam() ?? enemyStates)}>Import enemies</button>
+		<button on:click={() => (importTextTeam(Side.Allies))}>Import allies</button>
+		<button on:click={() => (importTextTeam(Side.Enemies))}>Import enemies</button>
 
 		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
 		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
