@@ -44,6 +44,7 @@ type CalculateFunc = (
 
 type GameEntry = {
 	baseGen: number;
+	basedOn?: string;
 	sets: string;
 	modData?: string;
 	calculate?: CalculateFunc;
@@ -51,17 +52,18 @@ type GameEntry = {
 };
 
 const GameMap: { [id: string]: GameEntry } = {
-	RBY: { baseGen: 1, sets: "/data/baseSets/gen1.json" },
-	GSC: { baseGen: 2, sets: "/data/baseSets/gen2.json" },
-	ADV: { baseGen: 3, sets: "/data/baseSets/gen3.json" },
-	DPP: { baseGen: 4, sets: "/data/baseSets/gen4.json" },
-	'B/W': { baseGen: 5, sets: "/data/baseSets/gen5.json" },
-	'X/Y': { baseGen: 6, sets: "/data/baseSets/gen6.json" },
-	'S/M': { baseGen: 7, sets: "/data/baseSets/gen7.json" },
-	'S/S': { baseGen: 8, sets: "/data/baseSets/gen8.json" },
-	'S/V': { baseGen: 9, sets: "/data/baseSets/gen9.json" },
+	RBY: { baseGen: 1, sets: '/data/baseSets/gen1.json' },
+	GSC: { baseGen: 2, sets: '/data/baseSets/gen2.json' },
+	ADV: { baseGen: 3, sets: '/data/baseSets/gen3.json' },
+	DPP: { baseGen: 4, sets: '/data/baseSets/gen4.json' },
+	'B/W': { baseGen: 5, sets: '/data/baseSets/gen5.json' },
+	'X/Y': { baseGen: 6, sets: '/data/baseSets/gen6.json' },
+	'S/M': { baseGen: 7, sets: '/data/baseSets/gen7.json' },
+	'S/S': { baseGen: 8, sets: '/data/baseSets/gen8.json' },
+	'S/V': { baseGen: 9, sets: '/data/baseSets/gen9.json' },
 	'Sweltering Sun': {
 		baseGen: 7,
+		basedOn: 'https://github.com/DarkShinyGiratina/Sweltering-Sun-Damage-Calc',
 		sets: '/data/swelsun/sets.json',
 		modData: '/data/swelsun/mod-data.json',
 		calculate: calculateSwelSun,
@@ -75,7 +77,7 @@ function existsOrPast(d: Data) {
 	return Generations.DEFAULT_EXISTS(d) || ('isNonstandard' in d && d['isNonstandard'] == 'Past');
 }
 
-const BASE_PATH  = "/Poke-MultiCalc";
+const BASE_PATH = '/Poke-MultiCalc';
 export async function getGame(name: string): Promise<Game> {
 	let gameEntry = GameMap[name as keyof typeof GameMap];
 	let data;
@@ -84,14 +86,15 @@ export async function getGame(name: string): Promise<Game> {
 	}
 
 	let setUrl = BASE_PATH + gameEntry.sets;
-	let	sets = (await (await fetch(setUrl)).json()) as SetList;
+	let sets = (await (await fetch(setUrl)).json()) as SetList;
 
 	let dex = new ModdedDex(`gen${gameEntry.baseGen}` as any, data);
-	dex.data.Aliases = {}
+	dex.data.Aliases = {};
 	let gen = new Generation(dex, existsOrPast);
 	return {
 		gen,
 		sets: sets ?? {},
+		basedOn: gameEntry.basedOn,
 		calculate: gameEntry.calculate ?? calculate,
 		calculateSpeed: gameEntry.calculateSpeed ?? getFinalSpeed
 	};
@@ -102,6 +105,7 @@ export type Game = {
 	sets: SetList;
 	calculate: CalculateFunc;
 	calculateSpeed: CalcSpeedFunc;
+	basedOn?: string | undefined;
 };
 export let currentGame: Writable<Game> = writable({
 	gen: new Generation(new ModdedDex('gen9'), existsOrPast),

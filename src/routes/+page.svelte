@@ -36,7 +36,7 @@
 			allies: $allies.map(pokeToSet),
 			enemies: $enemies.map(pokeToSet)
 		};
-		console.log("Saving state", state);
+		console.log('Saving state', state);
 		localStorage.setItem(`${genName}-state`, JSON.stringify(state));
 	}
 
@@ -127,7 +127,14 @@
 			</div>
 		</div>
 		<div class="box">
-			<TextImporter bind:allyStates bind:enemyStates on:teamUpdated={saveState}/>
+			<TextImporter bind:allyStates bind:enemyStates on:teamUpdated={saveState} />
+		</div>
+		<div class="box credits">
+			Based on: <br />
+			<a href="https://github.com/smogon/damage-calc">Smogon damage calc</a> <br />
+			{#if $currentGame.basedOn}
+				<a href={$currentGame.basedOn}>RomHack calc</a>
+			{/if}
 		</div>
 	</div>
 	<div class="data">
@@ -176,7 +183,8 @@
 	}
 
 	.poke-editor,
-	.field-editor {
+	.field-editor,
+	.credits {
 		padding: 10px;
 	}
 
@@ -194,6 +202,7 @@
 		margin: 5px;
 		overflow: hidden;
 	}
+
 	.teams {
 		display: grid;
 		grid-auto-columns: minmax(0, 1fr);
