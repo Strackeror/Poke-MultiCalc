@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Field } from '$lib/calc';
-	import type { Generation } from '@pkmn/data';
+	import { selectedPokemon, type PokemonState } from '$lib/state';
 	import DamageResult from './DamageResult.svelte';
-	import type { PokemonState } from '$lib/state';
 
 	export let attackers: PokemonState[];
 	export let defenders: PokemonState[];
@@ -20,9 +19,21 @@
 			currentField.defenderSide = newSides[1];
 		}
 	}
+
+	let current: readonly [PokemonState, PokemonState][];
+	$: {
+		if (attackers.includes($selectedPokemon)) current = defenders.map((d) => [$selectedPokemon, d]);
+		if (defenders.includes($selectedPokemon)) current = attackers.map((a) => [a, $selectedPokemon]);
+	}
 </script>
 
 <div class="results">
+	{#each current as [atk, def]}
+			<div>
+				<DamageResult {atk} {def} field={currentField} />
+			</div>
+	{/each}
+	<div class="sep"/>
 	{#each attackers as atk}
 		{#each defenders as def}
 			<div>
@@ -38,6 +49,10 @@
 		flex-direction: column;
 		flex-grow: 1;
 		overflow: auto;
+	}
+
+	.sep {
+		min-height: 5px;
 	}
 
 	.results > div {

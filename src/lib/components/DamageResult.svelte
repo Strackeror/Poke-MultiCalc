@@ -5,6 +5,7 @@
 
 	export let atk: PokemonState, def: PokemonState;
 	export let field: Field;
+	export let open: boolean = false;
 
 	$: gen = $currentGame.gen;
 
@@ -26,9 +27,7 @@
 
 	$: results = getResults($atk, $def, field);
 
-	let folded = false;
-	$: showOthers = atk == $selectedPokemon || def == $selectedPokemon || folded;
-
+	let folded = !open;
 	function description(res: Result) {
 		return `${res.moveDesc()}: ${res.kochance(false).text}`;
 	}
@@ -45,7 +44,7 @@
 			<PokemonSprite pokemon={results[0].defender} icon={true} />
 		</button>
 
-		{#if showOthers}
+		{#if !folded}
 			<div class="main-damage folded">{results[0].damage}</div>
 			{#each results.slice(1) as result}
 				<div class="damage-description folded">

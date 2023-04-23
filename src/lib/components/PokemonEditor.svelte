@@ -1,24 +1,28 @@
 <script lang="ts">
-	import { Pokemon, Move, calcStat } from '$lib/calc';
+	import { Move, Pokemon, calcStat } from '$lib/calc';
 	import { currentGame, type PokemonState } from '$lib/state';
-	import type { Generation, Type, Item, Specie, StatID, StatsTable, TypeName } from '@pkmn/data';
+	import type { Generation, StatID, StatsTable } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
 
 	export let pokemon: PokemonState;
 
+	function compareName(a: { name: string }, b: { name: string }) {
+		return a.name.localeCompare(b.name);
+	}
+
 	$: gen = $currentGame.gen;
 	$: types = [...gen.types];
-	$: species = [...gen.species].sort((a, b) => a.name.localeCompare(b.name));
-	$: moves = [...gen.moves].sort((a, b) => a.name.localeCompare(b.name));
+	$: species = [...gen.species].sort(compareName);
+	$: moves = [...gen.moves].sort(compareName);
 	$: moveNames = moves.map((m) => m.name);
-	$: abilities = [...gen.abilities].sort((a, b) => a.name.localeCompare(b.name));
-	$: items = [...gen.items];
+	$: abilities = [...gen.abilities].sort(compareName);
+	$: items = [...gen.items].sort(compareName);
 
 	let stats: readonly StatID[];
 	$: {
 		stats = [...gen.stats];
 		if (gen.num == 1) stats = stats.slice(0, -1);
-		stats = [...stats.filter(s => s != "spe"), "spe"]
+		stats = [...stats.filter((s) => s != 'spe'), 'spe'];
 	}
 
 	$: {
@@ -73,7 +77,7 @@
 
 	$: speciesName = $pokemon.species.name;
 	function updateSpecies(speciesName: string) {
-		$pokemon = new Pokemon(gen, speciesName, {level: $pokemon.level});
+		$pokemon = new Pokemon(gen, speciesName, { level: $pokemon.level });
 		pokemon = pokemon;
 	}
 
