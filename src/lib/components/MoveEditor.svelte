@@ -83,9 +83,15 @@
 		>Crit</label
 	>
 	{#if gen.num == 7}
-		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.isZ} />
+		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.useZ} />
 		<label for="zMove{uniqueId}" title="Make this attack a Z-move?">Z</label>
 	{/if}
+	
+	{#if gen.num == 8}
+		<input type="checkbox" id="maxMove{uniqueId}" bind:checked={move.useMax} />
+		<label for="maxMove{uniqueId}" title="Make this attack a max attack?">Max</label>
+	{/if}
+
 
 	{#if hits.length > 1}
 		<select class="move-hits" bind:value={move.hits}>
