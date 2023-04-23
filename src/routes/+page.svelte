@@ -10,7 +10,7 @@
 	import { page } from '$app/stores';
 	import { Field, Pokemon } from '$lib/calc';
 	import { pokeToSet, setToPoke } from '$lib/sets/sets';
-	import { GameNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
+	import { GameNames, HackNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
 	import type { PokemonSet } from '@pkmn/data';
 	import { derived } from 'svelte/store';
 
@@ -103,9 +103,16 @@
 		<div class="box basic-options">
 			Games
 			<select bind:value={genName} on:change={updateGen}>
-				{#each GameNames as name}
-					<option value={name}>{name}</option>
-				{/each}
+				<optgroup label="Vanilla">
+					{#each GameNames as name}
+						<option value={name}>{name}</option>
+					{/each}
+				</optgroup>
+				<optgroup label="Hacks">
+					{#each HackNames as name}
+						<option value={name}>{name}</option>
+					{/each}
+				</optgroup>
 			</select>
 			<button class="clear" on:click={updateGen}>Clear</button>
 		</div>

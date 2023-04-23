@@ -71,7 +71,13 @@ const GameMap: { [id: string]: GameEntry } = {
 	}
 };
 
-export const GameNames = Object.keys(GameMap);
+export const GameNames = Object.entries(GameMap)
+	.filter(([_, entry]) => entry.modData === undefined)
+	.map(([key, _]) => key);
+
+export const HackNames = Object.entries(GameMap)
+	.filter(([_, entry]) => entry.modData !== undefined)
+	.map(([key, _]) => key);
 
 function existsOrPast(d: Data) {
 	return Generations.DEFAULT_EXISTS(d) || ('isNonstandard' in d && d['isNonstandard'] == 'Past');
