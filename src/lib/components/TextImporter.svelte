@@ -10,7 +10,7 @@
 	import Svelecte, { addFormatter } from 'svelecte';
 	import { createEventDispatcher } from 'svelte';
 
-	const event = createEventDispatcher<{"teamUpdated":void}>();
+	const event = createEventDispatcher<{ teamUpdated: void }>();
 
 	export let allyStates: PokemonState[];
 	export let enemyStates: PokemonState[];
@@ -26,12 +26,15 @@
 
 	$: gen = $currentGame.gen;
 
-	let selectedSet: SetEntry;
+	let selectedSets: SetEntry[];
 	function setListUpdate(_: unknown) {
-		importText = Sets.exportSet(localSetToPokemonSet(selectedSet.name, selectedSet.value));
+		importText = selectedSets
+			.map((set) => localSetToPokemonSet(set.name, set.value))
+			.map((set) => Sets.exportSet(set))
+			.join('\n\n');
 	}
 
-	function renderListElem(item: typeof selectedSet, isSelected: boolean): string {
+	function renderListElem(item: typeof selectedSets[0], isSelected: boolean): string {
 		if (isSelected) {
 			return `${item.name}: ${item.text}`;
 		}
@@ -50,7 +53,7 @@
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		event("teamUpdated");
+		event('teamUpdated');
 		let state = new PokemonState(poke);
 		$selectedPokemonState = state.pokemon;
 		$selectedPokemon = selectedPokemonState;
@@ -77,7 +80,9 @@
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		let newTeam = pokes.filter((p): p is Pokemon => p !== undefined).map((p) => new PokemonState(p));
+		let newTeam = pokes
+			.filter((p): p is Pokemon => p !== undefined)
+			.map((p) => new PokemonState(p));
 		switch (side) {
 			case Side.Allies:
 				if (allyStates.includes($selectedPokemon)) $selectedPokemon = newTeam[0];
@@ -88,7 +93,7 @@
 				enemyStates = newTeam;
 				break;
 		}
-		event("teamUpdated");
+		event('teamUpdated');
 	}
 
 	function exportTextTeam(team: Pokemon[]) {
@@ -99,8 +104,8 @@
 <div class="import-text-box">
 	<div class="button-grid">
 		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
-		<button on:click={() => (importTextTeam(Side.Allies))}>Import allies</button>
-		<button on:click={() => (importTextTeam(Side.Enemies))}>Import enemies</button>
+		<button on:click={() => importTextTeam(Side.Allies)}>Import allies</button>
+		<button on:click={() => importTextTeam(Side.Enemies)}>Import enemies</button>
 
 		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
 		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
@@ -112,8 +117,11 @@
 		groupItemsField="sets"
 		virtualList={true}
 		valueAsObject
+		multiple
+		clearable
+		resetOnSelect={false}
 		renderer="with-name"
-		bind:value={selectedSet}
+		bind:value={selectedSets}
 		on:change={setListUpdate}
 	/>
 	<textarea class="import-text" bind:value={importText} />
