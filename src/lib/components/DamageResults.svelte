@@ -7,6 +7,7 @@
 	export let defenders: PokemonState[];
 	export let field: Field;
 	export let otherSide: boolean = false;
+	export let showAll: boolean = false;
 
 	let currentField: Field;
 	$: {
@@ -28,23 +29,25 @@
 </script>
 
 <div class="results">
-	{#each current as [atk, def]}
-		{#if (atk.enabled || $selectedPokemon == atk) && (def.enabled || $selectedPokemon == def)}
-			<div>
-				<DamageResult {atk} {def} field={currentField} />
-			</div>
-		{/if}
-	{/each}
-	<div class="sep"/>
-	{#each attackers as atk}
-		{#each defenders as def}
-			{#if atk.enabled && def.enabled}
+	{#if !showAll}
+		{#each current as [atk, def]}
+			{#if (atk.enabled || $selectedPokemon == atk) && (def.enabled || $selectedPokemon == def)}
 				<div>
 					<DamageResult {atk} {def} field={currentField} />
 				</div>
 			{/if}
 		{/each}
-	{/each}
+	{:else}
+		{#each attackers as atk}
+			{#each defenders as def}
+				{#if atk.enabled && def.enabled}
+					<div>
+						<DamageResult {atk} {def} field={currentField} />
+					</div>
+				{/if}
+			{/each}
+		{/each}
+	{/if}
 </div>
 
 <style>
@@ -53,10 +56,6 @@
 		flex-direction: column;
 		flex-grow: 1;
 		overflow: auto;
-	}
-
-	.sep {
-		min-height: 5px;
 	}
 
 	.results > div {

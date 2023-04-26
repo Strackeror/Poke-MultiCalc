@@ -20,6 +20,7 @@
 	let field = new Field();
 	let allyStates: PokemonState[] = [$selectedPokemon];
 	let enemyStates: PokemonState[] = [];
+	let showAll: boolean = false;
 
 	$: allies = derived(allyStates, (p) => p);
 	$: enemies = derived(enemyStates, (p) => p);
@@ -130,6 +131,11 @@
 				</optgroup>
 			</select>
 			<button class="right" on:click={clear}>Clear</button>
+			<br>
+			<div class="right">
+				<input type="checkbox" id="all" bind:checked={showAll}>
+				<label for="all" title="Show All Pokémon interactions">Show All</label>
+			</div>
 		</div>
 		<div class="box poke-editor">
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
@@ -172,9 +178,9 @@
 			</div>
 		</div>
 		<div class="result-matrix box">
-			<DamageResults attackers={allyStates} defenders={enemyStates} {field} />
+			<DamageResults attackers={allyStates} defenders={enemyStates} {field} {showAll}/>
 			<SpeedColumn leftTeam={$allies} rightTeam={$enemies} {field} />
-			<DamageResults attackers={enemyStates} defenders={allyStates} {field} otherSide />
+			<DamageResults attackers={enemyStates} defenders={allyStates} {field} {showAll} otherSide />
 		</div>
 	</div>
 </div>
