@@ -29,16 +29,20 @@
 
 <div class="results">
 	{#each current as [atk, def]}
+		{#if (atk.enabled || $selectedPokemon == atk) && (def.enabled || $selectedPokemon == def)}
 			<div>
 				<DamageResult {atk} {def} field={currentField} />
 			</div>
+		{/if}
 	{/each}
 	<div class="sep"/>
 	{#each attackers as atk}
 		{#each defenders as def}
-			<div>
-				<DamageResult {atk} {def} field={currentField} />
-			</div>
+			{#if atk.enabled && def.enabled}
+				<div>
+					<DamageResult {atk} {def} field={currentField} />
+				</div>
+			{/if}
 		{/each}
 	{/each}
 </div>

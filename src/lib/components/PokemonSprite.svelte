@@ -6,6 +6,7 @@
 	export let icon: boolean = false;
 	export let pokemon: Pokemon;
 	export let selected: boolean = false;
+	export let disabled: boolean = false;
 
 	const event = createEventDispatcher();
 </script>
@@ -15,10 +16,10 @@
 		<span class="pokeicon" style={Icons.getPokemon(pokemon.species.name).style} />
 	{:else}
 		{@const img = Sprites.getPokemon(pokemon.species.name, {gen: "gen5"})}
-		<img src={img.url} alt={pokemon.species.name} width={img.w} height={img.h} />
+		<img class:disabled src={img.url} alt={pokemon.species.name} width={img.w} height={img.h} />
 		{#if pokemon.item}
 			{@const item = Icons.getItem(pokemon.item)}
-			<span class="itemicon" style={item.style}/>
+			<span class:disabled class="itemicon" style={item.style}/>
 		{/if}
 	{/if}
 </button>
@@ -41,6 +42,10 @@
 	}
 	.selected {
 		background-color: darkgray;
+	}
+
+	.disabled {
+		opacity: 0.4;
 	}
 
 	.itemicon {

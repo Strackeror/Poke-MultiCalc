@@ -9,6 +9,7 @@ import { getFinalSpeed } from './calc/mechanics/util';
 
 export class PokemonState {
 	pokemon: Pokemon;
+	enabled: boolean = true;
 	writable: Writable<Pokemon>;
 
 	constructor(pokemon: Pokemon) {

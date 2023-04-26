@@ -29,6 +29,7 @@
 	{#each pokemonStateInstances as [pokemon, pokemonState]}
 		<PokemonSprite
 			{pokemon}
+			disabled={!pokemonState.enabled}
 			selected={$selectedPokemon == pokemonState}
 			on:clicked={() => ($selectedPokemon = pokemonState)}
 		/>

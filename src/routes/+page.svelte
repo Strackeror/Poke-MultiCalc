@@ -94,6 +94,12 @@
 		}
 	}
 
+	function togglePoke() {
+		$selectedPokemon.enabled = !$selectedPokemon.enabled;
+		allyStates = allyStates;
+		enemyStates = enemyStates;
+	}
+
 	let pokemonCollapsed: boolean = false;
 	let fieldCollapse: boolean = true;
 </script>
@@ -123,6 +129,7 @@
 				on:click={removePoke}
 				disabled={$allies.length + $enemies.length <= 1}>Remove</button
 			>
+			<button class="clear" on:click={togglePoke}>Toggle</button>
 			<div hidden={pokemonCollapsed}>
 				<PokemonEditor bind:pokemon={$selectedPokemon} />
 			</div>
