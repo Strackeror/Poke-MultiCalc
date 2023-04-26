@@ -100,6 +100,15 @@
 		enemyStates = enemyStates;
 	}
 
+	function clear() {
+		if (window.confirm("Are you sure you want to clear ?")) {
+			$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
+			allyStates = [$selectedPokemon];
+			enemyStates = [];
+			saveState();
+		}
+	}
+
 	let pokemonCollapsed: boolean = false;
 	let fieldCollapse: boolean = true;
 </script>
@@ -120,16 +129,16 @@
 					{/each}
 				</optgroup>
 			</select>
-			<button class="clear" on:click={updateGen}>Clear</button>
+			<button class="right" on:click={clear}>Clear</button>
 		</div>
 		<div class="box poke-editor">
 			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
 			<button
-				class="poke-remove"
+				class="poke-remove right"
 				on:click={removePoke}
 				disabled={$allies.length + $enemies.length <= 1}>Remove</button
 			>
-			<button class="clear" on:click={togglePoke}>Toggle</button>
+			<button class="right" on:click={togglePoke}>{#if $selectedPokemon.enabled}Hide{:else}Show{/if}</button>
 			<div hidden={pokemonCollapsed}>
 				<PokemonEditor bind:pokemon={$selectedPokemon} />
 			</div>
@@ -202,11 +211,7 @@
 		padding: 10px;
 	}
 
-	.poke-remove {
-		float: right;
-	}
-
-	.basic-options {
+.basic-options {
 		padding: 5px;
 	}
 
@@ -235,7 +240,7 @@
 		z-index: 1;
 	}
 
-	.clear {
+	.right {
 		float: right;
 	}
 </style>
