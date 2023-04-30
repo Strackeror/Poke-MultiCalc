@@ -32,6 +32,7 @@ export class PokemonState {
 }
 
 export let selectedPokemon: Writable<PokemonState> = writable();
+export let openedPair: Writable<[PokemonState, PokemonState] | undefined> = writable(undefined);
 
 type CalcSpeedFunc = (gen: Generation, poke: Pokemon, field: Field, side: Side) => number;
 

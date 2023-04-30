@@ -1,13 +1,27 @@
 <script lang="ts">
 	import type { Field, Pokemon, Result } from '$lib/calc';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import { currentGame, type PokemonState } from '$lib/state';
+	import { currentGame, openedPair, type PokemonState } from '$lib/state';
 
 	export let atk: PokemonState, def: PokemonState;
 	export let field: Field;
-	export let open: boolean = false;
 
 	$: gen = $currentGame.gen;
+
+
+	let folded: boolean = true;
+	$: {
+		if (!$openedPair) folded = true;
+		else if ($openedPair[0] == atk && $openedPair[1] == def) folded = false
+		else if ($openedPair[0] == def && $openedPair[1] == atk) folded = false
+		else folded = true;
+	}
+
+	function toggleFolded() {
+		if (folded) $openedPair = [atk, def];
+		else $openedPair = undefined;
+
+	}
 
 	function totalDmg(res: Result) {
 		let [min, max] = res.range();
@@ -42,7 +56,6 @@
 	$: results = getResults($atk, $def, field);
 	$: foldedResults = results.filter(showFolded);
 
-	let folded = !open;
 	function description(res: Result) {
 		if (totalDmg(res)[1] == 0) return '';
 		let isCrit = res.move.isCrit ? ' (Crit)' : '';
@@ -61,7 +74,7 @@
 
 {#if results.length > 0}
 	<div class="damage-results">
-		<button class="damage-result" on:click={() => (folded = !folded)}>
+		<button class="damage-result" on:click={toggleFolded}>
 			<div class="icon">
 				<PokemonSprite pokemon={foldedResults[0].attacker} icon={true} />
 			</div>
