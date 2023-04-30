@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { Field, Pokemon, Result } from '$lib/calc';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import type { Result, Pokemon, Field } from '$lib/calc';
-	import { currentGame, selectedPokemon, type PokemonState } from '$lib/state';
+	import { currentGame, type PokemonState } from '$lib/state';
 
 	export let atk: PokemonState, def: PokemonState;
 	export let field: Field;
@@ -10,7 +10,8 @@
 	$: gen = $currentGame.gen;
 
 	function totalDmg(res: Result) {
-		return res.range()[0] * res.move.hits;
+		let [min, max] = res.range();
+		return [min * res.move.hits, max * res.move.hits];
 	}
 
 	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
@@ -21,39 +22,62 @@
 				results.push($currentGame.calculate(gen, atk, def, move, field));
 			}
 		}
-		results.sort((a, b) => totalDmg(b) - totalDmg(a));
+		results.sort((a, b) => totalDmg(b)[1] - totalDmg(a)[1]);
 		return results;
 	}
 
+	function showFolded(result: Result, _index: any, results: Result[]) {
+		// Always show priority KOs
+		if (result.move.priority > 0 && totalDmg(result)[1] > result.defender.curHP()) {
+			return true;
+		}
+
+		// Always show overlapped max rolls
+		if (totalDmg(result)[1] > totalDmg(results[0])[0]) {
+			return true;
+		}
+		return false;
+	}
+
 	$: results = getResults($atk, $def, field);
+	$: foldedResults = results.filter(showFolded);
 
 	let folded = !open;
 	function description(res: Result) {
-		return `${res.moveDesc()}: ${res.kochance(false).text}`;
+		if (totalDmg(res)[1] == 0) return '';
+		return `${res.moveDesc()}: ${res.kochance(false).text}\n`;
+	}
+
+	function damageRolls(res: Result) {
+		if (totalDmg(res)[1] == 0) return '';
+		return res.damage + '\n';
 	}
 </script>
 
 {#if results.length > 0}
 	<div class="damage-results">
 		<button class="damage-result" on:click={() => (folded = !folded)}>
-			<PokemonSprite pokemon={results[0].attacker} icon={true} />
-			<div class="damage-description">
-				<b>{results[0].move.name}</b><br />
-				{description(results[0])}
+			<PokemonSprite pokemon={foldedResults[0].attacker} icon={true} />
+			<div>
+				{#if folded}
+					{#each foldedResults as result}
+						<div class="damage-description">
+							<b>{result.move.name}</b><br />
+							{description(result)}
+						</div>
+					{/each}
+				{:else}
+					{#each results as result}
+						<div class="damage-description folded">
+							<b>{result.move.name}</b><br />
+							{description(result)}
+							{damageRolls(result)}
+						</div>
+					{/each}
+				{/if}
 			</div>
-			<PokemonSprite pokemon={results[0].defender} icon={true} />
+			<PokemonSprite pokemon={foldedResults[0].defender} icon={true} />
 		</button>
-
-		{#if !folded}
-			<div class="main-damage folded">{results[0].damage}</div>
-			{#each results.slice(1) as result}
-				<div class="damage-description folded">
-					<b>{result.move.name}</b><br />
-					{description(result)} <br />
-					{result.damage}
-				</div>
-			{/each}
-		{/if}
 	</div>
 {/if}
 
@@ -80,13 +104,6 @@
 	.damage-description {
 		margin: 0px 3px;
 		padding-bottom: 5px;
-	}
-
-	.damage-description.folded {
-		padding-top: 8px;
-	}
-
-	.folded {
-		margin-left: 48px;
+		white-space: pre-line;
 	}
 </style>
