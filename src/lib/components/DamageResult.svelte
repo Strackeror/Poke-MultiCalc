@@ -45,19 +45,26 @@
 	let folded = !open;
 	function description(res: Result) {
 		if (totalDmg(res)[1] == 0) return '';
-		return `${res.moveDesc()}: ${res.kochance(false).text}\n`;
+		let isCrit = res.move.isCrit ? ' (Crit)' : '';
+		return `${res.moveDesc()}: ${res.kochance(false).text}${isCrit}\n`;
 	}
 
 	function damageRolls(res: Result) {
 		if (totalDmg(res)[1] == 0) return '';
 		return res.damage + '\n';
 	}
+
+	function quickDesc(res: Result) {
+		return ` ${res.move.bp || ''} ${res.move.type} ${res.move.category}`;
+	}
 </script>
 
 {#if results.length > 0}
 	<div class="damage-results">
 		<button class="damage-result" on:click={() => (folded = !folded)}>
-			<PokemonSprite pokemon={foldedResults[0].attacker} icon={true} />
+			<div class="icon">
+				<PokemonSprite pokemon={foldedResults[0].attacker} icon={true} />
+			</div>
 			<div>
 				{#if folded}
 					{#each foldedResults as result}
@@ -69,14 +76,16 @@
 				{:else}
 					{#each results as result}
 						<div class="damage-description folded">
-							<b>{result.move.name}</b><br />
+							<b>{result.move.name}</b> - <span class="move-desc">{quickDesc(result)}</span><br />
 							{description(result)}
-							{damageRolls(result)}
+							<span class="damage-rolls">{damageRolls(result)}</span>
 						</div>
 					{/each}
 				{/if}
 			</div>
-			<PokemonSprite pokemon={foldedResults[0].defender} icon={true} />
+			<div class="icon">
+				<PokemonSprite pokemon={foldedResults[0].defender} icon={true} />
+			</div>
 		</button>
 	</div>
 {/if}
@@ -94,7 +103,7 @@
 	}
 	.damage-result {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 	}
 
 	.damage-results:hover {
@@ -102,8 +111,21 @@
 	}
 
 	.damage-description {
-		margin: 0px 3px;
+		margin: 2px 3px;
+		line-height: 1.25em;
 		padding-bottom: 5px;
 		white-space: pre-line;
+	}
+
+	.move-desc {
+		font-size: 90%;
+	}
+
+	.damage-rolls {
+		font-size: 90%;
+	}
+
+	.icon {
+		margin-top: 6px;
 	}
 </style>
