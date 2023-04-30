@@ -135,9 +135,23 @@ export class Move implements State.Move {
     this.hasCrashDamage = !!data.hasCrashDamage;
     this.mindBlownRecoil = !!data.mindBlownRecoil;
     this.struggleRecoil = !!data.struggleRecoil;
-    this.isCrit = !!options.isCrit || !!data.willCrit ||
-      // These don't *always* crit (255/256 chance), but for the purposes of the calc they do
-      gen.num === 1 && ['crabhammer', 'razorleaf', 'slash', 'karate chop'].includes(data.id);
+    
+    let critRatio = data.critRatio ?? 1;
+    if (["scopelens", "razorclaw"].includes(toID(options.item))) {
+      critRatio += 1;
+    }
+    if (toID(options.ability) == "superluck") {
+      critRatio += 1;
+    }
+
+    this.isCrit =
+			!!options.isCrit ||
+			!!data.willCrit ||
+			// These don't *always* crit (255/256 chance), but for the purposes of the calc they do
+			(gen.num === 1 && ['crabhammer', 'razorleaf', 'slash', 'karate chop'].includes(data.id)) ||
+      (gen.num >= 6 && critRatio >= 4);
+
+			((data.critRatio ?? 0) >= 3 && toID(options.item) == 'scopelens');
     this.drain = data.drain;
     this.flags = data.flags;
     // The calc doesn't currently care about negative priority moves so we simply default to 0

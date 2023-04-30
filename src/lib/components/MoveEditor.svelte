@@ -4,10 +4,12 @@
 
 <script lang="ts">
 	import { Move } from '$lib/calc';
+	import type { Pokemon } from '$lib/calc/pokemon';
 	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
 
 	export let gen: Generation;
 	export let move: Move;
+	export let poke: Pokemon;
 	export let moveNames: string[];
 	export let types: Type[];
 
@@ -15,7 +17,11 @@
 
 	$: name = move.name;
 	function changeMove(name: string) {
-		move = new Move(gen, name);
+		move = new Move(gen, name, {
+			species: poke.species.name,
+			ability: poke.ability,
+			item: poke.item
+		});
 	}
 
 	$: category = move.overrides?.category ?? move.category;
@@ -43,7 +49,7 @@
 		else if (typeof multihit == 'number') hits = [multihit];
 		else {
 			hits = [];
-			for (let i = multihit[0]; i <= multihit[1]; ++i) hits.push(i)
+			for (let i = multihit[0]; i <= multihit[1]; ++i) hits.push(i);
 		}
 	}
 </script>
@@ -86,12 +92,11 @@
 		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.useZ} />
 		<label for="zMove{uniqueId}" title="Make this attack a Z-move?">Z</label>
 	{/if}
-	
+
 	{#if gen.num == 8}
 		<input type="checkbox" id="maxMove{uniqueId}" bind:checked={move.useMax} />
 		<label for="maxMove{uniqueId}" title="Make this attack a max attack?">Max</label>
 	{/if}
-
 
 	{#if hits.length > 1}
 		<select class="move-hits" bind:value={move.hits}>
