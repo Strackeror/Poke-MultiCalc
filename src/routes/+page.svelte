@@ -151,6 +151,7 @@
 		</div>
 		<div class="box field-editor">
 			<button on:click={() => (fieldCollapse = !fieldCollapse)}>Field</button>
+			<button class="right" on:click={()=> {field = new Field()}}>Reset</button>
 			<div hidden={fieldCollapse}>
 				<FieldEditor bind:field />
 			</div>
@@ -159,10 +160,11 @@
 			<TextImporter bind:allyStates bind:enemyStates on:teamUpdated={saveState} />
 		</div>
 		<div class="box credits">
+			<a target="_blank" href="https://github.com/Strackeror/pkmn-calc-damage-matrix">Github</a> <br />
 			Based on: <br />
-			<a href="https://github.com/smogon/damage-calc">Smogon damage calc</a> <br />
+			<a target="_blank" href="https://github.com/smogon/damage-calc">Smogon damage calc</a> <br />
 			{#if $currentGame.basedOn}
-				<a href={$currentGame.basedOn}>RomHack calc</a>
+				<a target="_blank" href={$currentGame.basedOn}>RomHack calc</a>
 			{/if}
 		</div>
 	</div>

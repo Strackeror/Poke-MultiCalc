@@ -76,7 +76,7 @@
 	<div class="damage-results">
 		<button class="damage-result" on:click={toggleFolded}>
 			<div class="icon">
-				<PokemonSprite pokemon={foldedResults[0].attacker} icon={true} />
+				<PokemonSprite pokemon={$atk} icon={true} />
 			</div>
 			<div>
 				{#if folded}
@@ -97,7 +97,7 @@
 				{/if}
 			</div>
 			<div class="icon">
-				<PokemonSprite pokemon={foldedResults[0].defender} icon={true} />
+				<PokemonSprite pokemon={$def} icon={true} />
 			</div>
 		</button>
 	</div>

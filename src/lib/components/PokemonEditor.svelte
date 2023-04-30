@@ -338,7 +338,7 @@
 		<br />
 	</div>
 	{#each $pokemon.moves as move}
-		<MoveEditor {gen} {moveNames} {types} bind:move />
+		<MoveEditor poke={$pokemon} {gen} {moveNames} {types} bind:move />
 	{/each}
 </div>
 
