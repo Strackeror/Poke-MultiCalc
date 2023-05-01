@@ -6,6 +6,7 @@
 
 	export let pokemon: PokemonState;
 
+	const TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Interstellar', 'Evoboost'];
 	function compareName(a: { name: string }, b: { name: string }) {
 		return a.name.localeCompare(b.name);
 	}
@@ -266,6 +267,9 @@
 					<option value={ability.name}>{ability.name}</option>
 				{/each}
 			</select>
+			{#if TOGGLE_ABILITIES.includes($pokemon.ability ?? "")}
+				<input type="checkbox" bind:checked={$pokemon.abilityOn}/>
+			{/if}
 		</div>
 		<div class={genCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}>
 			<div class="edit">Item</div>

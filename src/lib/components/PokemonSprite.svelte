@@ -9,14 +9,25 @@
 	export let disabled: boolean = false;
 
 	const event = createEventDispatcher();
+
+	const Aliases: {[id: string]: string} = {
+		"Minior-Red": "Minior"
+	}
+
+	let species: string = "";
+	$: {
+		species = pokemon.species.name;
+		if (pokemon.species.name in Aliases) species = Aliases[species];
+ 		if (pokemon.species.name.endsWith("-Totem")) species = species.slice(0, -6);
+	}
 </script>
 
 <button class:selected on:click={() => event('clicked')}>
 	{#if icon}
-		<span class="pokeicon" style={Icons.getPokemon(pokemon.species.name).style} />
+		<span class="pokeicon" style={Icons.getPokemon(species).style} />
 	{:else}
-		{@const img = Sprites.getPokemon(pokemon.species.name, {gen: "gen5"})}
-		<img class:disabled src={img.url} alt={pokemon.species.name} width={img.w} height={img.h} />
+		{@const img = Sprites.getPokemon(species, {gen: "gen5"})}
+		<img class:disabled src={img.url} alt={species} width={img.w} height={img.h} />
 		{#if pokemon.item}
 			{@const item = Icons.getItem(pokemon.item)}
 			<span class:disabled class="itemicon" style={item.style}/>
