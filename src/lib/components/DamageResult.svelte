@@ -8,19 +8,17 @@
 
 	$: gen = $currentGame.gen;
 
-
 	let folded: boolean = true;
 	$: {
 		if (!$openedPair) folded = true;
-		else if ($openedPair[0] == atk && $openedPair[1] == def) folded = false
-		else if ($openedPair[0] == def && $openedPair[1] == atk) folded = false
+		else if ($openedPair[0] == atk && $openedPair[1] == def) folded = false;
+		else if ($openedPair[0] == def && $openedPair[1] == atk) folded = false;
 		else folded = true;
 	}
 
 	function toggleFolded() {
 		if (folded) $openedPair = [atk, def];
 		else $openedPair = undefined;
-
 	}
 
 	function totalDmg(res: Result) {
@@ -41,12 +39,12 @@
 	}
 
 	function showFolded(result: Result, _index: any, results: Result[]) {
-		// Always show priority KOs
-		if (result.move.priority > 0 && totalDmg(result)[1] > result.defender.curHP()) {
+		// Show potential KOs
+		if (totalDmg(result)[1] > result.defender.curHP()) {
 			return true;
 		}
 
-		// Always show overlapped max rolls
+		// Show overlapped max rolls
 		if (totalDmg(result)[1] > totalDmg(results[0])[0]) {
 			return true;
 		}
@@ -67,8 +65,13 @@
 		return res.damage + '\n';
 	}
 
-	function quickDesc(res: Result) {
-		return ` ${res.move.bp || ''} ${res.move.type} ${res.move.category}`;
+	function quickDesc(res: Result): string {
+		let desc = ` ${res.move.bp || ''} ${res.move.type} ${res.move.category}`;
+	
+		if (res.move.priority > 0) desc += ` +${res.move.priority}`;
+		else if (res.move.priority < 0) desc += ` ${res.move.priority}`;
+
+		return desc
 	}
 </script>
 
