@@ -160,7 +160,7 @@
 			<TextImporter bind:allyStates bind:enemyStates on:teamUpdated={saveState} />
 		</div>
 		<div class="box credits">
-			<a target="_blank" href="https://github.com/Strackeror/pkmn-calc-damage-matrix">Github</a> <br />
+			<a target="_blank" href="https://github.com/Strackeror/Poke-MultiCalc">Github</a> <br />
 			Based on: <br />
 			<a target="_blank" href="https://github.com/smogon/damage-calc">Smogon damage calc</a> <br />
 			{#if $currentGame.basedOn}
