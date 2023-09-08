@@ -350,7 +350,7 @@
             "item": "Quick Claw",
             "nature": "Calm",
             "moves": [
-                "Extrasensory",
+                "Confusion",
                 "Parabolic Charge",
                 "Signal Beam",
                 "Dazzling Gleam"
@@ -390,7 +390,7 @@
                 "Recycle"
             ],
             "evs": {
-                "df": 252,
+                "sa": 252,
                 "hp": 252
             }
         }
@@ -3379,7 +3379,7 @@
             "moves": [
                 "Facade",
                 "Aqua Tail",
-                "Fake Out",
+                "Protect",
                 "Parting Shot"
             ],
             "evs": {
@@ -3395,9 +3395,9 @@
             "item": "Flame Orb",
             "nature": "Timid",
             "moves": [
-                "Shadow Ball",
+                "Infernal Parade",
                 "Aeroblast",
-                "Roost",
+                "Flamethrower",
                 "Aura Sphere"
             ],
             "evs": {
@@ -4842,7 +4842,7 @@
             ],
             "evs": {
                 "sa": 252,
-                "sp": 252
+                "at": 252
             }
         },
         "Lusamine (Title Defense)": {
@@ -4858,7 +4858,7 @@
             ],
             "evs": {
                 "sa": 252,
-                "sp": 252
+                "at": 252
             }
         }
     },
