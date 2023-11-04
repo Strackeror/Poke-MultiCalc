@@ -58,7 +58,7 @@
 			.filter((p): p is Pokemon => !!p)
 			.map((p) => new PokemonState(p));
 		$selectedPokemon = [...allyStates, ...enemyStates][0];
-		return true;
+		return $selectedPokemon != undefined;
 	}
 
 	async function updateGen() {

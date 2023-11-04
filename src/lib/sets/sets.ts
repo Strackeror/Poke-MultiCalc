@@ -55,10 +55,7 @@ export function setToPoke(gen: Generation, set: Partial<PokemonSet<string>>) {
 		if (set.item && !gen.items.get(set.item)) return;
 		if (set.nature && !gen.natures.get(set.nature)) return;
 
-		for (let m of set.moves || []) {
-			if (!gen.moves.get(m)) return;
-		}
-
+		set.moves = set.moves?.filter(m => gen.moves.get(m))
 		try {
 			let poke = 
 				new Pokemon(gen, set.species, {

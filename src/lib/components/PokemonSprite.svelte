@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Pokemon } from '$lib/calc/pokemon';
+	import { currentGame } from '$lib/state';
 	import { Icons, Sprites } from '@pkmn/img';
 	import { createEventDispatcher } from 'svelte';
 
@@ -10,27 +11,38 @@
 
 	const event = createEventDispatcher();
 
-	const Aliases: {[id: string]: string} = {
-		"Minior-Red": "Minior"
-	}
+	const Aliases: { [id: string]: string } = {
+		'Minior-Red': 'Minior'
+	};
 
-	let species: string = "";
+	let species: string = '';
+	let override: [string, string] | undefined;
 	$: {
 		species = pokemon.species.name;
-		if (pokemon.species.name in Aliases) species = Aliases[species];
- 		if (pokemon.species.name.endsWith("-Totem")) species = species.slice(0, -6);
+		if (species in Aliases) species = Aliases[species];
+		if (species.endsWith('-Totem')) species = species.slice(0, -6);
+
+		override = $currentGame.spriteOverrides[species];
 	}
 </script>
 
 <button class:selected on:click={() => event('clicked')}>
 	{#if icon}
-		<span class="pokeicon" style={Icons.getPokemon(species).style} />
+		{#if override}
+			<img class="pokeicon" src={override[1]} alt={species} />
+		{:else}
+			<span class="pokeicon" style={Icons.getPokemon(species).style} />
+		{/if}
 	{:else}
-		{@const img = Sprites.getPokemon(species, {gen: "gen5"})}
-		<img class:disabled src={img.url} alt={species} width={img.w} height={img.h} />
+		{#if override}
+			<img class:disabled src={override[0]} alt={species} height=100 width=100/>
+		{:else}
+			{@const img = Sprites.getPokemon(species, { gen: 'gen5' })}
+			<img class:disabled src={img.url} alt={species} width={img.w} height={img.h} />
+		{/if}
 		{#if pokemon.item}
 			{@const item = Icons.getItem(pokemon.item)}
-			<span class:disabled class="itemicon" style={item.style}/>
+			<span class:disabled class="itemicon" style={item.style} />
 		{/if}
 	{/if}
 </button>
@@ -64,5 +76,4 @@
 		bottom: 5px;
 		right: 5px;
 	}
-
 </style>

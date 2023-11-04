@@ -67,7 +67,7 @@ const GameMap: { [id: string]: GameEntry } = {
 		baseGen: 7,
 		basedOn: 'https://github.com/DarkShinyGiratina/Sweltering-Sun-Damage-Calc',
 		sets: '/data/swelsun/sets.json',
-		modData: '/data/swelsun/mod-data.json',
+		modData: '/data/swelsun/',
 		calculate: calculateSwelSun,
 		calculateSpeed: calculateSpeedSwelSun
 	}
@@ -89,8 +89,12 @@ const BASE_PATH = '/Poke-MultiCalc';
 export async function getGame(name: string): Promise<Game> {
 	let gameEntry = GameMap[name as keyof typeof GameMap];
 	let data;
+	let spriteOverrides;
 	if (gameEntry.modData) {
-		data = await (await fetch(BASE_PATH + gameEntry.modData)).json();
+		data = await (await fetch(BASE_PATH + gameEntry.modData + "mod-data.json")).json();
+		spriteOverrides = await(
+			await fetch(BASE_PATH + gameEntry.modData + 'sprites.json').catch(() => undefined)
+		)?.json();
 	}
 
 	let setUrl = BASE_PATH + gameEntry.sets;
@@ -104,7 +108,8 @@ export async function getGame(name: string): Promise<Game> {
 		sets: sets ?? {},
 		basedOn: gameEntry.basedOn,
 		calculate: gameEntry.calculate ?? calculate,
-		calculateSpeed: gameEntry.calculateSpeed ?? getFinalSpeed
+		calculateSpeed: gameEntry.calculateSpeed ?? getFinalSpeed,
+		spriteOverrides: spriteOverrides ?? {}
 	};
 }
 
@@ -113,11 +118,14 @@ export type Game = {
 	sets: SetList;
 	calculate: CalculateFunc;
 	calculateSpeed: CalcSpeedFunc;
+	spriteOverrides: { [id: string]: [string,string] };
 	basedOn?: string | undefined;
 };
+
 export let currentGame: Writable<Game> = writable({
 	gen: new Generation(new ModdedDex('gen9'), existsOrPast),
 	sets: {},
 	calculate,
-	calculateSpeed: getFinalSpeed
+	calculateSpeed: getFinalSpeed,
+	spriteOverrides: {},
 });
