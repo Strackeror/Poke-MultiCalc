@@ -8,30 +8,31 @@
 
 	<!-- You should properly set the path from the main file. -->
 	<meta name="viewport" content="width=device-width" />
-	<meta http-equiv="content-security-policy" content="">
-		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/entry/start.f6743717.js">
-		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/chunks/index.b9f1d530.js">
-		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/chunks/singletons.44127c06.js">
-		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/entry/app.8797b11e.js">
-		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/chunks/preload-helper.41c905a7.js">
+	
+		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/entry/start.ee6ef2a2.js">
+		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/chunks/index.c9f0f9f0.js">
+		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/chunks/singletons.a1ef6e1d.js">
+		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/entry/app.5cee8cbc.js">
+		<link rel="modulepreload" href="/Poke-MultiCalc/_app/immutable/chunks/preload-helper.a4192956.js">
 </head>
 
 <body data-sveltekit-preload-data="hover">
 	<div style="display: contents">
 			<script>
 				{
-					__sveltekit_yr4gs6 = {
-						env: {},
+					__sveltekit_12wbwl0 = {
 						assets: "/Poke-MultiCalc",
 						base: "/Poke-MultiCalc",
-						element: document.currentScript.parentElement
+						env: {}
 					};
 
+					const element = document.currentScript.parentElement;
+
 					Promise.all([
-						import("/Poke-MultiCalc/_app/immutable/entry/start.f6743717.js"),
-						import("/Poke-MultiCalc/_app/immutable/entry/app.8797b11e.js")
+						import("/Poke-MultiCalc/_app/immutable/entry/start.ee6ef2a2.js"),
+						import("/Poke-MultiCalc/_app/immutable/entry/app.5cee8cbc.js")
 					]).then(([kit, app]) => {
-						kit.start(app, __sveltekit_yr4gs6.element);
+						kit.start(app, element);
 					});
 				}
 			</script>
