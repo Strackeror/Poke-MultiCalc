@@ -6,7 +6,17 @@
 
 	export let pokemon: PokemonState;
 
-	const TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Interstellar', 'Evoboost'];
+	const TOGGLE_ABILITIES = [
+		'Flash Fire',
+		'Intimidate',
+		'Minus',
+		'Plus',
+		'Slow Start',
+		'Unburden',
+		'Stakeout',
+		'Interstellar',
+		'Evoboost'
+	];
 	function compareName(a: { name: string }, b: { name: string }) {
 		return a.name.localeCompare(b.name);
 	}
@@ -24,14 +34,6 @@
 		stats = [...gen.stats];
 		if (gen.num == 1) stats = stats.slice(0, -1);
 		stats = [...stats.filter((s) => s != 'spe'), 'spe'];
-	}
-
-	$: {
-		for (let i of [0, 1, 2, 3]) {
-			if (!$pokemon.moves[i]) {
-				$pokemon.moves[i] = new Move(gen, '');
-			}
-		}
 	}
 
 	$: {
@@ -102,6 +104,22 @@
 			return 'hide';
 		}
 		return '';
+	}
+
+	function addMove() {
+		$pokemon.moves.push(new Move(gen, ''));
+		$pokemon = $pokemon;
+	}
+
+	function removeMove() {
+		$pokemon.moves.splice(-1);
+		$pokemon = $pokemon;
+	}
+
+	function updateMove(current: Move, next: Move) {
+		let index = $pokemon.moves.indexOf(current);
+		if (index < 0) return;
+		$pokemon.moves[index] = next;
 	}
 </script>
 
@@ -267,8 +285,8 @@
 					<option value={ability.name}>{ability.name}</option>
 				{/each}
 			</select>
-			{#if TOGGLE_ABILITIES.includes($pokemon.ability ?? "")}
-				<input type="checkbox" bind:checked={$pokemon.abilityOn}/>
+			{#if TOGGLE_ABILITIES.includes($pokemon.ability ?? '')}
+				<input type="checkbox" bind:checked={$pokemon.abilityOn} />
 			{/if}
 		</div>
 		<div class={genCheck(gen, [2, 3, 4, 5, 6, 7, 8, 9])}>
@@ -341,9 +359,24 @@
 		<br />
 		<br />
 	</div>
-	{#each $pokemon.moves as move}
-		<MoveEditor poke={$pokemon} {gen} {moveNames} {types} bind:move />
-	{/each}
+	<div class="info-group">
+		<div class="move-header">
+			Moves
+			<span />
+			<button on:click={addMove}>Add</button>
+			<button on:click={removeMove} disabled={$pokemon.moves.length == 0}>Remove</button>
+		</div>
+		{#each $pokemon.moves as move}
+			<MoveEditor
+				poke={$pokemon}
+				{gen}
+				{moveNames}
+				{types}
+				{move}
+				on:changed={(m) => updateMove(move, m.detail)}
+			/>
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -368,5 +401,9 @@
 
 	.hide {
 		display: none;
+	}
+
+	.move-header {
+		padding-bottom: 5px;
 	}
 </style>

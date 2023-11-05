@@ -6,6 +6,7 @@
 	import { Move } from '$lib/calc';
 	import type { Pokemon } from '$lib/calc/pokemon';
 	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
+	import { createEventDispatcher } from 'svelte';
 
 	export let gen: Generation;
 	export let move: Move;
@@ -14,6 +15,11 @@
 	export let types: Type[];
 
 	let uniqueId = counter++;
+	let event = createEventDispatcher<{changed:Move}>();
+
+	function notifyChanged() {
+		event('changed', move);
+	}
 
 	$: name = move.name;
 	function changeMove(name: string) {
@@ -22,24 +28,28 @@
 			ability: poke.ability,
 			item: poke.item
 		});
+		notifyChanged();
 	}
 
 	$: category = move.overrides?.category ?? move.category;
 	function updateCategory(value: string) {
 		let category = value as MoveCategory;
 		move.overrides = { ...move.overrides, category };
+		notifyChanged();
 	}
 
 	$: type = move.overrides?.type ?? move.type;
 	function updateType(value: string) {
 		let type = value as TypeName;
 		move.overrides = { ...move.overrides, type };
+		notifyChanged();
 	}
 
 	$: basePower = move.overrides?.basePower ?? move.bp;
 	function updateBp(value: string) {
 		let basePower = +value;
 		move.overrides = { ...move.overrides, basePower };
+		notifyChanged();
 	}
 
 	let hits: number[];
@@ -84,22 +94,32 @@
 		</select>
 	{/if}
 	<br />
-	<input type="checkbox" id="crit{uniqueId}" bind:checked={move.isCrit} />
+	<input type="checkbox" id="crit{uniqueId}" bind:checked={move.isCrit} on:change={notifyChanged} />
 	<label class="btn crit-btn" for="crit{uniqueId}" title="Force this attack to be a critical hit?"
 		>Crit</label
 	>
 	{#if gen.num == 7}
-		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.useZ} />
+		<input
+			type="checkbox"
+			id="zMove{uniqueId}"
+			bind:checked={move.useZ}
+			on:change={notifyChanged}
+		/>
 		<label for="zMove{uniqueId}" title="Make this attack a Z-move?">Z</label>
 	{/if}
 
 	{#if gen.num == 8}
-		<input type="checkbox" id="maxMove{uniqueId}" bind:checked={move.useMax} />
+		<input
+			type="checkbox"
+			id="maxMove{uniqueId}"
+			bind:checked={move.useMax}
+			on:change={notifyChanged}
+		/>
 		<label for="maxMove{uniqueId}" title="Make this attack a max attack?">Max</label>
 	{/if}
 
 	{#if hits.length > 1}
-		<select class="move-hits" bind:value={move.hits}>
+		<select class="move-hits" bind:value={move.hits} on:change={notifyChanged}>
 			{#each hits as hitCount}
 				<option value={hitCount}>{hitCount} hits</option>
 			{/each}
@@ -111,6 +131,7 @@
 			class="stat-drops calc-trigger hide"
 			title="How many times was this move used in a row?"
 			bind:value={move.timesUsed}
+			on:change={notifyChanged}
 		>
 			<option value={2}>Twice</option>
 			<option value={3}>3 times</option>
@@ -124,6 +145,7 @@
 			class="metronome calc-trigger hide"
 			title="How many times was this move successfully and consecutively used while holding Metronome before this turn?"
 			bind:value={move.timesUsedWithMetronome}
+			on:change={notifyChanged}
 		>
 			<option value={0} selected>Never</option>
 			<option value={1}>Once</option>
