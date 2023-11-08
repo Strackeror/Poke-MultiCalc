@@ -32,13 +32,13 @@
             "item": "Oran Berry",
             "nature": "Calm",
             "moves": [
-                "Gust",
-                "Swift",
-                "Dismal Cry",
+                "Air Cutter",
+                "Harmonize",
+                "Work Up",
                 "Cotton Spore"
             ],
             "evs": {
-                "sa": 252,
+                "sd": 252,
                 "hp": 252
             },
             "ivs": {
@@ -60,7 +60,7 @@
             "moves": [
                 "Faerie Blow",
                 "Swift",
-                "Tearful Look",
+                "Endure",
                 "Draining Kiss"
             ],
             "evs": {
@@ -136,10 +136,10 @@
             "item": "Oran Berry",
             "nature": "Hasty",
             "moves": [
-                "Double Slap",
+                "Mud Fling",
                 "Covet",
                 "Karate Chop",
-                "Ignite"
+                "Flame Wheel"
             ],
             "evs": {
                 "sa": 252,
@@ -160,10 +160,10 @@
             "item": "Oran Berry",
             "nature": "Hasty",
             "moves": [
-                "Double Slap",
+                "Mud Fling",
                 "Covet",
                 "Karate Chop",
-                "Bubble Shot"
+                "Water Pulse"
             ],
             "evs": {
                 "sa": 252,
@@ -187,7 +187,7 @@
                 "Double Slap",
                 "Covet",
                 "Karate Chop",
-                "Leaf Flurry"
+                "Razor Leaf"
             ],
             "evs": {
                 "sa": 252,
@@ -223,7 +223,7 @@
         "Totem Gumshoos Fight": {
             "level": 15,
             "ability": "Adaptability",
-            "item": "Chople Berry",
+            "item": "Pecha Berry",
             "nature": "Bold",
             "moves": [
                 "Quick Attack",
@@ -247,8 +247,8 @@
             "item": "",
             "nature": "Bold",
             "moves": [
-                "Struggle Bug",
-                "Mega Drain",
+                "Sludge Fling",
+                "Extrasensory",
                 "Poison Powder",
                 "String Shot"
             ],
@@ -261,7 +261,7 @@
         "Dulse (Seaward Cave)": {
             "level": 17,
             "ability": "Psychic Surge",
-            "item": "Sitrus Berry",
+            "item": "Psychic Seed",
             "nature": "Modest",
             "moves": [
                 "Dismal Cry",
@@ -279,13 +279,13 @@
         "Dulse (Seaward Cave)": {
             "level": 17,
             "ability": "Energy Shield",
-            "item": "Sitrus Berry",
+            "item": "Petaya Berry",
             "nature": "Calm",
             "moves": [
                 "Confusion",
                 "Brine",
                 "Rain Dance",
-                "Disable"
+                "Endure"
             ],
             "evs": {
                 "sa": 252,
@@ -299,9 +299,9 @@
             "nature": "Calm",
             "moves": [
                 "Water Pledge",
-                "Confusion",
-                "Charge Beam",
-                "Recover"
+                "Extrasensory",
+                "Parabolic Charge",
+                "Giga Drain"
             ],
             "evs": {
                 "sa": 252,
@@ -313,12 +313,12 @@
         "Dulse (Seaward Cave)": {
             "level": 17,
             "ability": "Liquid Veil",
-            "item": "Sitrus Berry",
+            "item": "Quick Claw",
             "nature": "Calm",
             "moves": [
                 "Confusion",
                 "Sludge Fling",
-                "Bubble Barrage",
+                "Water Pulse",
                 "Siphon"
             ],
             "evs": {
@@ -365,7 +365,7 @@
         "Dulse (Seaward Cave)": {
             "level": 17,
             "ability": "Levitate",
-            "item": "Normalium Z",
+            "item": "Sitrus Berry",
             "nature": "Calm",
             "moves": [
                 "Confusion",
@@ -381,16 +381,16 @@
         "Dulse (Paniola Ranch)": {
             "level": 24,
             "ability": "Levitate",
-            "item": "Petaya Berry",
+            "item": "Red Card",
             "nature": "Calm",
             "moves": [
                 "Extrasensory",
                 "Dazzling Gleam",
-                "Moonlight",
-                "Recycle"
+                "Ominous Wind",
+                "Volt Switch"
             ],
             "evs": {
-                "df": 252,
+                "sa": 252,
                 "hp": 252
             }
         }
@@ -398,33 +398,33 @@
     "Clefairy": {
         "Dulse (Seaward Cave)": {
             "level": 17,
-            "ability": "Unaware",
-            "item": "Sitrus Berry",
-            "nature": "Calm",
+            "ability": "Magic Guard",
+            "item": "Normalium Z",
+            "nature": "Adamant",
             "moves": [
-                "Disarming Voice",
-                "Draining Kiss",
-                "Defense Curl",
-                "Encore"
+                "Comet Punch",
+                "Dizzy Punches",
+                "Pummel",
+                "Hop"
             ],
             "evs": {
-                "sa": 252,
+                "at": 252,
                 "hp": 252
             }
         },
         "Dulse (Paniola Ranch)": {
             "level": 24,
-            "ability": "Unaware",
-            "item": "Sitrus Berry",
-            "nature": "Calm",
+            "ability": "Magic Guard",
+            "item": "Sticky Barb",
+            "nature": "Adamant",
             "moves": [
-                "Dazzling Gleam",
-                "Signal Beam",
-                "Volt Switch",
-                "Encore"
+                "Hoodwink",
+                "Fire Punch",
+                "Drain Punch",
+                "Trick"
             ],
             "evs": {
-                "sa": 252,
+                "at": 252,
                 "hp": 252
             }
         }
@@ -433,13 +433,13 @@
         "Hau (Route 3)": {
             "level": 18,
             "ability": "Galvanize",
-            "item": "Sitrus Berry",
+            "item": "Quick Claw",
             "nature": "Hasty",
             "moves": [
                 "Harmonize",
                 "Disarming Voice",
                 "Nuzzle",
-                "Encore"
+                "Work Up"
             ],
             "evs": {
                 "sa": 252,
@@ -447,7 +447,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Galvanize",
             "item": "Air Balloon",
             "nature": "Hasty",
@@ -497,7 +497,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Amplifier",
             "item": "Flyinium Z",
             "nature": "Modest",
@@ -534,9 +534,9 @@
             "level": 20,
             "ability": "Technician",
             "item": "Coba Berry",
-            "nature": "Timid",
+            "nature": "Modest",
             "moves": [
-                "Force Waves",
+                "Vacuum Wave",
                 "Confusion",
                 "Icy Wind",
                 "Shock Wave"
@@ -547,7 +547,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Pure Power",
             "item": "Expert Belt",
             "nature": "Jolly",
@@ -555,7 +555,7 @@
                 "Drain Punch",
                 "Think Fast",
                 "Ice Punch",
-                "Rock Tomb"
+                "Work Up"
             ],
             "evs": {
                 "at": 252,
@@ -570,10 +570,10 @@
             "item": "Silk Scarf",
             "nature": "Jolly",
             "moves": [
-                "Double Slap",
+                "Quick Attack",
                 "Thief",
                 "Fake Out",
-                "Encore"
+                "Tickle"
             ],
             "evs": {
                 "at": 252,
@@ -581,15 +581,15 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Technician",
             "item": "Silk Scarf",
             "nature": "Jolly",
             "moves": [
-                "Double Slap",
-                "Knock Off",
+                "Quick Attack",
+                "Thief",
                 "Fake Out",
-                "Low Kick"
+                "Work Up"
             ],
             "evs": {
                 "at": 252,
@@ -615,7 +615,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Blaze",
             "item": "Liechi Berry",
             "nature": "Naive",
@@ -638,7 +638,7 @@
             "item": "Sitrus Berry",
             "nature": "Modest",
             "moves": [
-                "Bubble Barrage",
+                "Water Pulse",
                 "Disarming Voice",
                 "Wish",
                 "Work Up"
@@ -649,7 +649,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Competitive",
             "item": "Sitrus Berry",
             "nature": "Modest",
@@ -700,11 +700,11 @@
     "Panpour": {
         "Hau (Route 3)": {
             "level": 18,
-            "ability": "Torren",
+            "ability": "Torrent",
             "item": "Petaya Berry",
             "nature": "Naive",
             "moves": [
-                "Bubble Barrage",
+                "Water Pulse",
                 "Disarming Voice",
                 "Endure",
                 "Work Up"
@@ -749,7 +749,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Technician",
             "item": "Sitrus Berry",
             "nature": "Timid",
@@ -757,7 +757,7 @@
                 "Magical Leaf",
                 "Air Cutter",
                 "Ominous Wind",
-                "Roost"
+                "Work Up"
             ],
             "evs": {
                 "sa": 252,
@@ -815,7 +815,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Overgrow",
             "item": "Liechi Berry",
             "nature": "Naive",
@@ -834,7 +834,7 @@
     "Torracat": {
         "Hau (Route 3)": {
             "level": 18,
-            "ability": "Intimidate",
+            "ability": "Blaze",
             "item": "Sitrus Berry",
             "nature": "Jolly",
             "moves": [
@@ -849,7 +849,7 @@
             }
         },
         "Hau (Paniola Town)": {
-            "level": 20,
+            "level": 21,
             "ability": "Intimidate",
             "item": "Sitrus Berry",
             "nature": "Jolly",
@@ -857,7 +857,7 @@
                 "Fire Fang",
                 "Thunder Fang",
                 "Stomping Tantrum",
-                "Morning Sun"
+                "Work Up"
             ],
             "evs": {
                 "at": 252,
@@ -996,7 +996,7 @@
             "moves": [
                 "Mach Punch",
                 "Bullet Punch",
-                "Knock Off",
+                "Shadow Punch",
                 "Smack Down"
             ],
             "evs": {
@@ -1005,17 +1005,17 @@
             }
         }
     },
-    "Mienfoo": {
+    "Mankey": {
         "Hala (Grand Trial)": {
             "level": 20,
-            "ability": "Technician",
-            "item": "Silk Scarf",
+            "ability": "Hustle",
+            "item": "Payapa Berry",
             "nature": "Jolly",
             "moves": [
-                "Power-Up Punch",
-                "Double Slap",
-                "Fake Out",
-                "Knock Off"
+                "Thunder Punch",
+                "Brick Break",
+                "Ice Punch",
+                "Stomping Tantrum"
             ],
             "evs": {
                 "at": 252,
@@ -1027,7 +1027,7 @@
         "Hala (Grand Trial)": {
             "level": 20,
             "ability": "Resilient",
-            "item": "Payapa Berry",
+            "item": "Quick Claw",
             "nature": "Adamant",
             "moves": [
                 "Drain Punch",
@@ -1050,7 +1050,7 @@
             "moves": [
                 "Brick Break",
                 "Aqua Jet",
-                "Mach Punch",
+                "Skitter Smack",
                 "Bullet Punch"
             ],
             "evs": {
@@ -1063,13 +1063,13 @@
         "Gladion (Route 5)": {
             "level": 22,
             "ability": "Battle Armor",
-            "item": "Silk Scarf",
+            "item": "Quick Claw",
             "nature": "Adamant",
             "moves": [
-                "Headbutt",
-                "Iron Head",
+                "Rage",
+                "Smart Strike",
                 "Stomping Tantrum",
-                "Rock Tomb"
+                "Skirmish"
             ],
             "evs": {
                 "at": 252,
@@ -1113,16 +1113,16 @@
         "Gladion (Route 5)": {
             "level": 22,
             "ability": "Prankster",
-            "item": "Red Card",
+            "item": "Expert Belt",
             "nature": "Hasty",
             "moves": [
-                "Knock Off",
-                "Hoodwink",
-                "Taunt",
+                "Dismal Cry",
+                "Disarming Voice",
+                "Extrasensory",
                 "Parting Shot"
             ],
             "evs": {
-                "at": 252,
+                "sa": 252,
                 "sp": 252
             }
         }
@@ -1149,13 +1149,13 @@
         "Gladion (Route 5)": {
             "level": 22,
             "ability": "Levitate",
-            "item": "Sitrus Berry",
-            "nature": "Timid",
+            "item": "Red Card",
+            "nature": "Modest",
             "moves": [
                 "Parabolic Charge",
                 "Confusion",
                 "Icy Wind",
-                "Recharge"
+                "Signal Beam"
             ],
             "evs": {
                 "sa": 252,
@@ -1167,12 +1167,12 @@
         "Gladion (Route 5)": {
             "level": 22,
             "ability": "Hustle",
-            "item": "Expert Belt",
+            "item": "Silk Scarf",
             "nature": "Jolly",
             "moves": [
-                "Headbutt",
-                "Smack Down",
-                "Hoodwink",
+                "Quick Attack",
+                "Accelrock",
+                "Pursuit",
                 "Fire Fang"
             ],
             "evs": {
@@ -1186,10 +1186,10 @@
             "level": 22,
             "ability": "Defiant",
             "item": "Liechi Berry",
-            "nature": "Naive",
+            "nature": "Jolly",
             "moves": [
                 "Drain Punch",
-                "Hoodwink",
+                "Stomping Tantrum",
                 "Endure",
                 "Ice Punch"
             ],
@@ -1201,7 +1201,7 @@
     },
     "Mime Jr.": {
         "Trial Guide Bronson": {
-            "level": 22,
+            "level": 23,
             "ability": "Prankster",
             "item": "Red Card",
             "nature": "Modest",
@@ -1219,7 +1219,7 @@
     },
     "Lampent": {
         "Trial Guide Bronson": {
-            "level": 22,
+            "level": 23,
             "ability": "Levitate",
             "item": "Expert Belt",
             "nature": "Timid",
@@ -1233,27 +1233,11 @@
                 "sa": 252,
                 "sp": 252
             }
-        },
-        "Totem Mimikyu Fight": {
-            "level": 39,
-            "ability": "Levitate",
-            "item": "Focus Sash",
-            "nature": "Timid",
-            "moves": [
-                "Heat Wave",
-                "Hex",
-                "Thunderbolt",
-                "Will-O-Wisp"
-            ],
-            "evs": {
-                "sa": 252,
-                "sp": 252
-            }
         }
     },
     "Dunsparce": {
         "Trial Guide Bronson": {
-            "level": 22,
+            "level": 23,
             "ability": "Serene Grace",
             "item": "Sitrus Berry",
             "nature": "Modest",
@@ -1271,13 +1255,13 @@
     },
     "Noctowl": {
         "Trial Guide Bronson": {
-            "level": 22,
+            "level": 23,
             "ability": "Tinted Lens",
             "item": "Psychium Z",
             "nature": "Timid",
             "moves": [
-                "Confusion",
-                "Air Cutter",
+                "Extrasensory",
+                "Feather Ball",
                 "Dazzling Gleam",
                 "Roost"
             ],
@@ -1292,11 +1276,11 @@
             "level": 23,
             "ability": "Liquid Veil",
             "item": "Coba Berry",
-            "nature": "Calm",
+            "nature": "Sassy",
             "moves": [
                 "Bubble Shot",
-                "Siphon",
-                "Icy Wind",
+                "Leech Life",
+                "Aurora Beam",
                 "Protect"
             ],
             "evs": {
@@ -1326,7 +1310,7 @@
             "level": 21,
             "ability": "Lightning Rod",
             "item": "",
-            "nature": "Bold",
+            "nature": "Modest",
             "moves": [
                 "Bubble Shot",
                 "Shock Wave",
@@ -1360,11 +1344,11 @@
         "Dulse (Paniola Ranch)": {
             "level": 24,
             "ability": "Psychic Surge",
-            "item": "Red Card",
+            "item": "Psychic Seed",
             "nature": "Modest",
             "moves": [
                 "Dismal Cry",
-                "Taunt",
+                "Extrasensory",
                 "Dazzling Gleam",
                 "Parting Shot"
             ],
@@ -1382,7 +1366,7 @@
             "nature": "Naive",
             "moves": [
                 "Extrasensory",
-                "Sludge Fling",
+                "Venoshock",
                 "Giga Drain",
                 "Hidden Power Fire"
             ],
@@ -1414,7 +1398,7 @@
         "Totem Marowak Fight": {
             "level": 26,
             "ability": "Lightning Rod",
-            "item": "Passho Berry",
+            "item": "Colbur Berry",
             "nature": "Careful",
             "moves": [
                 "Fire Pledge",
@@ -1438,7 +1422,7 @@
                 "Ignite",
                 "Scorching Sands",
                 "Hidden Power Grass",
-                "Smog"
+                "Ancient Power"
             ],
             "evs": {
                 "hp": 252,
@@ -1516,17 +1500,17 @@
             }
         }
     },
-    "Fearow": {
+    "Scyther": {
         "Ace Trainer Eileen": {
             "level": 27,
-            "ability": "Stamina",
-            "item": "Flyinium Z",
+            "ability": "Technician",
+            "item": "Focus Sash",
             "nature": "Adamant",
             "moves": [
-                "Rage",
+                "Aerial Ace",
                 "Steel Wing",
-                "Pluck",
-                "Roost"
+                "Bug Biting",
+                "Karate Chop"
             ],
             "evs": {
                 "at": 252,
@@ -1538,13 +1522,13 @@
         "Totem Lurantis Fight": {
             "level": 29,
             "ability": "Tinted Lens",
-            "item": "Occa Berry",
+            "item": "Coba Berry",
             "nature": "Calm",
             "moves": [
                 "Giga Drain",
                 "Earth Power",
                 "Protect",
-                "Synthesis"
+                "Calm Mind"
             ],
             "evs": {
                 "df": 252,
@@ -1570,33 +1554,15 @@
             }
         }
     },
-    "Comfey": {
-        "Totem Lurantis Fight": {
-            "level": 27,
-            "ability": "Grassy Surge",
-            "item": "Babiri Berry",
-            "nature": "Timid",
-            "moves": [
-                "Disarming Voice",
-                "Sweet Scent",
-                "Leech Seed",
-                "Encore"
-            ],
-            "evs": {
-                "hp": 252,
-                "sp": 252
-            }
-        }
-    },
     "Nidorina": {
         "Plumeria (Akala Outskirts)": {
             "level": 32,
-            "ability": "Poison Touch",
+            "ability": "Multiscale",
             "item": "Eviolite",
             "nature": "Adamant",
             "moves": [
                 "Poison Fang",
-                "U-turn",
+                "Parting Shot",
                 "Taunt",
                 "Toxic Spikes"
             ],
@@ -1676,10 +1642,10 @@
         "Plumeria (Route 15)": {
             "level": 42,
             "ability": "Adaptability",
-            "item": "Shuca Berry",
+            "item": "Quick Claw",
             "nature": "Timid",
             "moves": [
-                "Surf",
+                "Torrential Pulse",
                 "Toxic Spikes",
                 "Taunt",
                 "Parting Shot"
@@ -1782,7 +1748,7 @@
             "nature": "Adamant",
             "moves": [
                 "Cross Chop",
-                "Night Slash",
+                "Drill Run",
                 "Psycho Cut",
                 "U-turn"
             ],
@@ -1818,7 +1784,7 @@
                 "Rock Slide",
                 "Brick Break",
                 "U-turn",
-                "Knock Off"
+                "Stomping Tantrum"
             ],
             "evs": {
                 "at": 252,
@@ -1836,7 +1802,7 @@
                 "Smack Down",
                 "Stomping Tantrum",
                 "Sedimend",
-                "U-turn"
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -1870,7 +1836,7 @@
                 "First Impression",
                 "Jagged Edge",
                 "Razor Shell",
-                "U-turn"
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -1880,13 +1846,13 @@
         "Olivia (Elite Four)": {
             "level": 100,
             "ability": "Ruthless",
-            "item": "Assault Vest",
+            "item": "Passho Berry",
             "nature": "Careful",
             "moves": [
                 "First Impression",
                 "Stone Edge",
-                "Surging Strikes",
-                "U-turn"
+                "Crabhammer",
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -1918,7 +1884,7 @@
             "nature": "Modest",
             "moves": [
                 "Sludge Wave",
-                "Giga Drain",
+                "Energy Ball",
                 "Whirlpool",
                 "Parting Shot"
             ],
@@ -1932,12 +1898,12 @@
         "Olivia (Grand Trial)": {
             "level": 33,
             "ability": "Intimidate",
-            "item": "Focus Sash",
-            "nature": "Jolly",
+            "item": "Quick Claw",
+            "nature": "Adamant",
             "moves": [
-                "Rock Slide",
+                "Accelrock",
                 "Pursuit",
-                "Psychic Fangs",
+                "Acrobatics",
                 "Parting Shot"
             ],
             "evs": {
@@ -1949,7 +1915,7 @@
             "level": 100,
             "ability": "Ruthless",
             "item": "Focus Sash",
-            "nature": "Jolly",
+            "nature": "Adamant",
             "moves": [
                 "Stone Edge",
                 "Pursuit",
@@ -1972,7 +1938,7 @@
                 "Rock Slide",
                 "Retaliate",
                 "Fire Fang",
-                "U-turn"
+                "Stomping Tantrum"
             ],
             "evs": {
                 "at": 252,
@@ -1987,8 +1953,8 @@
             "moves": [
                 "Stone Edge",
                 "Retaliate",
-                "Headlong Rush",
-                "Close Combat"
+                "Take Down",
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -2016,7 +1982,7 @@
         "Hau (Champion)": {
             "level": 100,
             "ability": "Psychic Surge",
-            "item": "Focus Sash",
+            "item": "Aloraichium Z",
             "nature": "Hasty",
             "moves": [
                 "Plasma Shot",
@@ -2067,14 +2033,14 @@
         },
         "Hau (Champion)": {
             "level": 100,
-            "ability": "Expertise",
-            "item": "Life Orb",
+            "ability": "Technician",
+            "item": "Expert Belt",
             "nature": "Jolly",
             "moves": [
-                "Double-Edge",
-                "Close Combat",
-                "Hell Thrust",
-                "Parting Shot"
+                "Tail Slap",
+                "Pummel",
+                "Fury Swipes",
+                "Dizzy Punches"
             ],
             "evs": {
                 "at": 252,
@@ -2090,7 +2056,7 @@
             "nature": "Modest",
             "moves": [
                 "Commotion",
-                "Psychic",
+                "Dragon Breath",
                 "Flamethrower",
                 "Energy Ball"
             ],
@@ -2102,13 +2068,13 @@
         "Hau (Champion)": {
             "level": 100,
             "ability": "Aerilate",
-            "item": "Yache Berry",
+            "item": "Life Orb",
             "nature": "Modest",
             "moves": [
                 "Boomburst",
                 "Drakonic Wave",
-                "Heat Wave",
-                "Parting Shot"
+                "Battle Cry",
+                "Protect"
             ],
             "evs": {
                 "sa": 252,
@@ -2136,13 +2102,13 @@
         "Hau (Champion)": {
             "level": 100,
             "ability": "Instinct",
-            "item": "Firium Z",
+            "item": "Focus Sash",
             "nature": "Naive",
             "moves": [
                 "Eruption",
                 "Focus Blast",
-                "Grass Knot",
-                "Parting Shot"
+                "Protect",
+                "Thunder Punch"
             ],
             "evs": {
                 "sa": 252,
@@ -2170,13 +2136,13 @@
         "Hau (Champion)": {
             "level": 100,
             "ability": "Instinct",
-            "item": "Waterium Z",
+            "item": "Focus Sash",
             "nature": "Naive",
             "moves": [
                 "Water Spout",
-                "Blizzard",
-                "Grass Knot",
-                "Parting Shot"
+                "Focus Blast",
+                "Ice Punch",
+                "Protect"
             ],
             "evs": {
                 "sa": 252,
@@ -2208,9 +2174,9 @@
             "nature": "Naive",
             "moves": [
                 "Seed Flare",
-                "Focus Blast",
-                "Stone Edge",
-                "Parting Shot"
+                "Close Combat",
+                "Protect",
+                "Grass Whistle"
             ],
             "evs": {
                 "sa": 252,
@@ -2303,22 +2269,6 @@
                 "sa": 252
             }
         },
-        "Totem Mimikyu Fight": {
-            "level": 39,
-            "ability": "Prankster",
-            "item": "Colbur Berry",
-            "nature": "Calm",
-            "moves": [
-                "Hex",
-                "Torment",
-                "Confide",
-                "Will-O-Wisp"
-            ],
-            "evs": {
-                "sd": 252,
-                "hp": 252
-            }
-        },
         "Acerola (Elite Four)": {
             "level": 100,
             "ability": "Prankster",
@@ -2337,22 +2287,6 @@
         }
     },
     "Golisopod": {
-        "Kantonian Gym (Pre-League)": {
-            "level": 35,
-            "ability": "Ruthless",
-            "item": "Focus Sash",
-            "nature": "Adamant",
-            "moves": [
-                "First Impression",
-                "Liquidation",
-                "Pursuit",
-                "U-turn"
-            ],
-            "evs": {
-                "at": 252,
-                "hp": 252
-            }
-        },
         "Guzma (Malie Garden)": {
             "level": 38,
             "ability": "Ruthless",
@@ -2388,13 +2322,13 @@
         "Guzma (Aether Paradise)": {
             "level": 55,
             "ability": "Ruthless",
-            "item": "Assault Vest",
+            "item": "Quick Claw",
             "nature": "Adamant",
             "moves": [
                 "First Impression",
-                "Surging Strikes",
+                "Crabhammer",
                 "Stone Edge",
-                "U-turn"
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -2444,7 +2378,7 @@
                 "Bug Buzz",
                 "Dragon Breath",
                 "Energy Ball",
-                "U-turn"
+                "Boomburst"
             ],
             "evs": {
                 "sa": 252,
@@ -2473,7 +2407,7 @@
             "item": "Life Orb",
             "nature": "Rash",
             "moves": [
-                "Bug Bomber",
+                "Bug Buzz",
                 "Drakonic Wave",
                 "Whirlwind",
                 "Hypnosis"
@@ -2488,7 +2422,7 @@
         "Kantonian Gym (Pre-League)": {
             "level": 35,
             "ability": "Hustle",
-            "item": "Firium Z",
+            "item": "Focus Sash",
             "nature": "Jolly",
             "moves": [
                 "Fire Punch",
@@ -2520,13 +2454,13 @@
         "Dooz (Kantonian Gym)": {
             "level": 100,
             "ability": "Hustle",
-            "item": "Firium Z",
+            "item": "Shell Bell",
             "nature": "Jolly",
             "moves": [
                 "Blazing Assault",
                 "Headlong Rush",
-                "Grass Knot",
-                "Wild Charge"
+                "Head Smash",
+                "Protect"
             ],
             "evs": {
                 "at": 252,
@@ -2652,22 +2586,6 @@
                 "hp": 252,
                 "sd": 252
             }
-        },
-        "Kahili (Elite Four)": {
-            "level": 100,
-            "ability": "Ruthless",
-            "item": "Scope Lens",
-            "nature": "Adamant",
-            "moves": [
-                "Laceration",
-                "Drill Peck",
-                "Taunt",
-                "Parting Shot"
-            ],
-            "evs": {
-                "at": 252,
-                "sp": 252
-            }
         }
     },
     "Raticate-Alola": {
@@ -2677,7 +2595,7 @@
             "item": "Darkinium Z",
             "nature": "Jolly",
             "moves": [
-                "Beat Up",
+                "Crunch",
                 "Retaliate",
                 "First Impression",
                 "Parting Shot"
@@ -2688,14 +2606,14 @@
             }
         }
     },
-    "Absol": {
+    "Gallade": {
         "Veteran Akira": {
             "level": 36,
             "ability": "Ruthless",
-            "item": "Razor Claw",
+            "item": "Scope Lens",
             "nature": "Jolly",
             "moves": [
-                "Night Slash",
+                "Cross Chop",
                 "Psycho Cut",
                 "First Impression",
                 "Parting Shot"
@@ -2752,7 +2670,7 @@
                 "Zing Zap",
                 "Smart Strike",
                 "Spiky Shield",
-                "Recharge"
+                "Stomping Tantrum"
             ],
             "evs": {
                 "hp": 252,
@@ -2767,7 +2685,7 @@
             "item": "Focus Sash",
             "nature": "Modest",
             "moves": [
-                "Electro Ball",
+                "Parabolic Charge",
                 "Energy Ball",
                 "Hidden Power Water",
                 "Encore"
@@ -2781,14 +2699,14 @@
     "Minun": {
         "Totem Togedemaru Fight": {
             "level": 35,
-            "ability": "Friend Guard",
+            "ability": "Fur Coat",
             "item": "Air Balloon",
             "nature": "Modest",
             "moves": [
                 "Dazzling Gleam",
                 "Energy Ball",
                 "Aura Sphere",
-                "Befriend"
+                "Helping Hand"
             ],
             "evs": {
                 "sa": 252,
@@ -2799,14 +2717,14 @@
     "Kricketune": {
         "Guzma (Malie Garden)": {
             "level": 38,
-            "ability": "Tinted Lens",
+            "ability": "Technician",
             "item": "Focus Sash",
             "nature": "Adamant",
             "moves": [
                 "First Impression",
                 "Sing",
                 "Sticky Web",
-                "U-turn"
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -2853,11 +2771,11 @@
             "level": 44,
             "ability": "Guts",
             "item": "Flame Orb",
-            "nature": "Jolly",
+            "nature": "Adamant",
             "moves": [
                 "First Impression",
-                "Take Down",
-                "Rock Slide",
+                "Mach Punch",
+                "Parting Shot",
                 "Creeping Strike"
             ],
             "evs": {
@@ -2874,9 +2792,9 @@
             "nature": "Jolly",
             "moves": [
                 "First Impression",
-                "Seismic Fist",
-                "Rock Slide",
-                "U-turn"
+                "Stomping Tantrum",
+                "Smack Down",
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -2886,13 +2804,13 @@
         "Dooz (Kantonian Gym)": {
             "level": 100,
             "ability": "Hustle",
-            "item": "Coba Berry",
+            "item": "Quick Claw",
             "nature": "Adamant",
             "moves": [
-                "First Impression",
+                "Megahorn",
                 "Headlong Rush",
-                "Stone Edge",
-                "U-turn"
+                "Head Smash",
+                "Guillotine"
             ],
             "evs": {
                 "at": 252,
@@ -2907,7 +2825,7 @@
             "item": "Buginium Z",
             "nature": "Jolly",
             "moves": [
-                "First Impression",
+                "Thunder Fang",
                 "Smart Strike",
                 "U-turn",
                 "Rock Slide"
@@ -2961,7 +2879,7 @@
             "item": "Focus Sash",
             "nature": "Modest",
             "moves": [
-                "Giga Drain",
+                "Energy Ball",
                 "Signal Beam",
                 "Earth Power",
                 "Grass Whistle"
@@ -2981,7 +2899,7 @@
             "moves": [
                 "Lunge",
                 "Rock Slide",
-                "Bulldoze",
+                "Earth Power",
                 "Shell Smash"
             ],
             "evs": {
@@ -2999,7 +2917,7 @@
             "moves": [
                 "Lunge",
                 "Gunk Shot",
-                "Rock Slide",
+                "Ice Fang",
                 "Aqua Tail"
             ],
             "evs": {
@@ -3008,20 +2926,20 @@
             }
         }
     },
-    "Ninjask": {
+    "Mothim": {
         "Shiny Hunter Andrew": {
             "level": 39,
-            "ability": "Tinted Lens",
+            "ability": "Adaptability",
             "item": "Buginium Z",
-            "nature": "Adamant",
+            "nature": "Timid",
             "moves": [
-                "Lunge",
-                "Dual Wingbeat",
-                "First Impression",
-                "U-turn"
+                "Bug Buzz",
+                "Aeroblast",
+                "Hidden Power Fire",
+                "Energy Ball"
             ],
             "evs": {
-                "at": 252,
+                "sa": 252,
                 "sp": 252
             }
         }
@@ -3049,7 +2967,7 @@
             "level": 41,
             "ability": "Tinted Lens",
             "item": "Choice Specs",
-            "nature": "Modest",
+            "nature": "Timid",
             "moves": [
                 "Night Daze",
                 "Electro Ball",
@@ -3114,23 +3032,25 @@
             }
         }
     },
-    "Beheeyem": {
+    "Ninjask": {
         "Veteran Angus": {
             "level": 41,
             "ability": "Tinted Lens",
             "item": "Choice Specs",
             "nature": "Modest",
             "moves": [
-                "Psyshock",
-                "Aura Sphere",
-                "Influx",
-                "Volt Switch"
+                "Bug Buzz",
+                "Aeroblast",
+                "Tailwind",
+                "Parting Shot"
             ],
             "evs": {
                 "sa": 252,
                 "sp": 252
             }
-        },
+        }
+    },
+    "Beheeyem": {
         "Faba Doubles (Aether Paradise)": {
             "level": 53,
             "ability": "Interstellar",
@@ -3153,7 +3073,7 @@
             "level": 41,
             "ability": "Tinted Lens",
             "item": "Choice Specs",
-            "nature": "Modest",
+            "nature": "Timid",
             "moves": [
                 "Bug Buzz",
                 "Radiant Edge",
@@ -3181,6 +3101,42 @@
             "evs": {
                 "hp": 252,
                 "df": 252
+            }
+        }
+    },
+    "Chandelure": {
+        "Totem Mimikyu Fight": {
+            "level": 40,
+            "ability": "Levitate",
+            "item": "Focus Sash",
+            "nature": "Timid",
+            "moves": [
+                "Hex",
+                "Heat Wave",
+                "Psychic",
+                "Will-O-Wisp"
+            ],
+            "evs": {
+                "sa": 252,
+                "sp": 252
+            }
+        }
+    },
+    "Seaking": {
+        "Totem Mimikyu Fight": {
+            "level": 40,
+            "ability": "Disguise",
+            "item": "Colbur Berry",
+            "nature": "Adamant",
+            "moves": [
+                "Shadow Sneak",
+                "Aqua Jet",
+                "Finishing Blow",
+                "Will-O-Wisp"
+            ],
+            "evs": {
+                "at": 252,
+                "hp": 252
             }
         }
     },
@@ -3277,7 +3233,7 @@
             "moves": [
                 "Drill Run",
                 "Gunk Shot",
-                "Lunge",
+                "X-Scissor",
                 "Take Down"
             ],
             "evs": {
@@ -3360,7 +3316,7 @@
             "nature": "Adamant",
             "moves": [
                 "Facade",
-                "Dual Wingbeat",
+                "Brave Bird",
                 "Take Down",
                 "Parting Shot"
             ],
@@ -3411,9 +3367,9 @@
             "item": "Quick Claw",
             "nature": "Modest",
             "moves": [
-                "Shadow Ball",
+                "Infernal Parade",
                 "Hurricane",
-                "Heat Wave",
+                "Focus Blast",
                 "Nasty Plot"
             ],
             "evs": {
@@ -3431,7 +3387,7 @@
             "moves": [
                 "Surf",
                 "Dazzling Gleam",
-                "Ice Beam",
+                "Calm Mind",
                 "Recover"
             ],
             "evs": {
@@ -3466,7 +3422,7 @@
             "nature": "Adamant",
             "moves": [
                 "Gunk Shot",
-                "Lunge",
+                "X-Scissor",
                 "Aqua Tail",
                 "Swords Dance"
             ],
@@ -3576,12 +3532,12 @@
             }
         }
     },
-    "Porygon-Z": {
+    "Porygon-2": {
         "Gladion (Aether House)": {
             "level": 48,
-            "ability": "Levitate",
-            "item": "Expert Belt",
-            "nature": "Timid",
+            "ability": "Energy Shield",
+            "item": "Weakness Policy",
+            "nature": "Modest",
             "moves": [
                 "Psychic",
                 "Energy Ball",
@@ -3592,15 +3548,17 @@
                 "sa": 252,
                 "sp": 252
             }
-        },
+        }
+    },
+    "Porygon-Z": {
         "Gladion (Mount Lanakila)": {
             "level": 75,
             "ability": "Galvanize",
-            "item": "Air Balloon",
-            "nature": "Timid",
+            "item": "Quick Claw",
+            "nature": "Modest",
             "moves": [
-                "Techno Blast",
-                "Subspace Tear",
+                "Explosion",
+                "Psystrike",
                 "Blizzard",
                 "Energy Ball"
             ],
@@ -3631,8 +3589,8 @@
             "item": "Air Balloon",
             "nature": "Timid",
             "moves": [
-                "Techno Blast",
-                "Subspace Tear",
+                "Explosion",
+                "Psystrike",
                 "Blizzard",
                 "Energy Ball"
             ],
@@ -3715,13 +3673,13 @@
             "item": "Darkinium Z",
             "nature": "Hasty",
             "moves": [
-                "Night Daze",
-                "Aura Sphere",
-                "Sludge Bomb",
+                "Wicked Blow",
+                "Play Rough",
+                "Gunk Shot",
                 "Parting Shot"
             ],
             "evs": {
-                "sa": 252,
+                "at": 252,
                 "sp": 252
             }
         },
@@ -3761,14 +3719,14 @@
     "Lucario-Mega": {
         "Gladion (Aether House)": {
             "level": 48,
-            "ability": "Adapability",
+            "ability": "Adaptability",
             "item": "Lucarionite",
-            "nature": "Naive",
+            "nature": "Jolly",
             "moves": [
                 "Sky Uppercut",
                 "Iron Tail",
                 "Rock Climb",
-                "Wild Charge"
+                "Swords Dance"
             ],
             "evs": {
                 "at": 252,
@@ -3779,15 +3737,15 @@
             "level": 75,
             "ability": "Adaptability",
             "item": "Lucarionite",
-            "nature": "Naive",
+            "nature": "Jolly",
             "moves": [
-                "Focus Blast",
-                "Flash Cannon",
-                "Dark Pulse",
-                "Psychic"
+                "Submission",
+                "Iron Tail",
+                "Rock Climb",
+                "Swords Dance"
             ],
             "evs": {
-                "sa": 252,
+                "at": 252,
                 "sp": 252
             }
         },
@@ -3795,7 +3753,7 @@
             "level": 100,
             "ability": "Adaptability",
             "item": "Lucarionite",
-            "nature": "Naive",
+            "nature": "Jolly",
             "moves": [
                 "Knockout Punch",
                 "Iron Tail",
@@ -3803,7 +3761,7 @@
                 "Megaton Kick"
             ],
             "evs": {
-                "sa": 252,
+                "at": 252,
                 "sp": 252
             }
         }
@@ -3826,41 +3784,25 @@
             }
         }
     },
-    "Krookodile": {
+    "Spirtomb":{
         "Nanu (Grand Trial)": {
             "level": 49,
-            "ability": "Strong Jaw",
-            "item": "Life Orb",
-            "nature": "Jolly",
+            "ability": "Sinister",
+            "item": "Quick Claw",
+            "nature": "Modest",
             "moves": [
-                "Crunch",
-                "Earthquake",
-                "Psychic Fangs",
-                "Poison Fang"
+                "Doom Desire",
+                "Eternal Beam",
+                "Hypnosis",
+                "Parting Shot"
             ],
             "evs": {
-                "at": 252,
+                "sa": 252,
                 "sp": 252
             }
         }
     },
     "Bisharp": {
-        "Nanu (Grand Trial)": {
-            "level": 49,
-            "ability": "Ruthless",
-            "item": "Scope Lens",
-            "nature": "Jolly",
-            "moves": [
-                "Night Slash",
-                "Laceration",
-                "Psycho Cut",
-                "Cross Chop"
-            ],
-            "evs": {
-                "at": 252,
-                "sp": 252
-            }
-        },
         "Ghetsis": {
             "level": 100,
             "ability": "Ruthless",
@@ -3881,13 +3823,13 @@
     "Honchkrow": {
         "Nanu (Grand Trial)": {
             "level": 49,
-            "ability": "Ruthless",
-            "item": "Black Glasses",
+            "ability": "Super Luck",
+            "item": "Roseli Berry",
             "nature": "Jolly",
             "moves": [
-                "Pursuit",
-                "Dual Wingbeat",
-                "First Impression",
+                "Night Slash",
+                "Drill Peck",
+                "Laceration",
                 "Parting Shot"
             ],
             "evs": {
@@ -3933,11 +3875,11 @@
     "Absol-Mega": {
         "Nanu (Grand Trial)": {
             "level": 49,
-            "ability": "Pixilate",
+            "ability": "Dazzling",
             "item": "Absolite",
-            "nature": "Adamant",
+            "nature": "Jolly",
             "moves": [
-                "Retaliate",
+                "Play Rough",
                 "Hell Thrust",
                 "Take Down",
                 "Earthquake"
@@ -4001,7 +3943,7 @@
     "Alakazam": {
         "Faba Singles (Aether Paradise)": {
             "level": 51,
-            "ability": "Trace",
+            "ability": "Magic Guard",
             "item": "Focus Sash",
             "nature": "Timid",
             "moves": [
@@ -4318,7 +4260,7 @@
             "nature": "Timid",
             "moves": [
                 "Power Gem",
-                "Energy Ball",
+                "Seed Flare",
                 "Aura Sphere",
                 "Earth Power"
             ],
@@ -4424,8 +4366,8 @@
             "nature": "Timid",
             "moves": [
                 "Revelation Dance",
-                "Fire Blast",
-                "Giga Drain",
+                "Fiery Dance",
+                "Quiver Dance",
                 "Earth Power"
             ],
             "evs": {
@@ -4473,12 +4415,12 @@
             "level": 55,
             "ability": "Unburden",
             "item": "Quick Claw",
-            "nature": "Jolly",
+            "nature": "Adamant",
             "moves": [
-                "Lunge",
-                "Iron Head",
+                "X-Scissor",
+                "Laceration",
                 "Swords Dance",
-                "Rock Slide"
+                "Drill Run"
             ],
             "evs": {
                 "at": 252,
@@ -4491,12 +4433,12 @@
             "level": 55,
             "ability": "Aerilate",
             "item": "Pinsirite",
-            "nature": "Jolly",
+            "nature": "Adamant",
             "moves": [
                 "Retaliate",
-                "Lunge",
-                "Earthquake",
-                "Take Down"
+                "First Impression",
+                "Stone Edge",
+                "Storm Throw"
             ],
             "evs": {
                 "at": 252,
@@ -4525,15 +4467,15 @@
             "level": 56,
             "ability": "Versatility",
             "item": "Focus Sash",
-            "nature": "Timid",
+            "nature": "Adamant",
             "moves": [
-                "Ice Beam",
-                "Aura Sphere",
-                "Power Gem",
-                "Volt Switch"
+                "Extreme Speed",
+                "Drain Punch",
+                "Shadow Punch",
+                "Parting Shot"
             ],
             "evs": {
-                "sa": 252,
+                "at": 252,
                 "sp": 252
             }
         }
@@ -4558,7 +4500,7 @@
         "Dulse (Vast Poni Canyon)": {
             "level": 60,
             "ability": "Ruthless",
-            "item": "Focus Sash",
+            "item": "Quick Claw",
             "nature": "Naive",
             "moves": [
                 "Subspace Tear",
@@ -4591,17 +4533,17 @@
     "Celesteela": {
         "Dulse (Aether Paradise)": {
             "level": 56,
-            "ability": "Huge Power",
-            "item": "Quick Claw",
-            "nature": "Adamant",
+            "ability": "Speed Boost",
+            "item": "Assault Vest",
+            "nature": "Modest",
             "moves": [
-                "Acrobatics",
-                "Heavy Slam",
-                "Heat Crash",
-                "Earthquake"
+                "Hurricane",
+                "Flash Cannon",
+                "Fire Blast",
+                "Earth Power"
             ],
             "evs": {
-                "at": 252,
+                "sa": 252,
                 "hp": 252
             }
         }
@@ -4610,11 +4552,11 @@
         "Dulse (Aether Paradise)": {
             "level": 56,
             "ability": "Sinister",
-            "item": "Assault Vest",
+            "item": "Quick Claw",
             "nature": "Modest",
             "moves": [
                 "Night Daze",
-                "Dragon Pulse",
+                "Dragon Fury",
                 "Fire Blast",
                 "Flash Cannon"
             ],
@@ -4628,17 +4570,17 @@
         "Dulse (Aether Paradise)": {
             "level": 56,
             "ability": "Dazzling",
-            "item": "Big Root",
+            "item": "Grassium Z",
             "nature": "Modest",
             "moves": [
                 "Parabolic Charge",
                 "Giga Drain",
                 "Hypnosis",
-                "Calm Mind"
+                "Ingrain"
             ],
             "evs": {
-                "sa": 252,
-                "hp": 252
+                "df": 252,
+                "sd": 252
             }
         },
         "Sophocles (Title Defense)": {
@@ -4668,7 +4610,7 @@
                 "Zen Headbutt",
                 "Rock Slide",
                 "Take Down",
-                "Heavy Slam"
+                "Earthquake"
             ],
             "evs": {
                 "at": 252,
@@ -4679,14 +4621,14 @@
     "Mismagius": {
         "Lusamine (Aether Paradise)": {
             "level": 57,
-            "ability": "Levitate",
-            "item": "Red Card",
-            "nature": "Quick Claw",
+            "ability": "Magic Guard",
+            "item": "Life Orb",
+            "nature": "Timid",
             "moves": [
                 "Infernal Parade",
                 "Psystrike",
-                "Taunt",
-                "Parting Shot"
+                "Focus Blast",
+                "Hypnosis"
             ],
             "evs": {
                 "sa": 252,
@@ -4713,14 +4655,14 @@
     "Aromatisse": {
         "Lusamine (Aether Paradise)": {
             "level": 57,
-            "ability": "Fur Coat",
-            "item": "Assault Vest",
+            "ability": "Prankster",
+            "item": "Quick Claw",
             "nature": "Modest",
             "moves": [
-                "Moonblast",
+                "Revelation Dance",
                 "Sludge Bomb",
-                "Aura Sphere",
-                "Mystical Fire"
+                "Charming Kiss",
+                "Parting Shot"
             ],
             "evs": {
                 "sa": 252,
@@ -4747,8 +4689,8 @@
     "Pheromosa": {
         "Lusamine (Aether Paradise)": {
             "level": 57,
-            "ability": "Tinted Lens",
-            "item": "Life Orb",
+            "ability": "Queenly Majesty",
+            "item": "Icium Z",
             "nature": "Naive",
             "moves": [
                 "Hell Thrust",
@@ -4833,7 +4775,7 @@
             "level": 57,
             "ability": "Serene Grace",
             "item": "Focus Sash",
-            "nature": "Timid",
+            "nature": "Modest",
             "moves": [
                 "Revelation Dance",
                 "Seed Flare",
@@ -4871,8 +4813,8 @@
             "moves": [
                 "Double-Edge",
                 "Take Down",
-                "Wild Charge",
-                "Shadow Punch"
+                "Rock Climb",
+                "Brutal Swing"
             ],
             "evs": {
                 "at": 252,
@@ -4990,13 +4932,13 @@
         "Dulse (Vast Poni Canyon)": {
             "level": 60,
             "ability": "Moxie",
-            "item": "Assault Vest",
-            "nature": "Jolly",
+            "item": "Flyinium Z",
+            "nature": "Adamant",
             "moves": [
-                "Drain Punch",
-                "Leech Life",
-                "First Impression",
-                "Stone Edge"
+                "Knockout Punch",
+                "Lunge",
+                "Stone Edge",
+                "Whirlwind"
             ],
             "evs": {
                 "at": 252,
@@ -5029,7 +4971,7 @@
             "moves": [
                 "Subspace Tear",
                 "Shadow Ball",
-                "Focus Blast",
+                "Aura Sphere",
                 "Nasty Plot"
             ],
             "evs": {
@@ -5043,12 +4985,12 @@
             "level": 60,
             "ability": "Proficiency",
             "item": "Scope Lens",
-            "nature": "Adamant",
+            "nature": "Jolly",
             "moves": [
                 "Leaf Blade",
                 "Laceration",
                 "Sacred Sword",
-                "First Impression"
+                "Swords Dance"
             ],
             "evs": {
                 "at": 252,
@@ -5060,7 +5002,7 @@
         "Dulse (Vast Poni Canyon)": {
             "level": 60,
             "ability": "Dazzling",
-            "item": "Red Card",
+            "item": "Focus Sash",
             "nature": "Timid",
             "moves": [
                 "Inferno",
@@ -5081,9 +5023,9 @@
             "item": "Life Orb",
             "nature": "Timid",
             "moves": [
-                "Psyshock",
+                "Psystrike",
                 "Focus Blast",
-                "Moonblast",
+                "Eternal Beam",
                 "Blizzard"
             ],
             "evs": {
@@ -5097,11 +5039,11 @@
             "level": 63,
             "ability": "Instinct",
             "item": "Focus Sash",
-            "nature": "Sassy",
+            "nature": "Calm",
             "moves": [
                 "Drakonic Wave",
                 "Iron Tail",
-                "Blaze Kick",
+                "Fire Blast",
                 "Protect"
             ],
             "evs": {
@@ -5187,8 +5129,8 @@
             "item": "Quick Claw",
             "nature": "Bold",
             "moves": [
-                "Moonblast",
-                "Psychic",
+                "Radiant Outburst",
+                "Sludge Bomb",
                 "Spore",
                 "Parting Shot"
             ],
@@ -5205,7 +5147,7 @@
             "item": "Toxic Orb",
             "nature": "Jolly",
             "moves": [
-                "Meteor Mash",
+                "Play Rough",
                 "Knockout Punch",
                 "Zen Headbutt",
                 "Parting Shot"
@@ -5226,7 +5168,7 @@
                 "Dazzling Gleam",
                 "Air Slash",
                 "Fire Blast",
-                "Heart Swap"
+                "Dreamy Kiss"
             ],
             "evs": {
                 "sa": 252,
@@ -5238,13 +5180,13 @@
         "Mina (Mina's Trial)": {
             "level": 65,
             "ability": "Huge Power",
-            "item": "Assault Vest",
+            "item": "Sitrus Berry",
             "nature": "Adamant",
             "moves": [
-                "Aqua Tail",
-                "Meteor Mash",
-                "Drain Punch",
-                "Zen Headbutt"
+                "Pyro Dash",
+                "Faerie Blow",
+                "Stomping Tantrum",
+                "Belly Drum"
             ],
             "evs": {
                 "at": 252,
@@ -5277,10 +5219,10 @@
             "item": "Gardevoirite",
             "nature": "Timid",
             "moves": [
-                "Subspace Tear",
+                "Psystrike",
                 "Eternal Beam",
                 "Focus Blast",
-                "Mystical Fire"
+                "Hypnosis"
             ],
             "evs": {
                 "sa": 252,
@@ -5291,14 +5233,14 @@
     "Cinccino": {
         "Ilima (Mina's Trial)": {
             "level": 66,
-            "ability": "Technician",
+            "ability": "Skill Link",
             "item": "Life Orb",
             "nature": "Hasty",
             "moves": [
                 "Comet Punch",
                 "Tail Slap",
                 "Pummel",
-                "First Impression"
+                "Fury Swipes"
             ],
             "evs": {
                 "at": 252,
@@ -5310,7 +5252,7 @@
         "Ilima (Mina's Trial)": {
             "level": 66,
             "ability": "Huge Power",
-            "item": "Chople Berry",
+            "item": "Quick Claw",
             "nature": "Jolly",
             "moves": [
                 "Retaliate",
@@ -5368,9 +5310,9 @@
             "nature": "Jolly",
             "moves": [
                 "Whiplash",
-                "Hell Thrust",
-                "Power-Up Punch",
-                "Zen Headbutt"
+                "Brutal Swing",
+                "Take Down",
+                "Dragon Dance"
             ],
             "evs": {
                 "at": 252,
@@ -5382,11 +5324,11 @@
         "Mallow (Mina's Trial)": {
             "level": 67,
             "ability": "Grassy Surge",
-            "item": "Focus Sash",
+            "item": "Quick Claw",
             "nature": "Jolly",
             "moves": [
-                "Branch Leech",
-                "Megaton Kick",
+                "Wood Hammer",
+                "Headlong Rush",
                 "Stone Edge",
                 "Parting Shot"
             ],
@@ -5396,38 +5338,38 @@
             }
         }
     },
-    "Tropius": {
+    "Sunflora": {
         "Mallow (Mina's Trial)": {
             "level": 67,
-            "ability": "Grassy Guard",
-            "item": "Assault Vest",
-            "nature": "Modest",
+            "ability": "Sweltering Sun",
+            "item": "Coba Berry",
+            "nature": "Timid",
             "moves": [
-                "Giga Drain",
-                "Dragon Pulse",
-                "Heat Wave",
-                "Earth Power"
+                "Fiery Dance",
+                "Revelation Dance",
+                "Earth Power",
+                "Blossom Dance"
             ],
             "evs": {
-                "hp": 252,
-                "sa": 252
+                "sa": 252,
+                "sp": 252
             }
         }
     },
     "Leavanny": {
         "Mallow (Mina's Trial)": {
             "level": 67,
-            "ability": "Technician",
-            "item": "Life Orb",
-            "nature": "Adamant",
+            "ability": "Tinted Lens",
+            "item": "Grassium Z",
+            "nature": "Timid",
             "moves": [
-                "First Impression",
-                "U-turn",
-                "Bullet Speed",
-                "Dual Wingbeat"
+                "Seed Flare",
+                "Bug Buzz",
+                "Earth Power",
+                "Blossom Dance"
             ],
             "evs": {
-                "at": 252,
+                "sa": 252,
                 "sp": 252
             }
         }
@@ -5436,11 +5378,11 @@
         "Mallow (Mina's Trial)": {
             "level": 67,
             "ability": "Queenly Majesty",
-            "item": "Grassium Z",
+            "item": "Focus Sash",
             "nature": "Adamant",
             "moves": [
                 "Power Whip",
-                "Submission",
+                "Close Combat",
                 "Hell Thrust",
                 "Blossom Dance"
             ],
@@ -5454,7 +5396,7 @@
         "Mallow (Mina's Trial)": {
             "level": 67,
             "ability": "Grassy Surge",
-            "item": "Coba Berry",
+            "item": "Life Orb",
             "nature": "Timid",
             "moves": [
                 "Seed Flare",
@@ -5473,16 +5415,16 @@
             "level": 67,
             "ability": "Grassy Guard",
             "item": "Venusaurite",
-            "nature": "Modest",
+            "nature": "Bold",
             "moves": [
                 "Giga Drain",
-                "Sludge Wave",
+                "Sludge Bomb",
                 "Earth Power",
                 "Ingrain"
             ],
             "evs": {
                 "hp": 252,
-                "sa": 252
+                "df": 252
             }
         }
     },
@@ -5556,17 +5498,17 @@
             }
         }
     },
-    "Charizard-Mega-Y": {
+    "Manectric-Mega": {
         "Kiawe (Mina's Trial)": {
             "level": 68,
-            "ability": "Drought",
-            "item": "Charizardite Y",
-            "nature": "Timid",
+            "ability": "Instinct",
+            "item": "Mega Stone I",
+            "nature": "Mild",
             "moves": [
                 "Fire Vortex",
-                "Aeroblast",
-                "Solar Beam",
-                "Scorching Sands"
+                "Plasma Shot",
+                "Play Rough",
+                "Energy Ball"
             ],
             "evs": {
                 "sa": 252,
@@ -5630,7 +5572,7 @@
         "Sophocles (Mina's Trial)": {
             "level": 69,
             "ability": "Galvanize",
-            "item": "Air Balloon",
+            "item": "Life Orb",
             "nature": "Modest",
             "moves": [
                 "Hyper Beam",
@@ -5652,7 +5594,7 @@
             "nature": "Timid",
             "moves": [
                 "Power Gem",
-                "Parabolic",
+                "Parabolic Charge",
                 "Energy Ball",
                 "Shell Smash"
             ],
@@ -5685,7 +5627,7 @@
             "item": "Shuca Berry",
             "nature": "Modest",
             "moves": [
-                "Mud Bomb",
+                "Earth Power",
                 "Plasma Shot",
                 "Hydro Pump",
                 "Parting Shot"
@@ -5834,23 +5776,25 @@
             }
         }
     },
-    "Seismitoad": {
+    "Heliolisk":{
         "Hapu (Grand Trial)": {
             "level": 73,
-            "ability": "Dry Skin",
-            "item": "Rindo Berry",
-            "nature": "Modest",
+            "ability": "Sweltering Sun",
+            "item": "Focus Sash",
+            "nature": "Timid",
             "moves": [
                 "Mud Bomb",
-                "Muddy Water",
-                "Blizzard",
-                "Sludge Wave"
+                "Plasma Shot",
+                "Weather Ball",
+                "Solar Beam"
             ],
             "evs": {
                 "sa": 252,
                 "hp": 252
             }
-        },
+        }
+    },
+    "Seismitoad": {
         "Hapu (Title Defense)": {
             "level": 100,
             "ability": "Dry Skin",
@@ -5875,14 +5819,14 @@
             "item": "Thick Club",
             "nature": "Jolly",
             "moves": [
-                "Bonemerang",
-                "Pummel",
-                "Rock Blast",
-                "First Impression"
+                "Bone Rush",
+                "Mach Punch",
+                "Accelrock",
+                "Swords Dance"
             ],
             "evs": {
                 "at": 252,
-                "sp": 252
+                "hp": 252
             }
         },
         "Hapu (Title Defense)": {
@@ -5936,23 +5880,25 @@
             }
         }
     },
-    "Rhyperior": {
+    "Steelix": {
         "Hapu (Grand Trial)": {
             "level": 73,
             "ability": "Sand Stream",
-            "item": "Assault Vest",
+            "item": "Passho Berry",
             "nature": "Adamant",
             "moves": [
                 "Precipice Blades",
                 "Stone Edge",
-                "Heat Crash",
-                "First Impression"
+                "Iron Tail",
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
                 "hp": 252
             }
-        },
+        }
+    },
+    "Rhyperior": {
         "Hapu (Title Defense)": {
             "level": 100,
             "ability": "Sand Stream",
@@ -5978,9 +5924,9 @@
             "nature": "Jolly",
             "moves": [
                 "Precipice Blades",
-                "Dragon Rush",
-                "Iron Tail",
-                "Close Combat"
+                "Dragon Hammer",
+                "Stone Edge",
+                "Swords Dance"
             ],
             "evs": {
                 "at": 252,
@@ -6007,8 +5953,8 @@
     "Silvally": {
         "Gladion (Mount Lanakila)": {
             "level": 75,
-            "ability": "Versatility",
-            "item": "Red Card",
+            "ability": "Adaptability",
+            "item": "Silk Scarf",
             "nature": "Adamant",
             "moves": [
                 "Extreme Speed",
@@ -6066,7 +6012,7 @@
                 "Psystrike",
                 "Flash Cannon",
                 "Focus Blast",
-                "Weather Ball"
+                "Earth Power"
             ],
             "evs": {
                 "sa": 252,
@@ -6097,12 +6043,12 @@
             "level": 100,
             "ability": "Tinted Lens",
             "item": "Steelium Z",
-            "nature": "Adamant",
+            "nature": "Jolly",
             "moves": [
                 "First Impression",
                 "Triple Cannonade",
                 "Swords Dance",
-                "Extreme Speed"
+                "Finishing Blow"
             ],
             "evs": {
                 "at": 252,
@@ -6114,12 +6060,12 @@
         "Molayne (Elite Four)": {
             "level": 100,
             "ability": "Technician",
-            "item": "Shuca Berry",
+            "item": "Chople Berry",
             "nature": "Adamant",
             "moves": [
                 "Gear Grind",
                 "Stone Edge",
-                "Earthquake",
+                "Drill Run",
                 "Shift Gear"
             ],
             "evs": {
@@ -6135,9 +6081,9 @@
             "item": "Aggronite",
             "nature": "Adamant",
             "moves": [
-                "Heavy Slam",
+                "Iron Tail",
                 "Dragon Tail",
-                "Drain Punch",
+                "Take Down",
                 "Precipice Blades"
             ],
             "evs": {
@@ -6225,7 +6171,7 @@
             "moves": [
                 "Shadow Sneak",
                 "Power Whip",
-                "Liquidation",
+                "Wave Crash",
                 "Anchor Shot"
             ],
             "evs": {
@@ -6239,12 +6185,12 @@
             "level": 100,
             "ability": "Shadow Tag",
             "item": "Gengarite",
-            "nature": "Modest",
+            "nature": "Timid",
             "moves": [
-                "Shadow Ball",
+                "Infernal Parade",
                 "Sludge Wave",
                 "Focus Blast",
-                "Heat Wave"
+                "Hypnosis"
             ],
             "evs": {
                 "sa": 252,
@@ -6252,20 +6198,38 @@
             }
         }
     },
-    "Dodrio": {
+    "Oricorio": {
         "Kahili (Elite Four)": {
             "level": 100,
-            "ability": "Reckless",
-            "item": "Red Card",
-            "nature": "Adamant",
+            "ability": "Unburden",
+            "item": "Quick Claw",
+            "nature": "Modest",
             "moves": [
-                "Headlong Rush",
-                "Divebomb",
-                "Rock Climb",
+                "Fiery Dance",
+                "Aeroblast",
+                "Nasty Plot",
+                "Sing"
+            ],
+            "evs": {
+                "sa": 252,
+                "hp": 252
+            }
+        }
+    },
+    "Articuno": {
+        "Kahili (Elite Four)": {
+            "level": 100,
+            "ability": "Guarding Gale",
+            "item": "Flyinium Z",
+            "nature": "Timid",
+            "moves": [
+                "Blizzard",
+                "Hurricane",
+                "Rock Slide",
                 "Parting Shot"
             ],
             "evs": {
-                "at": 252,
+                "sa": 252,
                 "sp": 252
             }
         }
@@ -6304,16 +6268,16 @@
             }
         }
     },
-    "Zapdos": {
+    "Fearow": {
         "Kahili (Elite Four)": {
             "level": 100,
-            "ability": "Guarding Gale",
-            "item": "Flyinium Z",
-            "nature": "Timid",
+            "ability": "Reckless",
+            "item": "Charti Berry",
+            "nature": "Adamant",
             "moves": [
-                "Thunder",
-                "Hurricane",
-                "Heat Wave",
+                "Electro Assault",
+                "Brave Bird",
+                "Submission",
                 "Parting Shot"
             ],
             "evs": {
@@ -6349,7 +6313,7 @@
             "moves": [
                 "Hyper Voice",
                 "Hurricane",
-                "Heat Wave",
+                "Sing",
                 "Focus Blast"
             ],
             "evs": {
@@ -6362,12 +6326,12 @@
         "Hau (Champion)": {
             "level": 100,
             "ability": "Pixilate",
-            "item": "Assault Vest",
+            "item": "Quick Claw",
             "nature": "Modest",
             "moves": [
                 "Boomburst",
                 "Whirlpool",
-                "Focus Blast",
+                "Sing",
                 "Blizzard"
             ],
             "evs": {
@@ -6402,7 +6366,7 @@
                 "Shadow Ball",
                 "Seed Flare",
                 "Grass Whistle",
-                "Nasty Plot"
+                "Destiny Bond"
             ],
             "evs": {
                 "sa": 252,
@@ -6429,14 +6393,14 @@
     "Incineroar": {
         "Hau (Champion)": {
             "level": 100,
-            "ability": "Moxie",
-            "item": "Chople Berry",
+            "ability": "Intimidate",
+            "item": "Quick Claw",
             "nature": "Jolly",
             "moves": [
-                "Wicked Blow",
-                "Flame Wheel",
+                "Brutal Swing",
+                "Blazing Assault",
                 "Megaton Kick",
-                "Swords Dance"
+                "Parting Shot"
             ],
             "evs": {
                 "at": 252,
@@ -7279,6 +7243,22 @@
         }
     },
     "Oranguru": {
+        "Totem Lurantis Fight": {
+            "level": 27,
+            "ability": "Grassy Surge",
+            "item": "Grassy Seed",
+            "nature": "Calm",
+            "moves": [
+                "Extrasensory",
+                "Thunderbolt",
+                "Aura Sphere",
+                "Rototiller"
+            ],
+            "evs": {
+                "hp": 252,
+                "df": 252
+            }
+        },
         "Kukui (Title Defense)": {
             "level": 100,
             "ability": "Pure Power",
@@ -7803,7 +7783,7 @@
             "level": 100,
             "ability": "Slush Rush",
             "item": "Occa Berry",
-            "nature": "Adamant Nature",
+            "nature": "Adamant",
             "moves": [
                 "Icicle Crash",
                 "Iron Tail",
@@ -7871,6 +7851,22 @@
         }
     },
     "Mightyena": {
+        "Nanu (Grand Trial)": {
+            "level": 49,
+            "ability": "Strong Jaw",
+            "item": "Life Orb",
+            "nature": "Jolly",
+            "moves": [
+                "Crunch",
+                "Jagged Fangs",
+                "Psychic Fangs",
+                "Fire Fang"
+            ],
+            "evs": {
+                "at": 252,
+                "sp": 252
+            }
+        },
         "Archie": {
             "level": 100,
             "ability": "Intimidate",
