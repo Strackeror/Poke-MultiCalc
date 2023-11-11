@@ -3,8 +3,8 @@
 </script>
 
 <script lang="ts">
-	import { Move } from '$lib/calc';
-	import type { Pokemon } from '$lib/calc/pokemon';
+	import { Move } from '@smogon/calc';
+	import type { Pokemon } from '$lib/pokemon';
 	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
 	import { createEventDispatcher } from 'svelte';
 
@@ -15,7 +15,7 @@
 	export let types: Type[];
 
 	let uniqueId = counter++;
-	let event = createEventDispatcher<{changed:Move}>();
+	let event = createEventDispatcher<{ changed: Move }>();
 
 	function notifyChanged() {
 		event('changed', move);

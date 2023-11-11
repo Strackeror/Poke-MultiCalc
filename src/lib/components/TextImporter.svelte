@@ -1,11 +1,9 @@
 <script lang="ts">
-	import type { Pokemon, Move } from '$lib/calc';
-	import { PokemonState, currentGame } from '$lib/state';
-	import type { TypeName } from '@pkmn/data';
-	import { Sets, Team, type PokemonSet } from '@pkmn/sets';
-	import { selectedPokemon } from '$lib/state';
+	import type { Pokemon } from '$lib/pokemon';
+	import { localSetToPokemonSet, pokeToSet, setToPoke, type LocalSet } from '$lib/sets/sets';
+	import { PokemonState, currentGame, selectedPokemon } from '$lib/state';
+	import { Sets, Team } from '@pkmn/sets';
 	import { derived } from 'svelte/store';
-	import { localSetToPokemonSet, type LocalSet, pokeToSet, setToPoke } from '$lib/sets/sets';
 	// @ts-ignore
 	import Svelecte, { addFormatter } from 'svelecte';
 	import { createEventDispatcher } from 'svelte';
@@ -34,7 +32,7 @@
 			.join('\n\n');
 	}
 
-	function renderListElem(item: typeof selectedSets[0], isSelected: boolean): string {
+	function renderListElem(item: (typeof selectedSets)[0], isSelected: boolean): string {
 		if (isSelected) {
 			return `${item.name}: ${item.text}`;
 		}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Pokemon } from '$lib/calc/pokemon';
+	import { Pokemon } from '$lib/pokemon';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { selectedPokemon, currentGame, PokemonState } from '$lib/state';
 	import { derived } from 'svelte/store';

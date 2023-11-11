@@ -37,6 +37,7 @@
 		"@pkmn/dex": "^0.7.55",
 		"@pkmn/img": "^0.2.18",
 		"@pkmn/sets": "^5.1.0",
+		"@smogon/calc": "^0.8.1",
 		"svelecte": "^3.17.2"
 	}
 }

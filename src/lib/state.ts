@@ -1,11 +1,11 @@
 import { Generation, Generations, type Data } from '@pkmn/data';
-import { ModdedDex, type ModData } from '@pkmn/dex';
+import { ModdedDex } from '@pkmn/dex';
+import { calculate, type Field, type Move, type Result, type Side } from '@smogon/calc';
+import { getFinalSpeed } from '@smogon/calc/dist/mechanics/util';
 import { writable, type Subscriber, type Updater, type Writable } from 'svelte/store';
-import type { Field, Move, Pokemon, Result, Side } from './calc';
+import { calculateSpeedSwelSun, calculateSwelSun } from './mods/swelsun';
 import type { SetList } from './sets/sets';
-import { calculate } from './calc/calc';
-import { calculateSpeedSwelSun, calculateSwelSun } from './calc/mechanics/mods/swelsun';
-import { getFinalSpeed } from './calc/mechanics/util';
+import type { Pokemon } from './pokemon';
 
 export class PokemonState {
 	pokemon: Pokemon;
@@ -91,8 +91,8 @@ export async function getGame(name: string): Promise<Game> {
 	let data;
 	let spriteOverrides;
 	if (gameEntry.modData) {
-		data = await (await fetch(BASE_PATH + gameEntry.modData + "mod-data.json")).json();
-		spriteOverrides = await(
+		data = await (await fetch(BASE_PATH + gameEntry.modData + 'mod-data.json')).json();
+		spriteOverrides = await (
 			await fetch(BASE_PATH + gameEntry.modData + 'sprites.json').catch(() => undefined)
 		)?.json();
 	}
@@ -118,7 +118,7 @@ export type Game = {
 	sets: SetList;
 	calculate: CalculateFunc;
 	calculateSpeed: CalcSpeedFunc;
-	spriteOverrides: { [id: string]: [string,string] };
+	spriteOverrides: { [id: string]: [string, string] };
 	basedOn?: string | undefined;
 };
 
@@ -127,5 +127,5 @@ export let currentGame: Writable<Game> = writable({
 	sets: {},
 	calculate,
 	calculateSpeed: getFinalSpeed,
-	spriteOverrides: {},
+	spriteOverrides: {}
 });

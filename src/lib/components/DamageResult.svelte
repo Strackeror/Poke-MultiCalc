@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { Field, Pokemon, Result } from '$lib/calc';
+	import type { Pokemon } from '$lib/pokemon';
+	import type { Field, Result } from '@smogon/calc';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { currentGame, openedPair, type PokemonState } from '$lib/state';
 
@@ -29,7 +30,7 @@
 	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
 		console.log(`calc ${atk.name} ${def.name}`);
 		let results: Result[] = [];
-		for (let move of atk.moves) {
+		for (let move of atk.move_states) {
 			if (move.name.length) {
 				results.push($currentGame.calculate(gen, atk, def, move, field));
 			}
@@ -67,11 +68,11 @@
 
 	function quickDesc(res: Result): string {
 		let desc = ` ${res.move.bp || ''} ${res.move.type} ${res.move.category}`;
-	
+
 		if (res.move.priority > 0) desc += ` +${res.move.priority}`;
 		else if (res.move.priority < 0) desc += ` ${res.move.priority}`;
 
-		return desc
+		return desc;
 	}
 </script>
 

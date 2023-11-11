@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Pokemon } from '$lib/calc/pokemon';
+	import type { Pokemon } from '$lib/pokemon';
 	import { currentGame } from '$lib/state';
 	import { Icons, Sprites } from '@pkmn/img';
 	import { createEventDispatcher } from 'svelte';
@@ -35,7 +35,7 @@
 		{/if}
 	{:else}
 		{#if override}
-			<img class:disabled src={override[0]} alt={species} height=100 width=100/>
+			<img class:disabled src={override[0]} alt={species} height="100" width="100" />
 		{:else}
 			{@const img = Sprites.getPokemon(species, { gen: 'gen5' })}
 			<img class:disabled src={img.url} alt={species} width={img.w} height={img.h} />

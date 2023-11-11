@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Move, Pokemon, calcStat } from '$lib/calc';
+	import { Pokemon } from '$lib/pokemon';
+	import { Move, calcStat } from '@smogon/calc';
 	import { currentGame, type PokemonState } from '$lib/state';
 	import type { Generation, StatID, StatsTable } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
@@ -107,19 +108,19 @@
 	}
 
 	function addMove() {
-		$pokemon.moves.push(new Move(gen, ''));
+		$pokemon.move_states.push(new Move(gen, ''));
 		$pokemon = $pokemon;
 	}
 
 	function removeMove() {
-		$pokemon.moves.splice(-1);
+		$pokemon.move_states.splice(-1);
 		$pokemon = $pokemon;
 	}
 
 	function updateMove(current: Move, next: Move) {
-		let index = $pokemon.moves.indexOf(current);
+		let index = $pokemon.move_states.indexOf(current);
 		if (index < 0) return;
-		$pokemon.moves[index] = next;
+		$pokemon.move_states[index] = next;
 	}
 </script>
 
@@ -364,9 +365,9 @@
 			Moves
 			<span />
 			<button on:click={addMove}>Add</button>
-			<button on:click={removeMove} disabled={$pokemon.moves.length == 0}>Remove</button>
+			<button on:click={removeMove} disabled={$pokemon.move_states.length == 0}>Remove</button>
 		</div>
-		{#each $pokemon.moves as move}
+		{#each $pokemon.move_states as move}
 			<MoveEditor
 				poke={$pokemon}
 				{gen}

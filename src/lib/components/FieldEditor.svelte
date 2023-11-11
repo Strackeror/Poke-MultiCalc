@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Generation } from '@pkmn/data';
-	import type { Field } from '$lib/calc';
+	import type { Field } from '@smogon/calc';
 	import { currentGame } from '$lib/state';
 
 	export let field: Field;

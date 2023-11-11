@@ -1,5 +1,5 @@
-import type { Generation, AbilityName, StatID, Terrain, TypeName } from '../../interface';
-import { toID } from '../../util';
+import type { Generation, AbilityName, StatID, Terrain, TypeName } from '@smogon/calc/dist/data/interface';
+import { toID } from '@smogon/calc/dist/util';
 import {
 	getBerryResistType,
 	getFlingPower as getFlingPowerOrig,
@@ -7,12 +7,12 @@ import {
 	getMultiAttack,
 	getTechnoBlast,
 	SEED_BOOSTED_STAT
-} from '../../items';
-import type { RawDesc } from '../../desc';
-import { Field, Side } from '../../field';
-import type { Move } from '../../move';
-import type { Pokemon } from '../../pokemon';
-import { Result } from '../../result';
+} from '@smogon/calc/dist/items';
+import type { RawDesc } from '@smogon/calc/dist/desc';
+import { Field, Side } from '@smogon/calc/dist/field';
+import type { Move } from '@smogon/calc/dist/move';
+import type { Pokemon } from '@smogon/calc/dist/pokemon';
+import { Result } from '@smogon/calc/dist/result';
 import {
 	chainMods,
 	checkAirLock,
@@ -33,7 +33,6 @@ import {
 	getFinalDamage,
 	getFinalSpeed,
 	getModifiedStat,
-	getMostProficientStat,
 	getMoveEffectiveness,
 	getShellSideArmCategory,
 	getWeightFactor,
@@ -42,7 +41,7 @@ import {
 	OF16,
 	OF32,
 	pokeRound
-} from '../util';
+} from '@smogon/calc/dist/mechanics/util';
 
 export function calculateSwelSun(
 	gen: Generation,
@@ -1513,21 +1512,6 @@ export function calculateAtModsSMSSSV(
 	}
 
 	if (
-		(attacker.hasAbility('Protosynthesis') &&
-			(field.hasWeather('Sun') || attacker.hasItem('Booster Energy'))) ||
-		(attacker.hasAbility('Quark Drive') &&
-			(field.hasTerrain('Electric') || attacker.hasItem('Booster Energy')))
-	) {
-		if (
-			(move.category === 'Physical' && getMostProficientStat(attacker) === 'atk') ||
-			(move.category === 'Special' && getMostProficientStat(attacker) === 'spa')
-		) {
-			atMods.push(5325);
-			desc.attackerAbility = attacker.ability;
-		}
-	}
-
-	if (
 		(attacker.hasAbility('Hadron Engine') &&
 			move.category === 'Special' &&
 			field.hasTerrain('Electric') &&
@@ -1672,22 +1656,6 @@ export function calculateDfModsSMSSSV(
 		}
 		dfMods.push(3072);
 	}
-
-	if (
-		(defender.hasAbility('Protosynthesis') &&
-			(field.hasWeather('Sun') || attacker.hasItem('Booster Energy'))) ||
-		(defender.hasAbility('Quark Drive') &&
-			(field.hasTerrain('Electric') || attacker.hasItem('Booster Energy')))
-	) {
-		if (
-			(hitsPhysical && getMostProficientStat(defender) === 'def') ||
-			(!hitsPhysical && getMostProficientStat(defender) === 'spd')
-		) {
-			desc.defenderAbility = defender.ability;
-			dfMods.push(5324);
-		}
-	}
-
 	if (
 		(defender.hasItem('Eviolite') && gen.species.get(toID(defender.name))?.nfe) ||
 		(!hitsPhysical && defender.hasItem('Assault Vest'))

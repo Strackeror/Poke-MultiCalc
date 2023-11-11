@@ -8,7 +8,8 @@
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { Field, Pokemon } from '$lib/calc';
+	import { Pokemon } from '$lib/pokemon';
+	import { Field } from '@smogon/calc';
 	import { pokeToSet, setToPoke } from '$lib/sets/sets';
 	import { GameNames, HackNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
 	import type { PokemonSet } from '@pkmn/data';
