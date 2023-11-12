@@ -1,11 +1,13 @@
-import { Generation, Generations, type Data } from '@pkmn/data';
-import { ModdedDex } from '@pkmn/dex';
+import { Generations, type Data } from '@pkmn/data';
+import { Dex } from '@pkmn/dex';
 import { calculate, type Field, type Move, type Result, type Side } from '@smogon/calc';
+import type { Generation, GenerationNum } from '@smogon/calc/dist/data/interface';
 import { getFinalSpeed } from '@smogon/calc/dist/mechanics/util';
 import { writable, type Subscriber, type Updater, type Writable } from 'svelte/store';
-import { calculateSpeedSwelSun, calculateSwelSun } from './mods/swelsun';
-import type { SetList } from './sets/sets';
+import { ModGen } from './gen';
+import { calculateSpeedSwelSun, calculateSwelSun } from './mods/swelsun/swelsun';
 import type { Pokemon } from './pokemon';
+import type { SetList } from './sets/sets';
 
 export class PokemonState {
 	pokemon: Pokemon;
@@ -85,24 +87,23 @@ function existsOrPast(d: Data) {
 	return Generations.DEFAULT_EXISTS(d) || ('isNonstandard' in d && d['isNonstandard'] == 'Past');
 }
 
-const BASE_PATH = '/Poke-MultiCalc';
+export const BASE_PATH = '/Poke-MultiCalc';
 export async function getGame(name: string): Promise<Game> {
 	let gameEntry = GameMap[name as keyof typeof GameMap];
-	let data;
+	let gen: Generation;
 	let spriteOverrides;
 	if (gameEntry.modData) {
-		data = await (await fetch(BASE_PATH + gameEntry.modData + 'mod-data.json')).json();
+		gen = await ModGen.create(gameEntry.baseGen as GenerationNum, BASE_PATH + gameEntry.modData);
 		spriteOverrides = await (
 			await fetch(BASE_PATH + gameEntry.modData + 'sprites.json').catch(() => undefined)
 		)?.json();
+	} else {
+		gen = new Generations(Dex, existsOrPast).get(gameEntry.baseGen);
 	}
 
 	let setUrl = BASE_PATH + gameEntry.sets;
 	let sets = (await (await fetch(setUrl)).json()) as SetList;
 
-	let dex = new ModdedDex(`gen${gameEntry.baseGen}` as any, data);
-	dex.data.Aliases = {};
-	let gen = new Generation(dex, existsOrPast);
 	return {
 		gen,
 		sets: sets ?? {},
@@ -123,7 +124,7 @@ export type Game = {
 };
 
 export let currentGame: Writable<Game> = writable({
-	gen: new Generation(new ModdedDex('gen9'), existsOrPast),
+	gen: new Generations(Dex, existsOrPast).get(9),
 	sets: {},
 	calculate,
 	calculateSpeed: getFinalSpeed,

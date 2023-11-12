@@ -1,0 +1,59 @@
+diff --git a/node_modules/@smogon/calc/src/desc.ts b/src/lib/mods/swelsun/desc.ts
+index 75ce2ea..b1134f6 100644
+--- a/node_modules/@smogon/calc/src/desc.ts
++++ b/src/lib/mods/swelsun/desc.ts
+@@ -1,11 +1,11 @@
+-import {Generation, Weather, Terrain, TypeName, ID} from './data/interface';
+-import {Field, Side} from './field';
+-import {Move} from './move';
+-import {Pokemon} from './pokemon';
+-import {Damage, damageRange} from './result';
+-import {error} from './util';
++import type {Generation, Weather, Terrain, TypeName, ID} from '@smogon/calc/dist/data/interface';
++import type {Field, Side} from '@smogon/calc/dist/field';
++import type {Move} from '@smogon/calc/dist/move';
++import type {Pokemon} from '@smogon/calc/dist/pokemon';
++import { type Damage, damageRange } from '@smogon/calc/dist/result';
++import {error} from '@smogon/calc/dist/util';
+ // NOTE: This needs to come last to simplify bundling
+-import {isGrounded} from './mechanics/util';
++import {isGrounded} from '@smogon/calc/dist/mechanics/util';
+ 
+ export interface RawDesc {
+   HPEVs?: string;
+@@ -117,7 +117,7 @@ export function getRecovery(
+   const ignoresShellBell =
+     gen.num === 3 && move.named('Doom Desire', 'Future Sight');
+   if (attacker.hasItem('Shell Bell') && !ignoresShellBell) {
+-    const max = Math.round(defender.maxHP() / 8);
++    const max = Math.round(defender.maxHP() / 5);
+     for (let i = 0; i < minD.length; i++) {
+       recovery[0] += Math.min(Math.round(minD[i] * move.hits / 8), max);
+       recovery[1] += Math.min(Math.round(maxD[i] * move.hits / 8), max);
+@@ -166,7 +166,7 @@ export function getRecoil(
+   let recoil: [number, number] | number = [0, 0];
+   let text = '';
+ 
+-  const damageOverflow = minDamage > defender.curHP() || maxDamage > defender.curHP();
++  const damageOverflow = min > defender.curHP() || max > defender.curHP();
+   if (move.recoil) {
+     const mod = (move.recoil[0] / move.recoil[1]) * 100;
+     let minRecoilDamage, maxRecoilDamage;
+@@ -534,7 +534,7 @@ function getEndOfTurn(
+     texts.push('Leftovers recovery');
+   } else if (defender.hasItem('Black Sludge') && !loseItem) {
+     if (defender.hasType('Poison')) {
+-      damage += Math.floor(defender.maxHP() / 16);
++      damage += Math.floor(defender.maxHP() / 8);
+       texts.push('Black Sludge recovery');
+     } else if (!defender.hasAbility('Magic Guard', 'Klutz')) {
+       damage -= Math.floor(defender.maxHP() / 8);
+@@ -555,7 +555,7 @@ function getEndOfTurn(
+ 
+   if (field.attackerSide.isSeeded && !attacker.hasAbility('Magic Guard')) {
+     let recovery = Math.floor(attacker.maxHP() / (gen.num >= 2 ? 8 : 16));
+-    if (defender.hasItem('Big Root')) recovery = Math.trunc(recovery * 5324 / 4096);
++    if (defender.hasItem('Big Root')) recovery = Math.trunc(recovery * 2);
+     if (attacker.hasAbility('Liquid Ooze')) {
+       damage -= recovery;
+       texts.push('Liquid Ooze damage');

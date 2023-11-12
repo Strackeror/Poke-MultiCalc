@@ -1,0 +1,4 @@
+[
+  ["node_modules/@smogon/calc/src/mechanics/gen789.ts", "src/lib/mods/swelsun/gen789.ts"],
+  ["node_modules/@smogon/calc/src/desc.ts", "src/lib/mods/swelsun/desc.ts"]
+]

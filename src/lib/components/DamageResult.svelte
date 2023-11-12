@@ -23,8 +23,7 @@
 	}
 
 	function totalDmg(res: Result) {
-		let [min, max] = res.range();
-		return [min * res.move.hits, max * res.move.hits];
+		return res.range();
 	}
 
 	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
@@ -58,7 +57,8 @@
 	function description(res: Result) {
 		if (totalDmg(res)[1] == 0) return '';
 		let isCrit = res.move.isCrit ? ' (Crit)' : '';
-		return `${res.moveDesc()}: ${res.kochance(false).text}${isCrit}\n`;
+		let hits = res.move.hits > 1 ? ` (${res.move.hits} hits)` : '';
+		return `${res.moveDesc()}: ${res.kochance(false).text}${isCrit}${hits}\n`;
 	}
 
 	function damageRolls(res: Result) {
@@ -71,6 +71,7 @@
 
 		if (res.move.priority > 0) desc += ` +${res.move.priority}`;
 		else if (res.move.priority < 0) desc += ` ${res.move.priority}`;
+
 
 		return desc;
 	}

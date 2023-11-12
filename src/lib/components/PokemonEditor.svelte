@@ -2,8 +2,10 @@
 	import { Pokemon } from '$lib/pokemon';
 	import { Move, calcStat } from '@smogon/calc';
 	import { currentGame, type PokemonState } from '$lib/state';
-	import type { Generation, StatID, StatsTable } from '@pkmn/data';
+	import type { Generation } from '@smogon/calc/dist/data/interface';
+	import { Generation as DataGeneration, Stats, type StatID, type StatsTable } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
+	import { Dex } from '@pkmn/dex';
 
 	export let pokemon: PokemonState;
 
@@ -30,11 +32,9 @@
 	$: abilities = [...gen.abilities].sort(compareName);
 	$: items = [...gen.items].sort(compareName);
 
-	let stats: readonly StatID[];
+	let stats: Stats;
 	$: {
-		stats = [...gen.stats];
-		if (gen.num == 1) stats = stats.slice(0, -1);
-		stats = [...stats.filter((s) => s != 'spe'), 'spe'];
+		stats = new DataGeneration(Dex.forGen(gen.num), () => true).stats;
 	}
 
 	$: {
@@ -61,7 +61,7 @@
 	}
 
 	$: {
-		for (let stat of gen.stats) {
+		for (let stat of stats) {
 			let newStat = calcStat(
 				gen,
 				stat,
@@ -88,11 +88,11 @@
 	let dvs: StatsTable = { ...$pokemon.ivs };
 	$: {
 		for (let stat of stats) {
-			dvs[stat] = gen.stats.toDV($pokemon.ivs[stat]);
+			dvs[stat] = stats.toDV($pokemon.ivs[stat]);
 		}
 	}
 	function updateDv(stat: StatID) {
-		$pokemon.ivs[stat] = gen.stats.toIV(dvs[stat]);
+		$pokemon.ivs[stat] = stats.toIV(dvs[stat]);
 	}
 
 	let teraChecked: boolean;
@@ -197,9 +197,9 @@
 				<th />
 				<th />
 			</tr>
-			{#each stats as stat}
+			{#each [...stats] as stat}
 				<tr>
-					<td> {gen.stats.display(stat)} </td>
+					<td> {stats.display(stat)} </td>
 					<td>
 						<input type="number" bind:value={$pokemon.species.baseStats[stat]} />
 					</td>

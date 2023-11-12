@@ -3,9 +3,9 @@
 </script>
 
 <script lang="ts">
-	import { Move } from '@smogon/calc';
 	import type { Pokemon } from '$lib/pokemon';
-	import type { Generation, MoveCategory, Type, TypeName } from '@pkmn/data';
+	import { Move, toID } from '@smogon/calc';
+	import type { Generation, MoveCategory, Type, TypeName } from '@smogon/calc/dist/data/interface';
 	import { createEventDispatcher } from 'svelte';
 
 	export let gen: Generation;
@@ -54,7 +54,7 @@
 
 	let hits: number[];
 	$: {
-		let multihit = gen.moves.get(move.name)?.multihit;
+		let multihit = gen.moves.get(toID(move.name))?.multihit;
 		if (!multihit) hits = [1];
 		else if (typeof multihit == 'number') hits = [multihit];
 		else {
