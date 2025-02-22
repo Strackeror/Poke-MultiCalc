@@ -1,7 +1,8 @@
-import type { TypeName } from "@pkmn/data";
-import { Move, Pokemon as SPokemon } from "@smogon/calc";
+import { Move, Pokemon as SPokemon, } from "@smogon/calc";
+import type { StatsTable, TypeName } from "@smogon/calc/dist/data/interface";
 
 export class Pokemon extends SPokemon {
-  move_states: Move[] = []
+  moveStates: Move[] = []
+  baseStatOverrides: Partial<StatsTable> = {}
   selectedTera?: TypeName
 }

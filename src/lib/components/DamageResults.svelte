@@ -3,29 +3,34 @@
 	import { selectedPokemon, type PokemonState } from '$lib/state';
 	import DamageResult from './DamageResult.svelte';
 
-	export let attackers: PokemonState[];
-	export let defenders: PokemonState[];
-	export let field: Field;
-	export let otherSide: boolean = false;
-	export let showAll: boolean = false;
+	interface Props {
+		attackers: PokemonState[];
+		defenders: PokemonState[];
+		field: Field;
+		otherSide?: boolean;
+		showAll?: boolean;
+	}
 
-	let currentField: Field;
-	$: {
+	let { attackers, defenders, field, otherSide = false, showAll = false }: Props = $props();
+
+	let currentField: Field = $derived.by(() => {
 		if (!otherSide) {
-			currentField = field;
-		} else {
-			currentField = field.clone();
-			let newSides = [currentField.defenderSide, currentField.attackerSide];
-			currentField.attackerSide = newSides[0];
-			currentField.defenderSide = newSides[1];
+			return field.clone();
 		}
-	}
 
-	let current: readonly [PokemonState, PokemonState][];
-	$: {
-		if (attackers.includes($selectedPokemon)) current = defenders.map((d) => [$selectedPokemon, d]);
-		if (defenders.includes($selectedPokemon)) current = attackers.map((a) => [a, $selectedPokemon]);
-	}
+		let newField = field.clone();
+		let newSides = [newField.defenderSide, newField.attackerSide];
+		newField.attackerSide = newSides[0];
+		newField.defenderSide = newSides[1];
+		return newField;
+	});
+
+	let current: readonly [PokemonState, PokemonState][] = $derived.by(() => {
+		if (attackers.includes($selectedPokemon)) return defenders.map((d) => [$selectedPokemon, d]);
+		if (defenders.includes($selectedPokemon)) return attackers.map((a) => [a, $selectedPokemon]);
+		return [];
+	});
+
 </script>
 
 <div class="results">

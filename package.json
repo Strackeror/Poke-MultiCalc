@@ -10,35 +10,29 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"deploy": "node gh-pages.js",
-		"postinstall": "tsx scripts/calc-patches.ts apply"
+		"deploy": "node gh-pages.js"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.1.1",
-		"@sveltejs/adapter-static": "^2.0.3",
-		"@sveltejs/kit": "^1.27.3",
+		"@sveltejs/adapter-static": "^3.0.8",
+		"@sveltejs/kit": "^2.5.27",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
 		"eslint": "^8.53.0",
 		"eslint-config-prettier": "^8.10.0",
-		"eslint-plugin-svelte3": "^4.0.0",
 		"gh-pages": "^5.0.0",
-		"prettier": "^2.8.8",
-		"prettier-plugin-svelte": "^2.10.1",
-		"svelte": "^3.59.2",
-		"svelte-check": "^3.5.2",
+		"prettier": "^3.1.0",
+		"prettier-plugin-svelte": "^3.2.6",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
 		"tslib": "^2.6.2",
 		"tsx": "^4.1.1",
-		"typescript": "^5.2.2",
-		"vite": "^4.5.0"
+		"typescript": "^5.5.0"
 	},
 	"type": "module",
 	"dependencies": {
-		"@pkmn/data": "^0.7.55",
-		"@pkmn/dex": "^0.7.55",
-		"@pkmn/img": "^0.2.18",
-		"@pkmn/sets": "^5.1.0",
-		"@smogon/calc": "^0.8.1",
-		"svelecte": "^3.17.2"
+		"@pkmn/img": "^0.2.34",
+		"@pkmn/sets": "^5.1.2",
+		"@smogon/calc": "0.10.0",
+		"svelecte": "^5.0.0"
 	}
 }

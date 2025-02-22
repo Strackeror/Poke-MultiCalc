@@ -3,46 +3,49 @@
 	import { localSetToPokemonSet, pokeToSet, setToPoke, type LocalSet } from '$lib/sets/sets';
 	import { PokemonState, currentGame, selectedPokemon } from '$lib/state';
 	import { Sets, Team } from '@pkmn/sets';
-	import { derived } from 'svelte/store';
-	// @ts-ignore
-	import Svelecte, { addFormatter } from 'svelecte';
-	import { createEventDispatcher } from 'svelte';
+	import Svelecte from 'svelecte';
 
-	const event = createEventDispatcher<{ teamUpdated: void }>();
+	interface Props {
+		allyStates: PokemonState[];
+		enemyStates: PokemonState[];
+		teamUpdated: () => void;
+	}
 
-	export let allyStates: PokemonState[];
-	export let enemyStates: PokemonState[];
+	let { allyStates = $bindable(), enemyStates = $bindable(), teamUpdated }: Props = $props();
 
-	let importText: string = '';
+	let importText: string = $state('');
 
-	type SetEntry = { value: Partial<LocalSet>; text: string; name: string };
-	let setList: { name: string; sets: SetEntry[] }[];
-	$: setList = Object.entries($currentGame.sets).map(([name, sets]) => ({
-		name,
-		sets: Object.entries(sets).map(([setname, set]) => ({ value: set, text: setname, name: name }))
-	}));
+	type SetEntry = { poke: string; set_name: string; set: Partial<LocalSet> };
+	let setList: { label: string; options: SetEntry[] }[] = $derived(
+		Object.entries($currentGame.sets).map(([poke, sets]) => ({
+			label: poke,
+			options: Object.entries(sets).map(([set_name, set]) => ({
+				poke,
+				set_name,
+				set
+			}))
+		}))
+	);
 
-	$: gen = $currentGame.gen;
+	let gen = $derived($currentGame.gen);
 
-	let selectedSets: SetEntry[];
+	let selectedSets: SetEntry[] = $state([]);
 	function setListUpdate(_: unknown) {
 		importText = selectedSets
-			.map((set) => localSetToPokemonSet(set.name, set.value))
+			.map((set) => localSetToPokemonSet(set.poke, set.set))
 			.map((set) => Sets.exportSet(set))
 			.join('\n\n');
 	}
 
-	function renderListElem(item: (typeof selectedSets)[0], isSelected: boolean): string {
-		if (isSelected) {
-			return `${item.name}: ${item.text}`;
-		}
-		return item.text;
+	function renderListElem(value: object, selected?: boolean) {
+		let entry = value as SetEntry;
+		if (selected) return `${entry.poke}: ${entry.set_name}`;
+		return entry.set_name;
 	}
-	addFormatter('with-name', renderListElem);
 
-	$: selectedPokemonState = $selectedPokemon;
-	$: allies = derived(allyStates, (p) => p);
-	$: enemies = derived(enemyStates, (p) => p);
+	let selectedPokemonState = $derived($selectedPokemon);
+	let allies = $derived(allyStates.map((p) => p.pokemon));
+	let enemies = $derived(enemyStates.map((p) => p.pokemon));
 
 	function importTextPokemon() {
 		let set = Sets.importSet(importText);
@@ -51,7 +54,7 @@
 			window.alert(`failed to import: \n ${importText}`);
 			return;
 		}
-		event('teamUpdated');
+		teamUpdated();
 		let state = new PokemonState(poke);
 		$selectedPokemonState = state.pokemon;
 		$selectedPokemon = selectedPokemonState;
@@ -61,10 +64,7 @@
 		importText = Sets.exportSet(pokeToSet($selectedPokemonState));
 	}
 
-	enum Side {
-		Allies,
-		Enemies
-	}
+	type Side = 'Allies' | 'Enemies';
 
 	function importTextTeam(side: Side): PokemonState[] | undefined {
 		let sets = Team.import(importText);
@@ -82,16 +82,16 @@
 			.filter((p): p is Pokemon => p !== undefined)
 			.map((p) => new PokemonState(p));
 		switch (side) {
-			case Side.Allies:
+			case 'Allies':
 				if (allyStates.includes($selectedPokemon)) $selectedPokemon = newTeam[0];
 				allyStates = newTeam;
 				break;
-			case Side.Enemies:
+			case 'Enemies':
 				if (enemyStates.includes($selectedPokemon)) $selectedPokemon = newTeam[0];
 				enemyStates = newTeam;
 				break;
 		}
-		event('teamUpdated');
+		teamUpdated();
 	}
 
 	function exportTextTeam(team: Pokemon[]) {
@@ -101,28 +101,28 @@
 
 <div class="import-text-box">
 	<div class="button-grid">
-		<button on:click={() => importTextPokemon()}>Import Pokémon</button>
-		<button on:click={() => importTextTeam(Side.Allies)}>Import allies</button>
-		<button on:click={() => importTextTeam(Side.Enemies)}>Import enemies</button>
+		<button onclick={() => importTextPokemon()}>Import Pokémon</button>
+		<button onclick={() => importTextTeam('Allies')}>Import allies</button>
+		<button onclick={() => importTextTeam('Enemies')}>Import enemies</button>
 
-		<button on:click={() => exportTextPokemon()}>Export Pokémon</button>
-		<button on:click={() => exportTextTeam($allies)}>Export allies</button>
-		<button on:click={() => exportTextTeam($enemies)}>Export enemies</button>
+		<button onclick={() => exportTextPokemon()}>Export Pokémon</button>
+		<button onclick={() => exportTextTeam(allies)}>Export allies</button>
+		<button onclick={() => exportTextTeam(enemies)}>Export enemies</button>
 	</div>
 	<Svelecte
 		options={setList}
-		groupLabelField="name"
-		groupItemsField="sets"
-		virtualList={true}
+		valueField="set"
+		virtualList
 		valueAsObject
+		keepSelectionInList
 		multiple
 		clearable
 		resetOnSelect={false}
-		renderer="with-name"
 		bind:value={selectedSets}
-		on:change={setListUpdate}
+		renderer={renderListElem}
+		onChange={setListUpdate}
 	/>
-	<textarea class="import-text" bind:value={importText} />
+	<textarea class="import-text" bind:value={importText}></textarea>
 </div>
 
 <style>
@@ -151,7 +151,6 @@
 		position: absolute;
 		margin: 5px 5px 0px 5px;
 		width: 96%;
-
 		--sv-border-color: #888 !important;
 		--sv-color: #111;
 	}
@@ -159,8 +158,7 @@
 	:global(.svelecte-control input::placeholder) {
 		color: black;
 	}
-	/** Dropdown always goes down */
-	:global(.sv-dropdown) {
+	:global(.sv_dropdown) {
 		bottom: auto !important;
 	}
 </style>

@@ -2,19 +2,21 @@
 	import { Pokemon } from '$lib/pokemon';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { selectedPokemon, currentGame, PokemonState } from '$lib/state';
-	import { derived } from 'svelte/store';
+	import { derived as derived_  } from 'svelte/store';
 
-	export let pokemonStates: PokemonState[];
-	export let right: boolean = false;
-
-	$: pokemons = derived(pokemonStates, (p) => p);
-
-	let pokemonStateInstances: [Pokemon, PokemonState][];
-	$: {
-		pokemonStateInstances = $pokemons.map(
-			(p, i) => [p, pokemonStates[i]] as [Pokemon, PokemonState]
-		);
+	interface Props {
+		pokemonStates: PokemonState[];
+		right?: boolean;
 	}
+
+	let { pokemonStates = $bindable(), right = false }: Props = $props();
+
+	let pokemons = $derived(derived_(pokemonStates, (p) => p));
+
+	let pokemonStateInstances: [Pokemon, PokemonState][] = $derived($pokemons.map(
+			(p, i) => [p, pokemonStates[i]] as [Pokemon, PokemonState]
+		));
+	
 
 	function addPokemon() {
 		let level = pokemonStates.map((n) => n.pokemon.level).reduce((a, b) => Math.max(a, b), 0);
@@ -31,11 +33,11 @@
 			{pokemon}
 			disabled={!pokemonState.enabled}
 			selected={$selectedPokemon == pokemonState}
-			on:clicked={() => ($selectedPokemon = pokemonState)}
+			clicked={() => ($selectedPokemon = pokemonState)}
 		/>
 	{/each}
 	<div class="add">
-		<button on:click={addPokemon}>Add</button>
+		<button onclick={addPokemon}>Add</button>
 	</div>
 </div>
 

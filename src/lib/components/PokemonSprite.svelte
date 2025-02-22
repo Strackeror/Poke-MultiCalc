@@ -2,36 +2,44 @@
 	import type { Pokemon } from '$lib/pokemon';
 	import { currentGame } from '$lib/state';
 	import { Icons, Sprites } from '@pkmn/img';
-	import { createEventDispatcher } from 'svelte';
 
-	export let icon: boolean = false;
-	export let pokemon: Pokemon;
-	export let selected: boolean = false;
-	export let disabled: boolean = false;
+	interface Props {
+		icon?: boolean;
+		pokemon: Pokemon;
+		selected?: boolean;
+		disabled?: boolean;
+		clicked?: () => void;
+	}
 
-	const event = createEventDispatcher();
+	let {
+		icon = false,
+		pokemon,
+		selected = false,
+		disabled = false,
+		clicked = () => {}
+	}: Props = $props();
+
+	let clickable = $derived(clicked != undefined)
 
 	const Aliases: { [id: string]: string } = {
 		'Minior-Red': 'Minior'
 	};
 
-	let species: string = '';
-	let override: [string, string] | undefined;
-	$: {
-		species = pokemon.species.name;
-		if (species in Aliases) species = Aliases[species];
-		if (species.endsWith('-Totem')) species = species.slice(0, -6);
-
-		override = $currentGame.spriteOverrides[species];
-	}
+	let species: string = $derived.by(() => {
+		let species = pokemon.species.name;
+		if (species in Aliases) return Aliases[species];
+		if (species.endsWith('-Totem')) return species.slice(0, -6);
+		return species;
+	});
+	let override: [string, string] | undefined = $derived($currentGame.spriteOverrides[species]);
 </script>
 
-<button class:selected on:click={() => event('clicked')}>
+<button class:selected class:clickable onclick={clicked}>
 	{#if icon}
 		{#if override}
 			<img class="pokeicon" src={override[1]} alt={species} />
 		{:else}
-			<span class="pokeicon" style={Icons.getPokemon(species).style} />
+			<span class="pokeicon" style={Icons.getPokemon(species).style}></span>
 		{/if}
 	{:else}
 		{#if override}
@@ -42,7 +50,7 @@
 		{/if}
 		{#if pokemon.item}
 			{@const item = Icons.getItem(pokemon.item)}
-			<span class:disabled class="itemicon" style={item.style} />
+			<span class:disabled class="itemicon" style={item.style}></span>
 		{/if}
 	{/if}
 </button>
@@ -57,21 +65,17 @@
 		text-align: inherit;
 		position: relative;
 	}
-	img {
-		border-radius: 8px;
-	}
-	.pokeicon {
-		border-radius: 4px;
-	}
 	.selected {
 		background-color: darkgray;
 	}
-
+	.clickable :hover {
+		background-color: lightgray;
+	}
 	.disabled {
 		opacity: 0.4;
 	}
-
 	.itemicon {
+		pointer-events: none;
 		position: absolute;
 		bottom: 5px;
 		right: 5px;

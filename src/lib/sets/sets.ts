@@ -1,7 +1,7 @@
 import { Pokemon } from '$lib/pokemon';
 import { Move, toID } from '@smogon/calc';
-import type { Generation, TypeName } from '@smogon/calc/dist/data/interface';
-import type { PokemonSet, StatsTable } from '@pkmn/dex';
+import type { Generation, TypeName, StatsTable } from '@smogon/calc/dist/data/interface';
+import { type PokemonSet } from '@pkmn/sets';
 
 export type LocalSetStats = {
 	hp: number;
@@ -51,7 +51,7 @@ export function pokeToSet(poke: Pokemon): Partial<PokemonSet> {
 		nature: poke.nature,
 		ability: poke.ability,
 		item: poke.item,
-		moves: poke.move_states.map((m) => m.name),
+		moves: poke.moveStates.map((m) => m.name),
 		level: poke.level,
 		ivs: poke.ivs,
 		evs: poke.evs,
@@ -76,7 +76,7 @@ export function setToPoke(gen: Generation, set: Partial<PokemonSet>) {
 			ivs: set.ivs,
 			evs: set.evs
 		});
-		poke.move_states =
+		poke.moveStates =
 			set.moves?.map(
 				(m) => new Move(gen, m, { species: set.species, ability: set.ability, item: set.item })
 			) ?? [];

@@ -3,50 +3,55 @@
 	import type { Field } from '@smogon/calc/';
 
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
-	import { currentGame } from '$lib/state';
+	import { currentGame, PokemonState, selectedPokemon } from '$lib/state';
 
-	export let field: Field;
-	export let leftTeam: Pokemon[], rightTeam: Pokemon[];
-
-	$: gen = $currentGame.gen;
-
-	enum PokeSide {
-		Left,
-		Right
+	interface Props {
+		field: Field;
+		leftTeam: PokemonState[];
+		rightTeam: PokemonState[];
 	}
 
-	let speeds: { speed: number; pokes: { poke: Pokemon; side: PokeSide }[] }[] = [];
-	$: {
+	let { field, leftTeam, rightTeam }: Props = $props();
+
+	let gen = $derived($currentGame.gen);
+
+	type PokeSide = 'Left' | 'Right';
+
+	let pokemon = $derived($selectedPokemon);
+	let speeds: { speed: number; pokes: { poke: Pokemon; side: PokeSide }[] }[] = $derived.by(() => {
+		let _ = [$pokemon];
+		console.log('speedsupdated');
 		let pokeBySpeed: { [speed: number]: { poke: Pokemon; side: PokeSide }[] } = {};
 		for (let poke of leftTeam) {
-			let speed = $currentGame.calculateSpeed(gen, poke, field, field.attackerSide);
+			let speed = $currentGame.calculateSpeed(gen, poke.pokemon, field, field.attackerSide);
 			if (!(speed in pokeBySpeed)) {
 				pokeBySpeed[speed] = [];
 			}
 
-			pokeBySpeed[speed].push({ poke, side: PokeSide.Left });
+			pokeBySpeed[speed].push({ poke: poke.pokemon, side: 'Left' });
 		}
 		for (let poke of rightTeam) {
-			let speed = $currentGame.calculateSpeed(gen, poke, field, field.defenderSide);
+			let speed = $currentGame.calculateSpeed(gen, poke.pokemon, field, field.defenderSide);
 			if (!(speed in pokeBySpeed)) {
 				pokeBySpeed[speed] = [];
 			}
 
-			pokeBySpeed[speed].push({ poke, side: PokeSide.Right });
+			pokeBySpeed[speed].push({ poke: poke.pokemon, side: 'Right' });
 		}
 
-		speeds = Object.keys(pokeBySpeed).map((speed) => ({
+		let newSpeeds = Object.keys(pokeBySpeed).map((speed) => ({
 			speed: Number(speed),
 			pokes: pokeBySpeed[Number(speed)]
 		}));
-		speeds.sort((a, b) => b.speed - a.speed);
-	}
+		newSpeeds.sort((a, b) => b.speed - a.speed);
+		return newSpeeds;
+	});
 
 	function getSideClass(side: PokeSide) {
 		switch (side) {
-			case PokeSide.Left:
+			case 'Left':
 				return 'left';
-			case PokeSide.Right:
+			case 'Right':
 				return 'right';
 		}
 	}

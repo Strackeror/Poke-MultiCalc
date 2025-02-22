@@ -7,42 +7,39 @@
 	import TextImporter from '$lib/components/TextImporter.svelte';
 
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Pokemon } from '$lib/pokemon';
 	import { Field } from '@smogon/calc';
 	import { pokeToSet, setToPoke } from '$lib/sets/sets';
-	import { GameNames, HackNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
-	import type { PokemonSet } from '@pkmn/data';
-	import { derived } from 'svelte/store';
+	import { GameNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
+	import type { PokemonSet } from '@pkmn/sets';
+	import { writable } from 'svelte/store';
 
-	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur'));
-	$: console.log(`selected pokemon changed: ${$selectedPokemon.pokemon.species.name}`);
+	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 
-	let field = new Field();
-	let allyStates: PokemonState[] = [$selectedPokemon];
-	let enemyStates: PokemonState[] = [];
-	let showAll: boolean = false;
+	const field = writable(new Field());
+	let allyStates: PokemonState[] = $state([$selectedPokemon]);
+	let enemyStates: PokemonState[] = $state([]);
+	let showAll: boolean = $state(false);
 
-	$: allies = derived(allyStates, (p) => p);
-	$: enemies = derived(enemyStates, (p) => p);
-
-	let genName: string = '';
-	genName = $page.url.searchParams.get('game') ?? 'S/V';
+	let genName: string = $state('');
+	genName = page.url.searchParams.get('game') ?? 'S/V';
 
 	type LocalStorageState = {
 		allies: Partial<PokemonSet>[];
 		enemies: Partial<PokemonSet>[];
 	};
+
 	function saveState() {
 		let state: LocalStorageState = {
-			allies: $allies.map(pokeToSet),
-			enemies: $enemies.map(pokeToSet)
+			allies: allyStates.map((p) => pokeToSet(p.pokemon)),
+			enemies: enemyStates.map((p) => pokeToSet(p.pokemon))
 		};
 		console.log('Saving state', state);
 		localStorage.setItem(`${genName}-state`, JSON.stringify(state));
 	}
 
-	let autosave = setInterval(() => {
+	setInterval(() => {
 		saveState();
 	}, 20_000);
 
@@ -64,9 +61,9 @@
 
 	async function updateGen() {
 		$currentGame = await getGame(genName);
-		$page.url.searchParams.set('game', genName);
-		goto(`?${$page.url.searchParams.toString()}`);
-		field = new Field();
+		page.url.searchParams.set('game', genName);
+		goto(`?${page.url.searchParams.toString()}`);
+		$field = new Field();
 		if (loadState()) return;
 
 		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
@@ -80,7 +77,6 @@
 		let index = allyStates.indexOf($selectedPokemon);
 		if (index >= 0) {
 			allyStates.splice(index, 1);
-			allyStates = allyStates;
 			if (index > 0) $selectedPokemon = allyStates[index - 1];
 			else $selectedPokemon = [...allyStates, ...enemyStates][0];
 			return;
@@ -89,7 +85,6 @@
 		index = enemyStates.indexOf($selectedPokemon);
 		if (index >= 0) {
 			enemyStates.splice(index, 1);
-			enemyStates = enemyStates;
 			if (index > 0) $selectedPokemon = enemyStates[index - 1];
 			else $selectedPokemon = [...allyStates, ...enemyStates][0];
 			return;
@@ -98,12 +93,11 @@
 
 	function togglePoke() {
 		$selectedPokemon.enabled = !$selectedPokemon.enabled;
-		allyStates = allyStates;
-		enemyStates = enemyStates;
+		$selectedPokemon.update()
 	}
 
 	function clear() {
-		if (window.confirm("Are you sure you want to clear ?")) {
+		if (window.confirm('Are you sure you want to clear ?')) {
 			$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 			allyStates = [$selectedPokemon];
 			enemyStates = [];
@@ -111,54 +105,55 @@
 		}
 	}
 
-	let pokemonCollapsed: boolean = false;
-	let fieldCollapse: boolean = true;
+	let pokemonCollapsed: boolean = $state(false);
+	let fieldCollapse: boolean = $state(true);
 </script>
 
 <div class="main">
 	<div class="edit">
 		<div class="box basic-options">
 			Games
-			<select bind:value={genName} on:change={updateGen}>
-				<optgroup label="Vanilla">
-					{#each GameNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</optgroup>
-				<optgroup label="Hacks">
-					{#each HackNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</optgroup>
+			<select bind:value={genName} onchange={updateGen}>
+				{#each GameNames as name}
+					<option value={name}>{name}</option>
+				{/each}
 			</select>
-			<button class="right" on:click={clear}>Clear</button>
-			<br>
+			<button class="right" onclick={clear}>Clear</button>
+			<br />
 			<div class="right">
-				<input type="checkbox" id="all" bind:checked={showAll}>
+				<input type="checkbox" id="all" bind:checked={showAll} />
 				<label for="all" title="Show All Pokémon interactions">Show All</label>
 			</div>
 		</div>
 		<div class="box poke-editor">
-			<button on:click={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
+			<button onclick={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
 			<button
 				class="poke-remove right"
-				on:click={removePoke}
-				disabled={$allies.length + $enemies.length <= 1}>Remove</button
+				onclick={removePoke}
+				disabled={allyStates.length + enemyStates.length <= 1}>Remove</button
 			>
-			<button class="right" on:click={togglePoke}>{#if $selectedPokemon.enabled}Hide{:else}Show{/if}</button>
+			<button class="right" onclick={togglePoke}
+				>{#if $selectedPokemon.enabled}Hide{:else}Show{/if}</button
+			>
 			<div hidden={pokemonCollapsed}>
 				<PokemonEditor bind:pokemon={$selectedPokemon} />
 			</div>
 		</div>
 		<div class="box field-editor">
-			<button on:click={() => (fieldCollapse = !fieldCollapse)}>Field</button>
-			<button class="right" on:click={()=> {field = new Field()}}>Reset</button>
+			<button onclick={() => (fieldCollapse = !fieldCollapse)}>Field</button>
+			<button
+				class="right"
+				onclick={() => {
+					$field = new Field();
+				}}
+				>Reset
+			</button>
 			<div hidden={fieldCollapse}>
-				<FieldEditor bind:field />
+				<FieldEditor bind:field={$field} />
 			</div>
 		</div>
 		<div class="box">
-			<TextImporter bind:allyStates bind:enemyStates on:teamUpdated={saveState} />
+			<TextImporter bind:allyStates bind:enemyStates teamUpdated={saveState} />
 		</div>
 		<div class="box credits">
 			<a target="_blank" href="https://github.com/Strackeror/Poke-MultiCalc">Github</a> <br />
@@ -181,9 +176,15 @@
 			</div>
 		</div>
 		<div class="result-matrix box">
-			<DamageResults attackers={allyStates} defenders={enemyStates} {field} {showAll}/>
-			<SpeedColumn leftTeam={$allies} rightTeam={$enemies} {field} />
-			<DamageResults attackers={enemyStates} defenders={allyStates} {field} {showAll} otherSide />
+			<DamageResults attackers={allyStates} defenders={enemyStates} field={$field} {showAll} />
+			<SpeedColumn leftTeam={allyStates} rightTeam={enemyStates} field={$field} />
+			<DamageResults
+				attackers={enemyStates}
+				defenders={allyStates}
+				field={$field}
+				{showAll}
+				otherSide
+			/>
 		</div>
 	</div>
 </div>
@@ -220,7 +221,7 @@
 		padding: 10px;
 	}
 
-.basic-options {
+	.basic-options {
 		padding: 5px;
 	}
 

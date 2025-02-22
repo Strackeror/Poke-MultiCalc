@@ -1,18 +1,15 @@
 <script lang="ts">
-	import type { Generation } from '@pkmn/data';
+	import type { Generation } from '@smogon/calc/dist/data/interface';
 	import type { Field } from '@smogon/calc';
 	import { currentGame } from '$lib/state';
 
-	export let field: Field;
-
-	$: gen = $currentGame.gen;
-
-	let leftSwitching: boolean, rightSwitching: boolean;
-	$: {
-		field.attackerSide.isSwitching = leftSwitching ? 'out' : undefined;
-		field.defenderSide.isSwitching = rightSwitching ? 'out' : undefined;
+	interface Props {
+		field: Field;
 	}
 
+	let { field = $bindable() }: Props = $props();
+
+	let gen = $derived($currentGame.gen);
 
 	function hideGenCheck(gen: Generation, gens: number[]) {
 		if (!gens.includes(gen.num)) {
@@ -49,7 +46,7 @@
 			type="radio"
 			name="terrain"
 			bind:group={field.terrain}
-			value="None"
+			value={undefined}
 			id="noneterrain"
 		/><label class="btn btn-left" for="noneterrain">None</label>
 		<input
@@ -89,7 +86,7 @@
 	</div>
 	<div
 		class="space"
-		class:hide={gen.num != 9 || field.gameType != "Doubles"}
+		class:hide={gen.num != 9 || field.gameType != 'Doubles'}
 		role="group"
 		title="Select the ruin abilities from other Pok&eacute;mon on the field."
 	>
@@ -122,7 +119,7 @@
 		<label class="btn btn-right" for="sword">Sword of Ruin</label>
 	</div>
 	<div
-		class:hide={gen.num != 9 || field.gameType != "Doubles"}
+		class:hide={gen.num != 9 || field.gameType != 'Doubles'}
 		role="group"
 		title="Select the ruin abilities from other Pok&eacute;mon on the field."
 	>
@@ -131,13 +128,16 @@
 	</div>
 
 	<hr class={hideGenCheck(gen, [6, 7, 8, 9])} />
-	<div class={hideGenCheck(gen, [3, 4, 5, 6, 7, 8, 9])} title="Select the current weather condition.">
+	<div
+		class={hideGenCheck(gen, [3, 4, 5, 6, 7, 8, 9])}
+		title="Select the current weather condition."
+	>
 		<input
 			class="visually-hidden"
 			type="radio"
 			name="weather"
 			bind:group={field.weather}
-			value=""
+			value={undefined}
 			id="clear"
 			checked
 		/>
@@ -633,18 +633,28 @@
 		<div class="left" title="Is the defending Pok&eacute;mon switching out?">
 			<input
 				class="visually-hidden"
-				bind:checked={leftSwitching}
 				type="checkbox"
 				id="switchingL"
+				bind:checked={
+					() => field.defenderSide.isSwitching == 'out',
+					(v) => {
+						field.defenderSide.isSwitching = v ? 'out' : undefined;
+					}
+				}
 			/>
 			<label class="btn" for="switchingL">Switching out</label>
 		</div>
-		<div class="right" title="Is the defending Pok&eacute;mon switching out?">
+		<div class="right" title="Is the attacking Pok&eacute;mon switching out?">
 			<input
 				class="visually-hidden"
-				bind:checked={rightSwitching}
 				type="checkbox"
 				id="switchingR"
+				bind:checked={
+					() => field.attackerSide.isSwitching == 'out',
+					(v) => {
+						field.attackerSide.isSwitching = v ? 'out' : undefined;
+					}
+				}
 			/>
 			<label class="btn" for="switchingR">Switching out</label>
 		</div>
@@ -664,6 +674,7 @@
 		margin: -1px -3px 0;
 		display: inline-block;
 		border-radius: 8px;
+		user-select: none;
 	}
 
 	.btn-left {

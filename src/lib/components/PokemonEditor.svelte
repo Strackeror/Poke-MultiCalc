@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { Pokemon } from '$lib/pokemon';
-	import { Move, calcStat } from '@smogon/calc';
+	import { Move, STATS, Stats, calcStat, type StatID} from '@smogon/calc';
 	import { currentGame, type PokemonState } from '$lib/state';
 	import type { Generation } from '@smogon/calc/dist/data/interface';
-	import { Generation as DataGeneration, Stats, type StatID, type StatsTable } from '@pkmn/data';
 	import MoveEditor from './MoveEditor.svelte';
-	import { Dex } from '@pkmn/dex';
 
-	export let pokemon: PokemonState;
+	interface Props {
+		pokemon: PokemonState;
+	}
+
+	let { pokemon = $bindable() }: Props = $props();
 
 	const TOGGLE_ABILITIES = [
 		'Flash Fire',
@@ -24,78 +26,75 @@
 		return a.name.localeCompare(b.name);
 	}
 
-	$: gen = $currentGame.gen;
-	$: types = [...gen.types];
-	$: species = [...gen.species].sort(compareName);
-	$: moves = [...gen.moves].sort(compareName);
-	$: moveNames = moves.map((m) => m.name);
-	$: abilities = [...gen.abilities].sort(compareName);
-	$: items = [...gen.items].sort(compareName);
+	let gen = $derived($currentGame.gen);
+	let types = $derived([...gen.types]);
+	let species = $derived([...gen.species].sort(compareName));
+	let moves = $derived([...gen.moves].sort(compareName));
+	let moveNames = $derived(moves.map((m) => m.name));
+	let abilities = $derived([...gen.abilities].sort(compareName));
+	let items = $derived([...gen.items].sort(compareName));
 
-	let stats: Stats;
-	$: {
-		stats = new DataGeneration(Dex.forGen(gen.num), () => true).stats;
-	}
+	let stats: typeof Stats = Stats;
+	let stat_list: StatID[] = $derived(STATS[gen.num] as StatID[]);
 
-	$: {
+	$effect(() => {
 		if ($pokemon.isDynamaxed && $pokemon.dynamaxLevel === undefined) {
 			$pokemon.dynamaxLevel = 10;
 		}
-	}
+	});
 
-	let hpRatio = 1;
+	let hpRatio = $state(1);
 	function updateOriginalHp() {
 		$pokemon.originalCurHP = Math.round($pokemon.rawStats.hp * hpRatio);
 	}
 
-	$: percentHp = '' + Math.round(hpRatio * 100);
+	let percentHp = $derived('' + Math.round(hpRatio * 100));
 	function updatePercentHp(value: string) {
 		hpRatio = +value / 100;
 		updateOriginalHp();
 	}
 
-	$: currentHp = Math.round($pokemon.maxHP() * hpRatio);
+	let currentHp = $derived(Math.round($pokemon.maxHP() * hpRatio));
 	function updateCurrentHp(value: number) {
 		hpRatio = value / $pokemon.maxHP();
 		updateOriginalHp();
 	}
 
-	$: {
-		for (let stat of stats) {
-			let newStat = calcStat(
-				gen,
-				stat,
-				$pokemon.species.baseStats[stat],
-				$pokemon.ivs[stat],
-				$pokemon.evs[stat],
-				$pokemon.level,
-				$pokemon.nature
-			);
+	function getBaseStat(stat: StatID) {
+		return {
+			...$pokemon.species.baseStats,
+			...$pokemon.baseStatOverrides
+		}[stat];
+	}
 
-			if (newStat != $pokemon.rawStats[stat]) {
-				$pokemon.rawStats[stat] = newStat;
-				if (stat == 'hp') updateOriginalHp();
-			}
+	function updateStat(stat: StatID) {
+		let newStat = calcStat(
+			gen,
+			stat,
+			getBaseStat(stat),
+			$pokemon.ivs[stat],
+			$pokemon.evs[stat],
+			$pokemon.level,
+			$pokemon.nature
+		);
+		if (newStat != $pokemon.rawStats[stat]) {
+			$pokemon.rawStats[stat] = newStat;
+			if (stat == 'hp') updateOriginalHp();
 		}
 	}
 
-	$: speciesName = $pokemon.species.name;
+	function updateStats() {
+		for (let stat of stat_list) {
+			updateStat(stat);
+		}
+	}
+
+	let speciesName = $derived($pokemon.species.name);
 	function updateSpecies(speciesName: string) {
 		$pokemon = new Pokemon(gen, speciesName, { level: $pokemon.level });
-		pokemon = pokemon;
 	}
 
-	let dvs: StatsTable = { ...$pokemon.ivs };
-	$: {
-		for (let stat of stats) {
-			dvs[stat] = stats.toDV($pokemon.ivs[stat]);
-		}
-	}
-	function updateDv(stat: StatID) {
-		$pokemon.ivs[stat] = stats.toIV(dvs[stat]);
-	}
-
-	let teraChecked: boolean;
+	let teraChecked: boolean = $state(false);
 	function updateTeraType() {
 		$pokemon.teraType = teraChecked ? $pokemon.selectedTera : undefined;
 	}
@@ -108,27 +107,29 @@
 	}
 
 	function addMove() {
-		$pokemon.move_states.push(new Move(gen, ''));
-		$pokemon = $pokemon;
+		$pokemon.moveStates.push(new Move(gen, ''));
+		pokemon.update()
 	}
 
 	function removeMove() {
-		$pokemon.move_states.splice(-1);
-		$pokemon = $pokemon;
+		$pokemon.moveStates.splice(-1);
+		pokemon.update()
 	}
 
 	function updateMove(current: Move, next: Move) {
-		let index = $pokemon.move_states.indexOf(current);
+		let index = $pokemon.moveStates.indexOf(current);
 		if (index < 0) return;
-		$pokemon.move_states[index] = next;
+		$pokemon.moveStates[index] = next;
+		pokemon.update()
 	}
+
 </script>
 
 <div class="panel-body poke-info">
 	<div class="info-group top">
 		<div>
 			<div class="edit">Species</div>
-			<select value={speciesName} on:change={(e) => updateSpecies(e.currentTarget.value)}>
+			<select value={speciesName} onchange={(e) => updateSpecies(e.currentTarget.value)}>
 				{#each species as specie}
 					<option value={specie.name}>{specie.name}</option>
 				{/each}
@@ -153,7 +154,7 @@
 			<div>
 				<div class="edit">Tera Type</div>
 				<select bind:value={$pokemon.selectedTera}>
-					<option value="" hidden />
+					<option value="" hidden></option>
 					{#each types as type}
 						<option value={type.name}>{type.name}</option>
 					{/each}
@@ -162,14 +163,14 @@
 					type="checkbox"
 					title="Has this Pok&eacute;mon terastalized?"
 					bind:checked={teraChecked}
-					on:change={updateTeraType}
+					onchange={updateTeraType}
 				/>
 			</div>
 		{/if}
 		<div>
 			<div class="edit">Gender</div>
 			<select class="gender calc-trigger" bind:value={$pokemon.gender}>
-				<option value="N" hidden />
+				<option value="N" hidden></option>
 				{#if $pokemon.gender != 'N'}
 					<option value="M">Male</option>
 					<option value="F">Female</option>
@@ -188,70 +189,113 @@
 	</div>
 	<div class="info-group">
 		<table>
-			<tr>
-				<th />
-				<th>Base</th>
-				<th class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>IVs</th>
-				<th class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>EVs</th>
-				<th class={genCheck(gen, [1, 2])}>DVs</th>
-				<th />
-				<th />
-			</tr>
-			{#each [...stats] as stat}
+			<tbody>
 				<tr>
-					<td> {stats.display(stat)} </td>
-					<td>
-						<input type="number" bind:value={$pokemon.species.baseStats[stat]} />
-					</td>
-					<td class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
-						<input class="ivs" type="number" min="0" max="31" bind:value={$pokemon.ivs[stat]} />
-					</td>
-					<td class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
-						<input
-							class="evs"
-							type="number"
-							min="0"
-							max="252"
-							step="4"
-							bind:value={$pokemon.evs[stat]}
-						/>
-					</td>
-					<td class="gen-specific {genCheck(gen, [1, 2])}">
-						<input
-							class="dvs"
-							type="number"
-							bind:value={dvs[stat]}
-							on:input={() => updateDv(stat)}
-						/>
-					</td>
-					<td><span class="total">{$pokemon.rawStats[stat]}</span> </td>
-					{#if stat != 'hp'}
-						<td>
-							<select class="boost" bind:value={$pokemon.boosts[stat]}>
-								<option value={6}>+6</option>
-								<option value={5}>+5</option>
-								<option value={4}>+4</option>
-								<option value={3}>+3</option>
-								<option value={2}>+2</option>
-								<option value={1}>+1</option>
-								<option value={0} selected>--</option>
-								<option value={-1}>-1</option>
-								<option value={-2}>-2</option>
-								<option value={-3}>-3</option>
-								<option value={-4}>-4</option>
-								<option value={-5}>-5</option>
-								<option value={-6}>-6</option>
-							</select>
-						</td>
-					{/if}
+					<th></th>
+					<th>Base</th>
+					<th class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>IVs</th>
+					<th class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>EVs</th>
+					<th class={genCheck(gen, [1, 2])}>DVs</th>
+					<th></th>
+					<th></th>
 				</tr>
-			{/each}
+				{#each [...stat_list] as stat}
+					<tr>
+						<td> {stats.displayStat(stat)} </td>
+						<td>
+							<input
+								type="number"
+								bind:value={
+									() => getBaseStat(stat),
+									(v) => {
+										$pokemon.baseStatOverrides[stat] = v;
+										updateStat(stat);
+									}
+								}
+							/>
+						</td>
+						<td class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
+							<input
+								class="ivs"
+								type="number"
+								min="0"
+								max="31"
+								bind:value={
+									() => $pokemon.ivs[stat],
+									(v) => {
+										$pokemon.ivs[stat] = v;
+										updateStat(stat);
+									}
+								}
+							/>
+						</td>
+						<td class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
+							<input
+								class="evs"
+								type="number"
+								min="0"
+								max="252"
+								step="4"
+								bind:value={
+									() => $pokemon.evs[stat],
+									(v) => {
+										$pokemon.evs[stat] = v;
+										updateStat(stat);
+									}
+								}
+							/>
+						</td>
+						<td class="gen-specific {genCheck(gen, [1, 2])}">
+							<input
+								class="dvs"
+								type="number"
+								bind:value={
+									() => Stats.IVToDV($pokemon.ivs[stat]),
+									(v) => {
+										$pokemon.ivs[stat] = Stats.DVToIV(v);
+										updateStat(stat);
+									}
+								}
+							/>
+						</td>
+						<td><span class="total">{$pokemon.rawStats[stat]}</span> </td>
+						{#if stat != 'hp'}
+							<td>
+								<select class="boost" bind:value={$pokemon.boosts[stat]}>
+									<option value={6}>+6</option>
+									<option value={5}>+5</option>
+									<option value={4}>+4</option>
+									<option value={3}>+3</option>
+									<option value={2}>+2</option>
+									<option value={1}>+1</option>
+									<option value={0} selected>--</option>
+									<option value={-1}>-1</option>
+									<option value={-2}>-2</option>
+									<option value={-3}>-3</option>
+									<option value={-4}>-4</option>
+									<option value={-5}>-5</option>
+									<option value={-6}>-6</option>
+								</select>
+							</td>
+						{/if}
+					</tr>
+				{/each}
+			</tbody>
 		</table>
 	</div>
 	<div class="info-group info-selectors">
 		<div class={genCheck(gen, [3, 4, 5, 6, 7, 8, 9])}>
 			<div class="edit">Nature</div>
-			<select class="nature" bind:value={$pokemon.nature}>
+			<select
+				class="nature"
+				bind:value={
+					() => $pokemon.nature,
+					(v) => {
+						$pokemon.nature = v;
+						updateStats();
+					}
+				}
+			>
 				<option value="Adamant">Adamant (+Atk, -SpA)</option>
 				<option value="Bashful">Bashful</option>
 				<option value="Bold">Bold (+Def, -Atk)</option>
@@ -336,15 +380,14 @@
 		<input
 			class="current-hp"
 			type="number"
-			value={currentHp}
-			on:input={(e) => updateCurrentHp(+e.currentTarget.value)}
+			bind:value={() => currentHp, (v) => updateCurrentHp(v)}
 		/>/
 		<span class="max-hp">{$pokemon.maxHP()}</span>
 		(
 		<input
 			class="percent-hp"
 			value={percentHp}
-			on:input={(e) => updatePercentHp(e.currentTarget.value)}
+			oninput={(e) => updatePercentHp(e.currentTarget.value)}
 		/>%)
 		<input
 			class="max calc-trigger btn-input {genCheck(gen, [8])}"
@@ -363,18 +406,18 @@
 	<div class="info-group">
 		<div class="move-header">
 			Moves
-			<span />
-			<button on:click={addMove}>Add</button>
-			<button on:click={removeMove} disabled={$pokemon.move_states.length == 0}>Remove</button>
+			<span></span>
+			<button onclick={addMove}>Add</button>
+			<button onclick={removeMove} disabled={$pokemon.moveStates.length == 0}>Remove</button>
 		</div>
-		{#each $pokemon.move_states as move}
+		{#each $pokemon.moveStates as move}
 			<MoveEditor
 				poke={$pokemon}
 				{gen}
 				{moveNames}
 				{types}
 				{move}
-				on:changed={(m) => updateMove(move, m.detail)}
+				changed={(m) => updateMove(move, m)}
 			/>
 		{/each}
 	</div>

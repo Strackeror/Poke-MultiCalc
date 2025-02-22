@@ -4,18 +4,22 @@
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { currentGame, openedPair, type PokemonState } from '$lib/state';
 
-	export let atk: PokemonState, def: PokemonState;
-	export let field: Field;
-
-	$: gen = $currentGame.gen;
-
-	let folded: boolean = true;
-	$: {
-		if (!$openedPair) folded = true;
-		else if ($openedPair[0] == atk && $openedPair[1] == def) folded = false;
-		else if ($openedPair[0] == def && $openedPair[1] == atk) folded = false;
-		else folded = true;
+	interface Props {
+		atk: PokemonState;
+		def: PokemonState;
+		field: Field;
 	}
+
+	let { atk, def, field }: Props = $props();
+
+	let gen = $derived($currentGame.gen);
+
+	const folded: boolean = $derived.by(() => {
+		if (!$openedPair) return true;
+		else if ($openedPair[0] == atk && $openedPair[1] == def) return false;
+		else if ($openedPair[0] == def && $openedPair[1] == atk) return false;
+		else return true;
+	});
 
 	function toggleFolded() {
 		if (folded) $openedPair = [atk, def];
@@ -29,7 +33,7 @@
 	function getResults(atk: Pokemon, def: Pokemon, field: Field): Result[] {
 		console.log(`calc ${atk.name} ${def.name}`);
 		let results: Result[] = [];
-		for (let move of atk.move_states) {
+		for (let move of atk.moveStates) {
 			if (move.name.length) {
 				results.push($currentGame.calculate(gen, atk, def, move, field));
 			}
@@ -51,8 +55,8 @@
 		return false;
 	}
 
-	$: results = getResults($atk, $def, field);
-	$: foldedResults = results.filter(showFolded);
+	let results = $derived(getResults($atk, $def, field));
+	let foldedResults = $derived(results.filter(showFolded));
 
 	function description(res: Result) {
 		if (totalDmg(res)[1] == 0) return '';
@@ -72,14 +76,13 @@
 		if (res.move.priority > 0) desc += ` +${res.move.priority}`;
 		else if (res.move.priority < 0) desc += ` ${res.move.priority}`;
 
-
 		return desc;
 	}
 </script>
 
 {#if results.length > 0}
 	<div class="damage-results">
-		<button class="damage-result" on:click={toggleFolded}>
+		<button class="damage-result" onclick={toggleFolded}>
 			<div class="icon">
 				<PokemonSprite pokemon={$atk} icon={true} />
 			</div>

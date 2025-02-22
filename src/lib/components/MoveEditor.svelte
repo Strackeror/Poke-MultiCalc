@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
 	let counter = 0;
 </script>
 
@@ -6,22 +6,25 @@
 	import type { Pokemon } from '$lib/pokemon';
 	import { Move, toID } from '@smogon/calc';
 	import type { Generation, MoveCategory, Type, TypeName } from '@smogon/calc/dist/data/interface';
-	import { createEventDispatcher } from 'svelte';
 
-	export let gen: Generation;
-	export let move: Move;
-	export let poke: Pokemon;
-	export let moveNames: string[];
-	export let types: Type[];
-
-	let uniqueId = counter++;
-	let event = createEventDispatcher<{ changed: Move }>();
-
-	function notifyChanged() {
-		event('changed', move);
+	interface Props {
+		gen: Generation;
+		move: Move;
+		poke: Pokemon;
+		moveNames: string[];
+		types: Type[];
+		changed: (_: Move) => void;
 	}
 
-	$: name = move.name;
+	let { gen, move = $bindable(), poke, moveNames, types, changed }: Props = $props();
+
+	let uniqueId = counter++;
+
+	function notifyChanged() {
+		changed(move);
+	}
+
+	let name = $derived(move.name);
 	function changeMove(name: string) {
 		move = new Move(gen, name, {
 			species: poke.species.name,
@@ -31,44 +34,40 @@
 		notifyChanged();
 	}
 
-	$: category = move.overrides?.category ?? move.category;
+	let category = $derived(move.overrides?.category ?? move.category);
 	function updateCategory(value: string) {
 		let category = value as MoveCategory;
 		move.overrides = { ...move.overrides, category };
 		notifyChanged();
 	}
 
-	$: type = move.overrides?.type ?? move.type;
+	let type = $derived(move.overrides?.type ?? move.type);
 	function updateType(value: string) {
 		let type = value as TypeName;
 		move.overrides = { ...move.overrides, type };
 		notifyChanged();
 	}
 
-	$: basePower = move.overrides?.basePower ?? move.bp;
+	let basePower = $derived(move.overrides?.basePower ?? move.bp);
 	function updateBp(value: string) {
 		let basePower = +value;
 		move.overrides = { ...move.overrides, basePower };
 		notifyChanged();
 	}
 
-	let hits: number[];
-	$: {
+	let hits: number[] = $derived.by(() => {
 		let multihit = gen.moves.get(toID(move.name))?.multihit;
-		if (!multihit) hits = [1];
-		else if (typeof multihit == 'number') hits = [multihit];
-		else {
-			hits = [];
-			for (let i = multihit[0]; i <= multihit[1]; ++i) hits.push(i);
-		}
-	}
+		if (!multihit) return [1];
+		else if (typeof multihit == 'number') return [multihit];
+		else return [...multihit];
+	});
 </script>
 
 <div>
 	<select
 		class="move-selector small-select"
 		value={name}
-		on:change={(e) => changeMove(e.currentTarget.value)}
+		onchange={(e) => changeMove(e.currentTarget.value)}
 	>
 		<option selected value="">(no move)</option>
 		{#each moveNames as moveName}
@@ -79,32 +78,27 @@
 		class="move-bp"
 		type="number"
 		value={basePower}
-		on:input={(e) => updateBp(e.currentTarget.value)}
+		oninput={(e) => updateBp(e.currentTarget.value)}
 	/>
-	<select class="move-type" value={type} on:change={(e) => updateType(e.currentTarget.value)}>
-		<option hidden value="" />
+	<select class="move-type" value={type} onchange={(e) => updateType(e.currentTarget.value)}>
+		<option hidden value=""></option>
 		{#each types as type}
 			<option value={type.name}>{type.name}</option>
 		{/each}
 	</select>
 	{#if gen.num >= 4}
-		<select value={category} on:change={(e) => updateCategory(e.currentTarget.value)}>
+		<select value={category} onchange={(e) => updateCategory(e.currentTarget.value)}>
 			<option value="Physical">Physical</option>
 			<option value="Special">Special</option>
 		</select>
 	{/if}
 	<br />
-	<input type="checkbox" id="crit{uniqueId}" bind:checked={move.isCrit} on:change={notifyChanged} />
+	<input type="checkbox" id="crit{uniqueId}" bind:checked={move.isCrit} onchange={notifyChanged} />
 	<label class="btn crit-btn" for="crit{uniqueId}" title="Force this attack to be a critical hit?"
 		>Crit</label
 	>
 	{#if gen.num == 7}
-		<input
-			type="checkbox"
-			id="zMove{uniqueId}"
-			bind:checked={move.useZ}
-			on:change={notifyChanged}
-		/>
+		<input type="checkbox" id="zMove{uniqueId}" bind:checked={move.useZ} onchange={notifyChanged} />
 		<label for="zMove{uniqueId}" title="Make this attack a Z-move?">Z</label>
 	{/if}
 
@@ -113,13 +107,13 @@
 			type="checkbox"
 			id="maxMove{uniqueId}"
 			bind:checked={move.useMax}
-			on:change={notifyChanged}
+			onchange={notifyChanged}
 		/>
 		<label for="maxMove{uniqueId}" title="Make this attack a max attack?">Max</label>
 	{/if}
 
 	{#if hits.length > 1}
-		<select class="move-hits" bind:value={move.hits} on:change={notifyChanged}>
+		<select class="move-hits" bind:value={move.hits} onchange={notifyChanged}>
 			{#each hits as hitCount}
 				<option value={hitCount}>{hitCount} hits</option>
 			{/each}
@@ -131,8 +125,9 @@
 			class="stat-drops calc-trigger hide"
 			title="How many times was this move used in a row?"
 			bind:value={move.timesUsed}
-			on:change={notifyChanged}
+			onchange={notifyChanged}
 		>
+			<option value={1}>Once</option>
 			<option value={2}>Twice</option>
 			<option value={3}>3 times</option>
 			<option value={4}>4 times</option>
@@ -145,7 +140,7 @@
 			class="metronome calc-trigger hide"
 			title="How many times was this move successfully and consecutively used while holding Metronome before this turn?"
 			bind:value={move.timesUsedWithMetronome}
-			on:change={notifyChanged}
+			onchange={notifyChanged}
 		>
 			<option value={0} selected>Never</option>
 			<option value={1}>Once</option>
