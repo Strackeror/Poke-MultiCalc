@@ -93,7 +93,7 @@
 
 	function togglePoke() {
 		$selectedPokemon.enabled = !$selectedPokemon.enabled;
-		$selectedPokemon.update()
+		$selectedPokemon.update();
 	}
 
 	function clear() {
@@ -190,6 +190,11 @@
 </div>
 
 <style>
+	:global(body) {
+		background-color: #1b1b1b;
+		color-scheme: dark;
+		color: aliceblue;
+	}
 	.main {
 		display: flex;
 		max-width: 100%;
@@ -200,6 +205,7 @@
 		min-width: 380px;
 		max-height: calc(100vh - 20px);
 		overflow-y: scroll;
+		padding-right: 7px;
 	}
 	.data {
 		display: flex;
@@ -226,10 +232,13 @@
 	}
 
 	.box {
-		border-radius: 10px;
-		border: 1px solid black;
-		margin: 5px;
+		margin: 10px;
 		overflow: hidden;
+		border-radius: 10px;
+		background: #1b1b1b;
+		box-shadow:
+			5px 5px 10px #0b0b0b,
+			-5px -5px 10px #2b2b2b;
 	}
 
 	.teams {

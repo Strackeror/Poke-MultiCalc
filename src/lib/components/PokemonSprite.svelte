@@ -64,12 +64,14 @@
 		padding: 0;
 		text-align: inherit;
 		position: relative;
+		border-radius: 10px;
 	}
 	.selected {
-		background-color: darkgray;
+		box-shadow: inset 0px 0px 0px 3px #3b3b3b;
 	}
 	.clickable :hover {
-		background-color: lightgray;
+		border-radius: 10px;
+		background-color: #3b3b3b;
 	}
 	.disabled {
 		opacity: 0.4;

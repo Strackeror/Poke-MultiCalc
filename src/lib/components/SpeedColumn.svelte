@@ -58,7 +58,7 @@
 </script>
 
 <div class="main-column">
-	<div class="speed-column">Speed</div>
+	<div>Speed</div>
 	{#each speeds as speedEntry}
 		<div class="speed-column">
 			{speedEntry.speed}
@@ -77,17 +77,18 @@
 		display: flex;
 		flex-direction: column;
 		width: 5em;
-
-		border-left: 1px solid black;
-		border-right: 1px solid black;
 		overflow-y: scroll;
 	}
 	.speed-column {
 		display: flex;
 		flex-direction: column;
-		border-bottom: 1px solid black;
-		margin-top: 5px;
+		margin-bottom: 5px;
+		padding-top: 3px;
 		padding-bottom: 5px;
+		border-radius: 3px;
+		box-shadow:
+			inset -3px -3px 5px #2b2b2b,
+			inset 3px 3px 5px #0b0b0b;
 	}
 
 	.left {

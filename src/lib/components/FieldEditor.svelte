@@ -665,15 +665,15 @@
 	/* general button styling */
 	.btn {
 		text-align: center;
-		border: solid 1px #aaaaaa;
+		border: solid 1px #8f8f9d;
 		padding: 4px 4px;
 		position: relative;
 		cursor: pointer;
-		color: #555555;
-		background: #e9e9e9;
+		color: #eee;
+		background: #2b2a33;
 		margin: -1px -3px 0;
 		display: inline-block;
-		border-radius: 8px;
+		border-radius: 4px;
 		user-select: none;
 	}
 
@@ -689,15 +689,13 @@
 	.btn-mid {
 		border-radius: 0;
 	}
-	.visually-hidden:focus + .btn, /* Add visual indication when focusing on visually hidden elements */
-    .btn:hover {
+	/* Add visual indication when focusing on visually hidden elements */
+	.btn:hover {
 		z-index: 10;
-		border-color: #777777;
-		background: #e3e3e3;
+		background: #445;
 	}
 	.visually-hidden:checked + .btn {
-		color: #111111;
-		background: #f8f8f8;
+		background: #52525e;
 	}
 
 	.btn::after {

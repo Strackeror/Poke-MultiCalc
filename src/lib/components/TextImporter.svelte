@@ -126,6 +126,16 @@
 </div>
 
 <style>
+	.import-text-box {
+		--sv-color: #ccc;
+		--sv-bg: #2b2a33;
+		--sv-disabled-bg: #eee;
+		--sv-item-selected-bg: #52525e;
+		--sv-item-btn-color: #ccc;
+		--sv-item-btn-color-hover: #ccc;
+		--sv-dropdown-active-bg: #52525e;
+		--sv-dropdown-selected-bg: #42424b;
+	}
 	.import-text {
 		margin: 5px;
 		height: 20em;
@@ -150,14 +160,9 @@
 	:global(.svelecte-control) {
 		position: absolute;
 		margin: 5px 5px 0px 5px;
-		width: 96%;
-		--sv-border-color: #888 !important;
-		--sv-color: #111;
+		width: 97%;
 	}
 
-	:global(.svelecte-control input::placeholder) {
-		color: black;
-	}
 	:global(.sv_dropdown) {
 		bottom: auto !important;
 	}

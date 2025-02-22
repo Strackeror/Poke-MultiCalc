@@ -125,10 +125,18 @@
 	.damage-result {
 		display: flex;
 		align-items: flex-start;
+		border-radius: 3px;
+		box-shadow:
+			inset -3px -3px 5px #2b2b2b,
+			inset 3px 3px 5px #0b0b0b;
+		margin-bottom: 5px;
 	}
 
-	.damage-results:hover {
-		background-color: lightgray;
+	.damage-result:hover {
+		background: #202020;
+		box-shadow:
+			-3px -3px 5px #2b2b2b,
+			3px 3px 5px #0b0b0b;
 	}
 
 	.damage-description {
