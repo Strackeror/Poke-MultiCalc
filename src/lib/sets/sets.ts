@@ -62,9 +62,9 @@ export function pokeToSet(poke: Pokemon): Partial<PokemonSet> {
 export function setToPoke(gen: Generation, set: Partial<PokemonSet>) {
 	if (!set?.species) return;
 
-	if (set.ability && !gen.abilities.get(toID(set.ability))) return;
-	if (set.item && !gen.items.get(toID(set.item))) return;
-	if (set.nature && !gen.natures.get(toID(set.nature))) return;
+	if (set.ability && !gen.abilities.get(toID(set.ability))) set.ability = undefined;
+	if (set.item && !gen.items.get(toID(set.item))) set.item = undefined;
+	if (set.nature && !gen.natures.get(toID(set.nature))) set.nature = "Hardy";
 
 	set.moves = set.moves?.filter((m) => gen.moves.get(toID(m)));
 	try {
