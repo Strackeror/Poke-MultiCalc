@@ -1,5 +1,5 @@
-import { Move, Pokemon as SPokemon, } from "@smogon/calc";
-import type { StatsTable, TypeName } from "@smogon/calc/dist/data/interface";
+import { Move, Pokemon as SPokemon, } from "$lib/calc";
+import type { StatsTable, TypeName } from "$lib/calc/data/interface";
 
 export class Pokemon extends SPokemon {
   moveStates: Move[] = []

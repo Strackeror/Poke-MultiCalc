@@ -1,6 +1,6 @@
 import { Pokemon } from '$lib/pokemon';
-import { Move, toID } from '@smogon/calc';
-import type { Generation, TypeName, StatsTable } from '@smogon/calc/dist/data/interface';
+import { Move, toID } from '$lib/calc';
+import type { Generation, TypeName, StatsTable } from '$lib/calc/data/interface';
 import { type PokemonSet } from '@pkmn/sets';
 
 export type LocalSetStats = {

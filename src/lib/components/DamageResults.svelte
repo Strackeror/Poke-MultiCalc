@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Field } from '@smogon/calc';
+	import type { Field } from '$lib/calc';
 	import { selectedPokemon, type PokemonState } from '$lib/state';
 	import DamageResult from './DamageResult.svelte';
 

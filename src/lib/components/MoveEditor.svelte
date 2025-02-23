@@ -4,8 +4,8 @@
 
 <script lang="ts">
 	import type { Pokemon } from '$lib/pokemon';
-	import { Move, toID } from '@smogon/calc';
-	import type { Generation, MoveCategory, Type, TypeName } from '@smogon/calc/dist/data/interface';
+	import { Move, toID } from '$lib/calc';
+	import type { Generation, MoveCategory, Type, TypeName } from '$lib/calc/dist/data/interface';
 
 	interface Props {
 		gen: Generation;

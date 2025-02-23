@@ -32,7 +32,6 @@
 	"dependencies": {
 		"@pkmn/img": "^0.2.34",
 		"@pkmn/sets": "^5.1.2",
-		"@smogon/calc": "0.10.0",
 		"svelecte": "^5.0.0"
 	}
 }

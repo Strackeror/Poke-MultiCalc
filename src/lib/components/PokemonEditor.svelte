@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Pokemon } from '$lib/pokemon';
-	import { Move, STATS, Stats, calcStat, type StatID } from '@smogon/calc';
+	import { Move, STATS, Stats, calcStat, type StatID } from '$lib/calc';
 	import { currentGame, type PokemonState } from '$lib/state';
-	import type { Generation } from '@smogon/calc/dist/data/interface';
+	import type { Generation } from '$lib/calc/data/interface';
 	import MoveEditor from './MoveEditor.svelte';
 
 	interface Props {

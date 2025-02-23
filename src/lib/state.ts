@@ -1,6 +1,6 @@
-import { calculate, Generations, type Field, type Move, type Result, type Side } from '@smogon/calc';
-import type { Generation, GenerationNum } from '@smogon/calc/dist/data/interface';
-import { getFinalSpeed } from '@smogon/calc/dist/mechanics/util';
+import { calculate, Generations, type Field, type Move, type Result, type Side } from '$lib/calc';
+import type { Generation, GenerationNum } from '$lib/calc/data/interface';
+import { getFinalSpeed } from '$lib/calc/mechanics/util';
 import { writable, type Subscriber, type Updater, type Writable } from 'svelte/store';
 import type { Pokemon } from './pokemon';
 import type { SetList } from './sets/sets';
@@ -53,27 +53,18 @@ type GameEntry = {
 };
 
 const GameMap: { [id: string]: GameEntry } = {
-	RBY: { baseGen: 1, sets: '/data/baseSets/gen1.json' },
-	GSC: { baseGen: 2, sets: '/data/baseSets/gen2.json' },
-	ADV: { baseGen: 3, sets: '/data/baseSets/gen3.json' },
-	DPP: { baseGen: 4, sets: '/data/baseSets/gen4.json' },
-	'B/W': { baseGen: 5, sets: '/data/baseSets/gen5.json' },
-	'X/Y': { baseGen: 6, sets: '/data/baseSets/gen6.json' },
-	'S/M': { baseGen: 7, sets: '/data/baseSets/gen7.json' },
-	'S/S': { baseGen: 8, sets: '/data/baseSets/gen8.json' },
-	'S/V': { baseGen: 9, sets: '/data/baseSets/gen9.json' },
+	'Scrambled': { baseGen: 9, sets: '/data/baseSets/gen9.json' },
 };
 
 export const GameNames = Object.keys(GameMap)
 
-export const BASE_PATH = '/Poke-MultiCalc';
 export async function getGame(name: string): Promise<Game> {
 	let gameEntry = GameMap[name as keyof typeof GameMap];
 	let gen: Generation;
 	let spriteOverrides;
 	gen = Generations.get(gameEntry.baseGen)
 
-	let setUrl = BASE_PATH + gameEntry.sets;
+	let setUrl = gameEntry.sets;
 	let sets = (await (await fetch(setUrl)).json()) as SetList;
 
 	return {

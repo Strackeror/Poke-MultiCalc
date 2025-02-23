@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Pokemon } from '$lib/pokemon';
-	import { Field } from '@smogon/calc';
+	import { Field } from '$lib/calc';
 	import { pokeToSet, setToPoke } from '$lib/sets/sets';
 	import { GameNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
 	import type { PokemonSet } from '@pkmn/sets';
@@ -23,8 +23,7 @@
 	let enemyStates: PokemonState[] = $state([]);
 	let showAll: boolean = $state(false);
 
-	let genName: string = $state('');
-	genName = page.url.searchParams.get('game') ?? 'S/V';
+	let genName: string = $state("Scrambled");
 
 	type LocalStorageState = {
 		allies: Partial<PokemonSet>[];

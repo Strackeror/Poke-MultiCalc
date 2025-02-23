@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Pokemon } from '$lib/pokemon';
-	import type { Field, Result } from '@smogon/calc';
+	import type { Field, Result } from '$lib/calc';
 	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 	import { currentGame, openedPair, type PokemonState } from '$lib/state';
 

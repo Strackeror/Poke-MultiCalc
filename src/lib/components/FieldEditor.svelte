@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Generation } from '@smogon/calc/dist/data/interface';
-	import type { Field } from '@smogon/calc';
+	import type { Generation } from '$lib/calc/data/interface';
+	import type { Field } from '$lib/calc';
 	import { currentGame } from '$lib/state';
 
 	interface Props {
