@@ -177,7 +177,19 @@
 		</div>
 		<div>
 			<div class="edit">Level</div>
-			<input class="level" type="number" min="1" max="100" bind:value={$pokemon.level} />
+			<input
+				class="level"
+				type="number"
+				min="1"
+				max="100"
+				bind:value={
+					() => $pokemon.level,
+					(v) => {
+						$pokemon.level = v;
+						updateStats();
+					}
+				}
+			/>
 		</div>
 		<div>
 			<div class="edit">Weight</div>
