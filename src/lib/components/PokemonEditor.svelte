@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Pokemon } from '$lib/pokemon';
-	import { Move, STATS, Stats, calcStat, type StatID} from '@smogon/calc';
+	import { Move, STATS, Stats, calcStat, type StatID } from '@smogon/calc';
 	import { currentGame, type PokemonState } from '$lib/state';
 	import type { Generation } from '@smogon/calc/dist/data/interface';
 	import MoveEditor from './MoveEditor.svelte';
@@ -94,9 +94,9 @@
 		$pokemon = new Pokemon(gen, speciesName, { level: $pokemon.level });
 	}
 
-	let teraChecked: boolean = $state(false);
-	function updateTeraType() {
-		$pokemon.teraType = teraChecked ? $pokemon.selectedTera : undefined;
+	let teraChecked: boolean = $derived($pokemon.teraType != undefined);
+	function checkTeraType(checked: boolean) {
+		$pokemon.teraType = checked ? $pokemon.selectedTera : undefined;
 	}
 
 	function genCheck(gen: Generation, gens: number[]) {
@@ -108,21 +108,20 @@
 
 	function addMove() {
 		$pokemon.moveStates.push(new Move(gen, ''));
-		pokemon.update()
+		pokemon.update();
 	}
 
 	function removeMove() {
 		$pokemon.moveStates.splice(-1);
-		pokemon.update()
+		pokemon.update();
 	}
 
 	function updateMove(current: Move, next: Move) {
 		let index = $pokemon.moveStates.indexOf(current);
 		if (index < 0) return;
 		$pokemon.moveStates[index] = next;
-		pokemon.update()
+		pokemon.update();
 	}
-
 </script>
 
 <div class="panel-body poke-info">
@@ -162,8 +161,7 @@
 				<input
 					type="checkbox"
 					title="Has this Pok&eacute;mon terastalized?"
-					bind:checked={teraChecked}
-					onchange={updateTeraType}
+					bind:checked={() => teraChecked, (v) => checkTeraType(v)}
 				/>
 			</div>
 		{/if}
