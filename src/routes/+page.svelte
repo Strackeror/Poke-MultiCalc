@@ -187,7 +187,7 @@
 				<FieldEditor bind:field={$field} />
 			</div>
 		</div>
-		<div class="box import">
+		<div class="box import" style="overflow: visible;">
 			<button onclick={() => (importCollapse = !importCollapse)}
 				>Import/Export <span class="icon">{importCollapse ? '▼' : '▲'}</span>
 			</button>
@@ -242,8 +242,8 @@
 	}
 	.edit {
 		font: 10pt Verdana;
-		width: 380px;
-		min-width: 380px;
+		width: 400px;
+		min-width: 400px;
 		max-height: calc(100vh - 20px);
 		overflow-y: scroll;
 		padding-right: 7px;
