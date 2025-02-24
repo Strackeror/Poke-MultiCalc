@@ -19,7 +19,7 @@
 	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 
 	const field = writable(new Field());
-	let allyStates: PokemonState[] = $state([$selectedPokemon]);
+	let allyStates: PokemonState[] = $state([]);
 	let enemyStates: PokemonState[] = $state([]);
 	let showAll: boolean = $state(false);
 
@@ -68,7 +68,7 @@
 		if (loadState()) return;
 
 		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
-		allyStates = [$selectedPokemon];
+		allyStates = [];
 		enemyStates = [];
 		return;
 	}
@@ -117,8 +117,7 @@
 
 	function clear() {
 		if (window.confirm('Are you sure you want to clear ?')) {
-			$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
-			allyStates = [$selectedPokemon];
+			allyStates = [];
 			enemyStates = [];
 			saveState();
 		}
