@@ -16,15 +16,6 @@
 	let pokemonStateInstances: [Pokemon, PokemonState][] = $derived($pokemons.map(
 			(p, i) => [p, pokemonStates[i]] as [Pokemon, PokemonState]
 		));
-	
-
-	function addPokemon() {
-		let level = pokemonStates.map((n) => n.pokemon.level).reduce((a, b) => Math.max(a, b), 0);
-		if (level == 0) level = 100;
-		let newPoke = new PokemonState(new Pokemon($currentGame.gen, 'bulbasaur', { level }));
-		pokemonStates = [...pokemonStates, newPoke];
-		$selectedPokemon = newPoke;
-	}
 </script>
 
 <div class:right>
@@ -36,9 +27,6 @@
 			clicked={() => ($selectedPokemon = pokemonState)}
 		/>
 	{/each}
-	<div class="add">
-		<button onclick={addPokemon}>Add</button>
-	</div>
 </div>
 
 <style>
@@ -48,11 +36,5 @@
 		flex-wrap: nowrap;
 		overflow-x: scroll;
 		overflow-y: hidden;
-	}
-
-	.add {
-		width: 64x;
-		height: 64px;
-		padding: 16px;
 	}
 </style>

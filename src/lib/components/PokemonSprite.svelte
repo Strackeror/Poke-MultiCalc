@@ -11,15 +11,9 @@
 		clicked?: () => void;
 	}
 
-	let {
-		icon = false,
-		pokemon,
-		selected = false,
-		disabled = false,
-		clicked = () => {}
-	}: Props = $props();
+	let { icon = false, pokemon, selected = false, disabled = false, clicked }: Props = $props();
 
-	let clickable = $derived(clicked != undefined)
+	let clickable = $derived(clicked != undefined);
 
 	const Aliases: { [id: string]: string } = {
 		'Minior-Red': 'Minior'
@@ -67,12 +61,18 @@
 		border-radius: 10px;
 	}
 	.selected {
-		box-shadow: inset 0px 0px 0px 3px #3b3b3b;
+		box-shadow: inset 0px 0px 0px 3px #666;
 	}
 	.clickable :hover {
 		border-radius: 10px;
 		background-color: #3b3b3b;
 	}
+
+	.clickable.selected :hover {
+		box-shadow: inset 0px 0px 0px 3px #666;
+		background-color: #3b3b3b;
+	}
+
 	.disabled {
 		opacity: 0.4;
 	}

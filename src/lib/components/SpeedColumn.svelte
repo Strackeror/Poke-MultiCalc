@@ -80,15 +80,14 @@
 		overflow-y: scroll;
 	}
 	.speed-column {
+		background: #222;
 		display: flex;
 		flex-direction: column;
-		margin-bottom: 5px;
+		margin: 0px 10px 10px 5px;
 		padding-top: 3px;
 		padding-bottom: 5px;
 		border-radius: 3px;
-		box-shadow:
-			inset -3px -3px 5px #2b2b2b,
-			inset 3px 3px 5px #0b0b0b;
+		box-shadow: 3px 3px 5px #0b0b0b;
 	}
 
 	.left {

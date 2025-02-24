@@ -123,20 +123,17 @@
 		width: 100%;
 	}
 	.damage-result {
+		background: #222;
 		display: flex;
 		align-items: flex-start;
 		border-radius: 3px;
-		box-shadow:
-			inset -3px -3px 5px #2b2b2b,
-			inset 3px 3px 5px #0b0b0b;
-		margin-bottom: 5px;
+		box-shadow: 3px 3px 5px #0b0b0b;
+		margin-bottom: 10px;
 	}
 
 	.damage-result:hover {
-		background: #202020;
-		box-shadow:
-			-3px -3px 5px #2b2b2b,
-			3px 3px 5px #0b0b0b;
+		background: #333;
+		box-shadow: 3px 3px 5px #0b0b0b;
 	}
 
 	.damage-description {
@@ -144,6 +141,10 @@
 		line-height: 1.25em;
 		padding-bottom: 5px;
 		white-space: pre-line;
+	}
+
+	.damage-results {
+		padding-right: 3px;
 	}
 
 	.move-desc {

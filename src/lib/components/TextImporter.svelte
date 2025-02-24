@@ -110,6 +110,7 @@
 		<button onclick={() => exportTextTeam(enemies)}>Export enemies</button>
 	</div>
 	<Svelecte
+		placeholder="Trainer Sets"
 		options={setList}
 		valueField="set"
 		virtualList
@@ -122,7 +123,16 @@
 		renderer={renderListElem}
 		onChange={setListUpdate}
 	/>
-	<textarea class="import-text" bind:value={importText}></textarea>
+	<textarea
+		class="import-text"
+		bind:value={
+			() => importText,
+			(v) => {
+				importText = v;
+				selectedSets = [];
+			}
+		}
+	></textarea>
 </div>
 
 <style>

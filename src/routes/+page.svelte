@@ -14,6 +14,7 @@
 	import { GameNames, PokemonState, currentGame, getGame, selectedPokemon } from '$lib/state';
 	import type { PokemonSet } from '@pkmn/sets';
 	import { writable } from 'svelte/store';
+	import PokemonSprite from '$lib/components/PokemonSprite.svelte';
 
 	$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 
@@ -77,18 +78,36 @@
 		let index = allyStates.indexOf($selectedPokemon);
 		if (index >= 0) {
 			allyStates.splice(index, 1);
-			if (index > 0) $selectedPokemon = allyStates[index - 1];
-			else $selectedPokemon = [...allyStates, ...enemyStates][0];
 			return;
 		}
-
 		index = enemyStates.indexOf($selectedPokemon);
 		if (index >= 0) {
 			enemyStates.splice(index, 1);
-			if (index > 0) $selectedPokemon = enemyStates[index - 1];
-			else $selectedPokemon = [...allyStates, ...enemyStates][0];
 			return;
 		}
+	}
+
+	function currentTeam(): PokemonState[] | undefined {
+		let index = allyStates.indexOf($selectedPokemon);
+		if (index >= 0) {
+			return allyStates;
+		}
+		index = enemyStates.indexOf($selectedPokemon);
+		if (index >= 0) {
+			return enemyStates;
+		}
+		return undefined;
+	}
+
+	function movePokeToTeam(team: PokemonState[] | undefined) {
+		removePoke();
+		if (team !== undefined) {
+			team.push($selectedPokemon);
+		}
+	}
+
+	function newPoke() {
+		$selectedPokemon = new PokemonState(new Pokemon($currentGame.gen, 'Bulbasaur'));
 	}
 
 	function togglePoke() {
@@ -105,8 +124,10 @@
 		}
 	}
 
+	let pokemon = $derived($selectedPokemon);
 	let pokemonCollapsed: boolean = $state(false);
 	let fieldCollapse: boolean = $state(true);
+	let importCollapse: boolean = $state(true);
 </script>
 
 <div class="main">
@@ -126,21 +147,36 @@
 			</div>
 		</div>
 		<div class="box poke-editor">
-			<button onclick={() => (pokemonCollapsed = !pokemonCollapsed)}>Pokémon</button>
-			<button
-				class="poke-remove right"
-				onclick={removePoke}
-				disabled={allyStates.length + enemyStates.length <= 1}>Remove</button
-			>
-			<button class="right" onclick={togglePoke}
-				>{#if $selectedPokemon.enabled}Hide{:else}Show{/if}</button
-			>
-			<div hidden={pokemonCollapsed}>
-				<PokemonEditor bind:pokemon={$selectedPokemon} />
+			<div class="current-poke-container">
+				<div class="current-poke">
+					<PokemonSprite pokemon={$pokemon} disabled={!$selectedPokemon.enabled} />
+				</div>
+				<div class="current-poke-buttons">
+					<button onclick={newPoke}>New</button>
+
+					<select bind:value={() => currentTeam(), (v) => movePokeToTeam(v)}>
+						<option value={undefined}>No Team</option>
+						<option value={allyStates}>Allies</option>
+						<option value={enemyStates}>Enemies</option>
+					</select>
+					<button onclick={togglePoke}>
+						{#if $selectedPokemon.enabled}Hide{:else}Show{/if}
+					</button>
+				</div>
+			</div>
+
+			<button onclick={() => (pokemonCollapsed = !pokemonCollapsed)}>
+				Pokémon Editor
+				<span class="icon">{pokemonCollapsed ? '▼' : '▲'}</span>
+			</button>
+			<div class="subbox" hidden={pokemonCollapsed}>
+				<PokemonEditor pokemon={$selectedPokemon} />
 			</div>
 		</div>
 		<div class="box field-editor">
-			<button onclick={() => (fieldCollapse = !fieldCollapse)}>Field</button>
+			<button onclick={() => (fieldCollapse = !fieldCollapse)}
+				>Field Editor<span class="icon">{fieldCollapse ? '▼' : '▲'}</span>
+			</button>
 			<button
 				class="right"
 				onclick={() => {
@@ -148,12 +184,18 @@
 				}}
 				>Reset
 			</button>
-			<div hidden={fieldCollapse}>
+			<div class="subbox" hidden={fieldCollapse}>
 				<FieldEditor bind:field={$field} />
 			</div>
 		</div>
-		<div class="box">
-			<TextImporter bind:allyStates bind:enemyStates teamUpdated={saveState} />
+		<div class="box import">
+			<button onclick={() => (importCollapse = !importCollapse)}
+				>Import/Export <span class="icon">{importCollapse ? '▼' : '▲'}</span>
+			</button>
+
+			<div class="subbox" hidden={importCollapse}>
+				<TextImporter bind:allyStates bind:enemyStates teamUpdated={saveState} />
+			</div>
 		</div>
 		<div class="box credits">
 			<a target="_blank" href="https://github.com/Strackeror/Poke-MultiCalc">Github</a> <br />
@@ -223,7 +265,8 @@
 
 	.poke-editor,
 	.field-editor,
-	.credits {
+	.credits,
+	.import {
 		padding: 10px;
 	}
 
@@ -232,15 +275,12 @@
 	}
 
 	.box {
-		margin: 10px;
+		margin: 8px;
 		overflow: hidden;
 		border-radius: 10px;
-		background: #1b1b1b;
-		box-shadow:
-			5px 5px 10px #0b0b0b,
-			-5px -5px 10px #2b2b2b;
+		background: #2b2b2b;
+		box-shadow: 5px 5px 7px #0b0b0b;
 	}
-
 	.teams {
 		display: grid;
 		grid-auto-columns: minmax(0, 1fr);
@@ -261,5 +301,33 @@
 
 	.right {
 		float: right;
+	}
+
+	.subbox {
+		box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		background-color: #3b3b3b;
+		border-radius: 5px;
+		margin-top: 10px;
+		padding: 10px;
+	}
+
+	.current-poke-container {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-bottom: 8px;
+	}
+
+	.current-poke {
+		box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		background-color: #3b3b3b;
+		border-radius: 5px;
+		width: min-content;
+		margin-bottom: 8px;
+		right: 50%;
+	}
+	.current-poke-buttons {
+		display: flex;
+		flex-direction: column;
 	}
 </style>
